@@ -1,0 +1,29 @@
+version: '3.8'
+services:
+  db_ecoride:
+    image: mysql:8.0
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword_ecoride
+      MYSQL_DATABASE: sf_EcoRide
+      MYSQL_USER: kevin
+      MYSQL_PASSWORD: kevin_password
+    ports:
+      - "3310:3306"       # port hôte 3310 -> container 3306 (évite conflits)
+    volumes:
+      - ecoride_db_data:/var/lib/mysql
+
+  phpmyadmin_ecoride:
+    image: phpmyadmin/phpmyadmin
+    restart: unless-stopped
+    depends_on:
+      - db_ecoride
+    environment:
+      PMA_HOST: db_ecoride
+      PMA_USER: root
+      PMA_PASSWORD: rootpassword_ecoride
+    ports:
+      - "8082:80"         # phpMyAdmin accessible sur 8082
+
+volumes:
+  ecoride_db_data:
