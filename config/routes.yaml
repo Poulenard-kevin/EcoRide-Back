@@ -1,7 +1,4 @@
-#index:
-#    path: /
-#    controller: App\Controller\DefaultController::index
-
-home_toto:
-  path: /
-  controller: App\Controller\DefaultController::home
+# config/routes.yaml
+controllers:
+    resource: ../src/Controller/
+    type: annotation
