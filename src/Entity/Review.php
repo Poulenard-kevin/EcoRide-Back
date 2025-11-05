@@ -25,15 +25,15 @@ class Review
     private ?\DateTimeInterface $date = null;
 
     #[ORM\ManyToOne(inversedBy: 'reviews')]
-    #[ORM\JoinColumn(name: 'auteur_id', nullable: false)] 
+    #[ORM\JoinColumn(name: "auteur_id", nullable: true)] // TODO: rendre NOT NULL après API 
     private ?User $author = null; 
 
     #[ORM\ManyToOne(inversedBy: 'reviews')]
-    #[ORM\JoinColumn(name: 'covoiturage_id', nullable: false)] 
+    #[ORM\JoinColumn(name: "covoiturage_id", nullable: true)] // TODO: rendre NOT NULL après API 
     private ?Carpool $carpool = null; 
 
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'receivedReviews')]
-    #[ORM\JoinColumn(name: 'cible_id', nullable: false)] 
+    #[ORM\JoinColumn(name: "cible_id", nullable: true)] // TODO: rendre NOT NULL après API
     private ?User $target = null; 
 
     public function getId(): ?int

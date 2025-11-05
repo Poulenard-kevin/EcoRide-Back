@@ -52,6 +52,7 @@ class TestController extends AbstractController
         $carpool->setPricePerSeat(20.0);
         $carpool->setTotalSeats(4);
         $carpool->setAvailableSeats(4);
+        $carpool->setStatus(Carpool::STATUS_ACTIVE);
 
         $em->persist($carpool);
 
@@ -72,13 +73,21 @@ class TestController extends AbstractController
         $booking->setCarpool($carpool);
         $booking->setBookingDate(new \DateTime());
         $booking->setReservedSeats(1);
-        $booking->setStatus('confirmée');
+        $booking->setStatus(Booking::STATUS_CONFIRMED);
 
         $em->persist($booking);
 
         // Enregistrer en base
         $em->flush();
 
-        return new Response('Les entités de test ont été créées avec succès !');
+        // Récupérer les labels français des statuts
+        $statusCarpool = $carpool->getStatusLabel();
+        $statusBooking = $booking->getStatusLabel();
+
+        $responseContent = "Les entités de test ont été créées avec succès !<br>";
+        $responseContent .= "Statut du covoiturage : " . $statusCarpool . "<br>";
+        $responseContent .= "Statut de la réservation : " . $statusBooking;
+
+        return new Response($responseContent);
     }
 }

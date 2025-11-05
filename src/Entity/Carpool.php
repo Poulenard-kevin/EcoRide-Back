@@ -44,15 +44,24 @@ class Carpool
     #[ORM\Column(name: 'nb_places_dispo')] 
     private ?int $availableSeats = null; 
 
+    #[ORM\Column(name: "statut", length: 50, nullable: true)] // TODO: rendre NOT NULL après API
+    private ?string $status = null;
+
+    // Ajoute aussi les constantes pour les statuts
+    public const STATUS_ACTIVE = 'active';
+    public const STATUS_COMPLETED = 'completed';
+    public const STATUS_CANCELLED = 'cancelled';
+    public const STATUS_ARCHIVED = 'archived';
+
     #[ORM\ManyToOne(inversedBy: 'carpools', targetEntity: User::class)]
-    #[ORM\JoinColumn(name: 'chauffeur_id', nullable: false)] 
+    #[ORM\JoinColumn(name: "chauffeur_id", nullable: true)] // TODO: rendre NOT NULL après API 
     private ?User $driver = null; 
 
     #[ORM\OneToMany(mappedBy: 'carpool', targetEntity: Booking::class)]
     private Collection $bookings; 
 
     #[ORM\ManyToOne(inversedBy: 'carpools')]
-    #[ORM\JoinColumn(name: 'voiture_id', nullable: false)] 
+    #[ORM\JoinColumn(name: "voiture_id", nullable: true)] // TODO: rendre NOT NULL après API 
     private ?Car $car = null; 
 
     #[ORM\OneToMany(mappedBy: 'carpool', targetEntity: Review::class)]
@@ -187,6 +196,34 @@ class Carpool
         $this->driver = $driver;
 
         return $this;
+    }
+
+    public function setStatus(string $status): self
+    {
+        $this->status = $status;
+
+        return $this;
+    }
+
+    public function getStatus(): ?string
+    {
+        return $this->status;
+    }
+
+    public static function getStatusLabels(): array
+    {
+        return [
+            self::STATUS_ACTIVE => 'Actif',
+            self::STATUS_COMPLETED => 'Terminé',
+            self::STATUS_CANCELLED => 'Annulé',
+            self::STATUS_ARCHIVED => 'Archivé',
+        ];
+    }
+
+    public function getStatusLabel(): string
+    {
+        $labels = self::getStatusLabels();
+        return $labels[$this->status] ?? 'Statut inconnu';
     }
 
     /**

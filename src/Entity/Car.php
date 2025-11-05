@@ -41,7 +41,7 @@ class Car
     private ?string $otherPreferences = null; 
 
     #[ORM\ManyToOne(inversedBy: 'cars')]
-    #[ORM\JoinColumn(name: 'proprietaire_id', nullable: false)] 
+    #[ORM\JoinColumn(name: "proprietaire_id", nullable: true)] // TODO: rendre NOT NULL après API 
     private ?User $owner = null; 
 
     #[ORM\OneToMany(mappedBy: 'car', targetEntity: Carpool::class, orphanRemoval: true)]

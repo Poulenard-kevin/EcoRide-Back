@@ -22,17 +22,21 @@ class Booking
     #[Assert\NotNull(message: "Le nombre de places réservées est obligatoire.")]
     #[Assert\Positive(message: "Le nombre de places réservées doit être un entier positif.")]
     #[ORM\Column(name: 'nb_places_reservees')] 
-    private ?int $reservedSeats = null; 
+    private ?int $reservedSeats = null;
 
-    #[ORM\Column(name: 'statut', length: 50)] 
+    #[ORM\Column(name: "statut", length: 50, nullable: true)] // TODO: rendre NOT NULL après API
     private ?string $status = null; 
 
+    public const STATUS_CONFIRMED = 'confirmed';
+    public const STATUS_CANCELLED = 'cancelled';
+    public const STATUS_PENDING = 'pending';
+
     #[ORM\ManyToOne(inversedBy: 'bookings', targetEntity: User::class)]
-    #[ORM\JoinColumn(name: 'passager_id', nullable: false)] 
+    #[ORM\JoinColumn(name: "passager_id", nullable: true)] // TODO: rendre NOT NULL après API 
     private ?User $passenger = null; 
 
     #[ORM\ManyToOne(inversedBy: 'bookings', targetEntity: Carpool::class)]
-    #[ORM\JoinColumn(name: 'covoiturage_id', nullable: false)] 
+    #[ORM\JoinColumn(name: "covoiturage_id", nullable: true)] // TODO: rendre NOT NULL après API
     private ?Carpool $carpool = null; 
 
     public function getId(): ?int
@@ -74,6 +78,21 @@ class Booking
         $this->status = $status;
 
         return $this;
+    }
+
+    public static function getStatusLabels(): array
+    {
+        return [
+            self::STATUS_CONFIRMED => 'Confirmée',
+            self::STATUS_CANCELLED => 'Annulée',
+            self::STATUS_PENDING => 'En attente',
+        ];
+    }
+
+    public function getStatusLabel(): string
+    {
+        $labels = self::getStatusLabels();
+        return $labels[$this->status] ?? 'Statut inconnu';
     }
 
     public function getPassenger(): ?User
