@@ -49,8 +49,12 @@ class Utilisateur
     #[ORM\OneToMany(mappedBy: 'auteur', targetEntity: Avis::class, orphanRemoval: true)]
     private Collection $avis;
 
+    #[ORM\OneToMany(mappedBy: 'cible', targetEntity: Avis::class, orphanRemoval: true)]
+    private Collection $avisRecus;
+
     public function __construct()
     {
+        $this->avisRecus = new ArrayCollection();
         $this->voitures = new ArrayCollection();
         $this->covoituragesProposes = new ArrayCollection();
         $this->reservations = new ArrayCollection();
@@ -239,6 +243,11 @@ class Utilisateur
     /**
      * @return Collection<int, Avis>
      */
+    public function getAvisRecus(): Collection
+    {
+        return $this->avisRecus;
+    }
+
     public function getAvis(): Collection
     {
         return $this->avis;
@@ -260,6 +269,27 @@ class Utilisateur
             // set the owning side to null (unless already changed)
             if ($avi->getAuteur() === $this) {
                 $avi->setAuteur(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function addAvisRecu(Avis $avis): static
+    {
+        if (!$this->avisRecus->contains($avis)) {
+            $this->avisRecus->add($avis);
+            $avis->setCible($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAvisRecu(Avis $avis): static
+    {
+        if ($this->avisRecus->removeElement($avis)) {
+            if ($avis->getCible() === $this) {
+                $avis->setCible(null);
             }
         }
 

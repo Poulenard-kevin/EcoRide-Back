@@ -31,6 +31,10 @@ class Avis
     #[ORM\JoinColumn(nullable: false)]
     private ?Covoiturage $covoiturage = null;
 
+    #[ORM\ManyToOne]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Utilisateur $cible = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -97,6 +101,18 @@ class Avis
     public function setCovoiturage(?Covoiturage $covoiturage): static
     {
         $this->covoiturage = $covoiturage;
+
+        return $this;
+    }
+
+    public function getCible(): ?Utilisateur
+    {
+        return $this->cible;
+    }
+
+    public function setCible(?Utilisateur $cible): static
+    {
+        $this->cible = $cible;
 
         return $this;
     }
