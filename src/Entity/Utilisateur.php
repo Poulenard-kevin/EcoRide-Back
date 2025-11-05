@@ -28,6 +28,11 @@ class Utilisateur
     #[ORM\Column(length: 255)]
     private ?string $motDePasse = null;
 
+    public const ROLE_VISITEUR = 'ROLE_VISITEUR';
+    public const ROLE_USER = 'ROLE_USER';
+    public const ROLE_EMPLOYE = 'ROLE_EMPLOYE';
+    public const ROLE_ADMIN = 'ROLE_ADMIN';
+
     #[ORM\Column(length: 50)]
     private ?string $role = null;
 
@@ -122,8 +127,27 @@ class Utilisateur
     public function setRole(string $role): static
     {
         $this->role = $role;
-
         return $this;
+    }
+
+    public function isAdmin(): bool
+    {
+        return $this->role === self::ROLE_ADMIN;
+    }
+
+    public function isEmploye(): bool
+    {
+        return $this->role === self::ROLE_EMPLOYE;
+    }
+
+    public function isUser(): bool
+    {
+        return $this->role === self::ROLE_USER;
+    }
+
+    public function isVisiteur(): bool
+    {
+        return $this->role === self::ROLE_VISITEUR;
     }
 
     public function getNoteMoyenne(): ?float

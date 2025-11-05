@@ -1,0 +1,38 @@
+<?php
+// src/Controller/TestRoleController.php
+
+namespace App\Controller;
+
+use App\Entity\Utilisateur;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
+
+class TestRoleController extends AbstractController
+{
+    #[Route('/test/role/{id<\d+>}', name: 'test_role')]
+    public function testRole(int $id, EntityManagerInterface $em): Response
+    {
+        $user = $em->getRepository(Utilisateur::class)->find($id);
+        if (!$user) {
+            return new Response('Utilisateur non trouvé', 404);
+        }
+
+        $roles = [];
+        if ($user->isAdmin()) {
+            $roles[] = 'Admin';
+        }
+        if ($user->isEmploye()) {
+            $roles[] = 'Employé';
+        }
+        if ($user->isUser()) {
+            $roles[] = 'Utilisateur';
+        }
+        if ($user->isVisiteur()) {
+            $roles[] = 'Visiteur';
+        }
+
+        return new Response('Rôles de l\'utilisateur : ' . implode(', ', $roles));
+    }
+}
