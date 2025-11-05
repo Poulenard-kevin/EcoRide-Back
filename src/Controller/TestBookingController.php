@@ -2,23 +2,23 @@
 
 namespace App\Controller;
 
-use App\Entity\Reservation;
+use App\Entity\Booking;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
-class TestReservationController extends AbstractController
+class TestBookingController extends AbstractController
 {
-    #[Route('/test/reservation-validation', name: 'test_reservation_validation')]
-    public function testReservationValidation(ValidatorInterface $validator): Response
+    #[Route('/test/booking-validation', name: 'test_booking_validation')]
+    public function testBookingValidation(ValidatorInterface $validator): Response
     {
-        $reservation = new Reservation();
-        $reservation->setNbPlacesReservees(0); // Valeur invalide (doit être positive)
-        $reservation->setDateReservation(new \DateTime());
-        $reservation->setStatut('en attente');
+        $booking = new Booking();
+        $booking->setReservedSeats(0); // Valeur invalide (doit être positive)
+        $booking->setBookingDate(new \DateTime());
+        $booking->setStatus('en attente');
 
-        $errors = $validator->validate($reservation);
+        $errors = $validator->validate($booking);
 
         if (count($errors) > 0) {
             $messages = [];

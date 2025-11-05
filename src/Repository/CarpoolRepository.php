@@ -2,7 +2,7 @@
 
 namespace App\Repository;
 
-use App\Entity\Covoiturage;
+use App\Entity\Carpool;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -14,11 +14,11 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method Covoiturage[]    findAll()
  * @method Covoiturage[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class CovoiturageRepository extends ServiceEntityRepository
+class CarpoolRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, Covoiturage::class);
+        parent::__construct($registry, Carpool::class);
     }
 
 //    /**

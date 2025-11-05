@@ -2,24 +2,25 @@
 
 namespace App\Repository;
 
-use App\Entity\Voiture;
+use App\Entity\Car;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @extends ServiceEntityRepository<Voiture>
+ * @extends ServiceEntityRepository<Car>
  *
- * @method Voiture|null find($id, $lockMode = null, $lockVersion = null)
- * @method Voiture|null findOneBy(array $criteria, array $orderBy = null)
- * @method Voiture[]    findAll()
- * @method Voiture[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method Car|null find($id, $lockMode = null, $lockVersion = null)
+ * @method Car|null findOneBy(array $criteria, array $orderBy = null)
+ * @method Car[]    findAll()
+ * @method Car[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class VoitureRepository extends ServiceEntityRepository
+class CarRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, Voiture::class);
+        parent::__construct($registry, Car::class);
     }
+
 
 //    /**
 //     * @return Voiture[] Returns an array of Voiture objects
