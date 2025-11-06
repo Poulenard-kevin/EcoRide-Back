@@ -7,25 +7,53 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: 'utilisateur')] 
-class User
+class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
 
+    /**
+     * @Assert\NotBlank(message="Le nom est obligatoire.")
+     * @Assert\Regex(
+     *     pattern="/^[A-Za-zÀ-ÖØ-öø-ÿ\s'-]{2,}$/u",
+     *     message="Le nom doit contenir au moins 2 lettres et ne peut contenir que des lettres, espaces, apostrophes ou tirets."
+     * )
+     */
     #[ORM\Column(name: 'nom', length: 100)] 
     private ?string $lastName = null;
 
+    /**
+     * @Assert\NotBlank(message="Le prénom est obligatoire.")
+     * @Assert\Regex(
+     *     pattern="/^[A-Za-zÀ-ÖØ-öø-ÿ\s'-]{2,}$/u",
+     *     message="Le prénom doit contenir au moins 2 lettres et ne peut contenir que des lettres, espaces, apostrophes ou tirets."
+     * )
+     */
     #[ORM\Column(name: 'prenom', length: 100)] 
     private ?string $firstName = null;
 
+    /**
+     * @Assert\NotBlank(message="L'email est obligatoire.")
+     * @Assert\Email(message="L'email n'est pas valide.")
+     */
     #[ORM\Column(name: 'email', length: 180)]
     private ?string $email = null;
 
+    /**
+     * @Assert\NotBlank(message="Le mot de passe est obligatoire.")
+     * @Assert\Regex(
+     *     pattern="/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_])[A-Za-z\d\W_]{8,}$/",
+     *     message="Le mot de passe doit contenir au moins 8 caractères, une majuscule, un chiffre et un symbole."
+     * )
+     */
     #[ORM\Column(name: 'mot_de_passe', length: 255)] 
     private ?string $password = null;
 
@@ -65,6 +93,7 @@ class User
 
     public function __construct()
     {
+        $this->role = self::ROLE_USER;
         $this->receivedReviews = new ArrayCollection();
         $this->cars = new ArrayCollection();
         $this->carpools = new ArrayCollection();
@@ -113,6 +142,28 @@ class User
         return $this;
     }
 
+    // Méthode requise par UserInterface et PasswordAuthenticatedUserInterface
+    public function getUserIdentifier(): string
+    {
+        return (string) $this->email;
+    }
+
+    // Pour compatibilité avec les anciennes versions de Symfony
+    public function getUsername(): string
+    {
+        return $this->getUserIdentifier();
+    }
+
+    public function getRoles(): array
+    {
+        $roles = [$this->role ?? self::ROLE_USER];
+        // Garantir que ROLE_USER est toujours présent
+        if (!in_array('ROLE_USER', $roles)) {
+            $roles[] = 'ROLE_USER';
+        }
+        return array_unique($roles);
+    }
+
     public function getPassword(): ?string
     {
         return $this->password;
@@ -123,6 +174,17 @@ class User
         $this->password = $password;
 
         return $this;
+    }
+
+    public function eraseCredentials()
+    {
+        // Si tu stockes des données sensibles temporaires, les effacer ici
+    }
+
+    public function getSalt(): ?string
+    {
+        // Not needed when using modern password encoders
+        return null;
     }
 
     public function getRole(): ?string
