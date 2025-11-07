@@ -72,7 +72,7 @@ class ResetPasswordController extends AbstractController
      * Validates and process the reset URL that the user clicked in their email.
      */
     #[Route('/reset/{token}', name: 'app_reset_password')]
-    public function reset(Request $request, UserPasswordHasherInterface $passwordHasher, string $token = null): Response
+    public function reset(Request $request, UserPasswordHasherInterface $passwordHasher, ?string $token = null): Response
     {
         if ($token) {
             // We store the token in session and remove it from the URL, to avoid the URL being
@@ -138,6 +138,19 @@ class ResetPasswordController extends AbstractController
             return $this->redirectToRoute('app_check_email');
         }
 
+        $now = new \DateTime();
+        $lastRequest = $user->getLastPasswordResetRequestAt();
+
+        if ($lastRequest && $now->getTimestamp() - $lastRequest->getTimestamp() < 900) { // 900 sec = 15 min
+            // Trop tôt pour une nouvelle demande
+            $this->addFlash('reset_password_error', 'Vous avez déjà demandé une réinitialisation récemment. Veuillez patienter 15 minutes.');
+            return $this->redirectToRoute('app_forgot_password_request');
+        }
+
+        // Sinon, on met à jour la date de la dernière demande
+        $user->setLastPasswordResetRequestAt($now);
+        $this->entityManager->flush();
+
         try {
             $resetToken = $this->resetPasswordHelper->generateResetToken($user);
         } catch (ResetPasswordExceptionInterface $e) {
@@ -155,7 +168,7 @@ class ResetPasswordController extends AbstractController
         }
 
         $email = (new TemplatedEmail())
-            ->from(new Address('test@example.com', 'EcoRide Support'))
+            ->from(new Address('hello@demomailtrap.co', 'EcoRide Support'))
             ->to($user->getEmail())
             ->subject('Your password reset request')
             ->htmlTemplate('reset_password/email.html.twig')

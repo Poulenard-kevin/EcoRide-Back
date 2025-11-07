@@ -31,8 +31,10 @@ security:
                 target: app_login
 
     access_control:
-        - { path: ^/login$, roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/register$, roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/admin, roles: ROLE_ADMIN }
-        - { path: ^/employe, roles: ROLE_EMPLOYE }
-        - { path: ^/, roles: ROLE_USER }
+    - { path: ^/test-email$, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+    - { path: ^/login$, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+    - { path: ^/register$, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+    - { path: ^/reset-password, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+    - { path: ^/admin, roles: ROLE_ADMIN }
+    - { path: ^/employe, roles: ROLE_EMPLOYE }
+    - { path: ^/, roles: ROLE_USER }

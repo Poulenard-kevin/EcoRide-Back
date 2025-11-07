@@ -89,6 +89,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\OneToMany(mappedBy: 'target', targetEntity: Review::class, orphanRemoval: true)]
     #[ORM\JoinColumn(name: 'avis_recus', referencedColumnName: 'id')] 
+
+    #[ORM\Column(type: 'datetime', nullable: true)]
+    private ?\DateTimeInterface $lastPasswordResetRequestAt = null;
+    
     private Collection $receivedReviews;
 
     public function __construct()
@@ -381,6 +385,20 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             }
         }
 
+        return $this;
+    }
+
+    /**
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    public function getLastPasswordResetRequestAt(): ?\DateTimeInterface
+    {
+        return $this->lastPasswordResetRequestAt;
+    }
+
+    public function setLastPasswordResetRequestAt(\DateTimeInterface $dateTime): self
+    {
+        $this->lastPasswordResetRequestAt = $dateTime;
         return $this;
     }
 }
