@@ -1,0 +1,58 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Détails de la voiture{% endblock %}
+
+{% block body %}
+    <h1 class="mb-4">Détails de la voiture</h1>
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <h5 class="card-title">{{ car.brand }} {{ car.model }}</h5>
+            <h6 class="card-subtitle mb-3 text-muted">Immatriculation : {{ car.registration }}</h6>
+
+            <dl class="row">
+                <dt class="col-sm-3">Couleur</dt>
+                <dd class="col-sm-9">{{ car.color }}</dd>
+
+                <dt class="col-sm-3">Type de carburant</dt>
+                <dd class="col-sm-9">{{ car.fuelType }}</dd>
+
+                <dt class="col-sm-3">Nombre de places</dt>
+                <dd class="col-sm-9">{{ car.seats }}</dd>
+
+                <dt class="col-sm-3">Préférences chauffeur</dt>
+                <dd class="col-sm-9">
+                    {% if car.driverPreferences is not empty %}
+                        {{ car.driverPreferences|join(', ') }}
+                    {% else %}
+                        <span class="text-muted fst-italic">Aucune</span>
+                    {% endif %}
+                </dd>
+
+                <dt class="col-sm-3">Autres préférences</dt>
+                <dd class="col-sm-9">
+                    {% if car.otherPreferences is not empty %}
+                        {{ car.otherPreferences|join(', ') }}
+                    {% else %}
+                        <span class="text-muted fst-italic">Aucune</span>
+                    {% endif %}
+                </dd>
+
+                <dt class="col-sm-3">Propriétaire</dt>
+                <dd class="col-sm-9">
+                    {% if car.owner %}
+                        <a href="{{ path('app_user_show', {'id': car.owner.id}) }}">
+                            {{ car.owner.firstName }} {{ car.owner.lastName }}
+                        </a>
+                    {% else %}
+                        Aucun propriétaire
+                    {% endif %}
+                </dd>
+            </dl>
+
+            <a href="{{ path('app_car_index') }}" class="btn btn-secondary me-2">Retour à la liste</a>
+            <a href="{{ path('app_car_edit', {'id': car.id}) }}" class="btn btn-warning me-2">Modifier</a>
+            {{ include('car/_delete_form.html.twig') }}
+        </div>
+    </div>
+{% endblock %}

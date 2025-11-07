@@ -33,7 +33,7 @@ class TestController extends AbstractController
         $car->setBrand('Toyota');
         $car->setModel('Corolla');
         $car->setColor('Blue');
-        $car->setFuelType('Gasoline');
+        $car->setFuelType('Thermique');
         $car->setRegistration('AB-123-CD');
         $car->setSeats(5);
 

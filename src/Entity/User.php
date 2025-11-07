@@ -68,7 +68,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(name: 'note_moyenne', nullable: true)] 
     private ?float $averageRating = null;
 
-    #[ORM\Column(name: 'a_propos', type: Types::TEXT, nullable: true)] 
+    #[ORM\Column(name: 'a_propos', type: Types::TEXT, nullable: true)]
+    #[Assert\Length(
+        max: 500,
+        maxMessage: "Le texte ne peut pas dépasser 500 caractères."
+    )] 
     private ?string $about = null;
 
     #[ORM\OneToMany(mappedBy: 'owner', targetEntity: Car::class, orphanRemoval: true)]
@@ -92,6 +96,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(type: 'datetime', nullable: true)]
     private ?\DateTimeInterface $lastPasswordResetRequestAt = null;
+
+    public function getLastPasswordResetRequestAt(): ?\DateTimeInterface
+    {
+        return $this->lastPasswordResetRequestAt;
+    }
+
+    public function setLastPasswordResetRequestAt(?\DateTimeInterface $date): self
+    {
+        $this->lastPasswordResetRequestAt = $date;
+        return $this;
+    }
     
     private Collection $receivedReviews;
 
@@ -385,20 +400,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             }
         }
 
-        return $this;
-    }
-
-    /**
-     * @ORM\Column(type="datetime", nullable=true)
-     */
-    public function getLastPasswordResetRequestAt(): ?\DateTimeInterface
-    {
-        return $this->lastPasswordResetRequestAt;
-    }
-
-    public function setLastPasswordResetRequestAt(\DateTimeInterface $dateTime): self
-    {
-        $this->lastPasswordResetRequestAt = $dateTime;
         return $this;
     }
 }

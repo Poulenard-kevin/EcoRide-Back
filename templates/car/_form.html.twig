@@ -1,0 +1,26 @@
+{{ form_start(form) }}
+
+{% for field in form %}
+    <div class="mb-3">
+        {{ form_label(field) }}
+        {% if field.vars.name == 'model' %}
+            {{ form_widget(field, {
+                'attr': {
+                    'class': 'form-control' ~ (form_errors(field) ? ' is-invalid' : ''),
+                    'style': 'white-space: nowrap; overflow: hidden; text-overflow: ellipsis;'
+                }
+            }) }}
+        {% else %}
+            {{ form_widget(field, {'attr': {'class': 'form-control' ~ (form_errors(field) ? ' is-invalid' : '')}}) }}
+        {% endif %}
+        {% if form_errors(field) %}
+            <div class="invalid-feedback">
+                {{ form_errors(field) }}
+            </div>
+        {% endif %}
+    </div>
+{% endfor %}
+
+<button type="submit" class="btn btn-success">{{ button_label|default('Enregistrer') }}</button>
+
+{{ form_end(form) }}

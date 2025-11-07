@@ -1,0 +1,68 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Détails de l'utilisateur{% endblock %}
+
+{% block body %}
+    <h1 class="mb-4">Détails de l'utilisateur</h1>
+
+    <table class="table table-bordered table-striped">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ user.id }}</td>
+            </tr>
+            <tr>
+                <th>Nom</th>
+                <td>{{ user.lastName }}</td>
+            </tr>
+            <tr>
+                <th>Prénom</th>
+                <td>{{ user.firstName }}</td>
+            </tr>
+            <tr>
+                <th>Email</th>
+                <td>{{ user.email }}</td>
+            </tr>
+            <tr>
+                <th>Mot de passe</th>
+                <td>{{ user.password }}</td>
+            </tr>
+            <tr>
+                <th>Rôle</th>
+                <td>{{ user.role }}</td>
+            </tr>
+            <tr>
+                <th>Note moyenne</th>
+                <td>{{ user.averageRating }}</td>
+            </tr>
+            <tr>
+                <th>À propos</th>
+                <td>{{ user.about }}</td>
+            </tr>
+            <tr>
+                <th>Dernière réinitialisation</th>
+                <td>{{ user.lastPasswordResetRequestAt ? user.lastPasswordResetRequestAt|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2 class="mt-5">Véhicules possédés</h2>
+
+    {% if user.cars|length > 0 %}
+        <ul class="list-group mb-4">
+            {% for car in user.cars %}
+                <li class="list-group-item">
+                    <a href="{{ path('app_car_show', {'id': car.id}) }}">
+                        {{ car.brand }} {{ car.model }} ({{ car.registration }})
+                    </a>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>Aucun véhicule associé.</p>
+    {% endif %}
+
+    <a href="{{ path('app_user_index') }}" class="btn btn-secondary me-2">Retour à la liste</a>
+    <a href="{{ path('app_user_edit', {'id': user.id}) }}" class="btn btn-warning me-2">Modifier</a>
+    {{ include('user/_delete_form.html.twig') }}
+{% endblock %}

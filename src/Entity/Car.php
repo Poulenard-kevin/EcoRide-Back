@@ -6,6 +6,7 @@ use App\Repository\CarRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: CarRepository::class)]
 #[ORM\Table(name: 'voiture')] 
@@ -25,7 +26,7 @@ class Car
     #[ORM\Column(name: 'couleur', length: 30)] 
     private ?string $color = null; 
 
-    #[ORM\Column(name: 'energie', length: 30)] 
+    #[ORM\Column(name: 'type_energie', length: 30)] 
     private ?string $fuelType = null; 
 
     #[ORM\Column(name: 'immatriculation', length: 20)] 
@@ -37,8 +38,12 @@ class Car
     #[ORM\Column(name: 'preferences_chauffeur', nullable: true)] 
     private ?array $driverPreferences = null; 
 
-    #[ORM\Column(name: 'autres_preferences', length: 255, nullable: true)] 
-    private ?string $otherPreferences = null; 
+    #[ORM\Column(name: 'autres_preferences', length: 255, nullable: true)]
+    #[Assert\Length(
+        max: 255,
+        maxMessage: "Le texte ne peut pas dépasser {{ limit }} caractères."
+    )]
+    private ?string $otherPreferences = null;
 
     #[ORM\ManyToOne(inversedBy: 'cars')]
     #[ORM\JoinColumn(name: "proprietaire_id", nullable: true)] // TODO: rendre NOT NULL après API 

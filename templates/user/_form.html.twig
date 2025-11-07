@@ -1,0 +1,16 @@
+{{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'novalidate'}}) }}
+
+    {% for field in form %}
+        <div class="mb-3">
+            {{ form_label(field) }}
+            {{ form_widget(field, {'attr': {'class': 'form-control'}}) }}
+            {# Affiche les erreurs avec la classe form-error-message #}
+            <div class="form-error-message text-danger mt-1">
+                {{ form_errors(field) }}
+            </div>
+        </div>
+    {% endfor %}
+
+    <button type="submit" class="btn btn-success">{{ button_label|default('Enregistrer') }}</button>
+
+{{ form_end(form) }}
