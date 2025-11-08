@@ -38,4 +38,5 @@ security:
     - { path: ^/admin, roles: ROLE_ADMIN }
     - { path: ^/employe, roles: ROLE_EMPLOYE }
     - { path: ^/user, roles: ROLE_ADMIN }
+    - { path: ^/carpool, roles: ROLE_USER }   
     - { path: ^/, roles: ROLE_USER }

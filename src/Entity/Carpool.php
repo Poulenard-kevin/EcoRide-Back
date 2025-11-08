@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: CarpoolRepository::class)]
 #[ORM\Table(name: 'covoiturage')] 
@@ -41,7 +42,9 @@ class Carpool
     #[ORM\Column(name: 'nb_places_total')] 
     private ?int $totalSeats = null; 
 
-    #[ORM\Column(name: 'nb_places_dispo')] 
+    #[ORM\Column(name: 'nb_places_dispo')]
+    #[Assert\NotBlank(message: "Le nombre de places disponibles est obligatoire.")]
+    #[Assert\GreaterThan(value: 0, message: "Le nombre de places disponibles doit être supérieur à zéro.")]
     private ?int $availableSeats = null; 
 
     #[ORM\Column(name: "statut", length: 50, nullable: true)] // TODO: rendre NOT NULL après API

@@ -10,6 +10,8 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 
 class CarType extends AbstractType
 {
@@ -37,8 +39,8 @@ class CarType extends AbstractType
                     'Animal' => 'Animal',
                     'Musique' => 'Musique',
                 ],
-                'expanded' => true,   // cases à cocher
-                'multiple' => true,   // plusieurs choix possibles
+                'expanded' => true,
+                'multiple' => true,
                 'label' => 'Préférences chauffeur',
                 'required' => false,
             ])
@@ -50,15 +52,32 @@ class CarType extends AbstractType
                     'placeholder' => 'Ex : Parler, sport mécanique...',
                 ],
             ])
+            // On ajoute le champ owner par défaut (sera modifié dans l'event listener)
             ->add('owner', EntityType::class, [
                 'class' => User::class,
-                'choice_label' => function (User $user) {
-                    return $user->getLastName() . ' ' . $user->getFirstName();
-                },
+                'choice_label' => fn(User $user) => $user->getFirstName() . ' ' . $user->getLastName(),
                 'placeholder' => 'Choisissez un propriétaire',
-                'required' => false, // selon si tu veux rendre ce champ obligatoire
+                'label' => 'Propriétaire',
+                'required' => true,
             ])
         ;
+
+        // Event listener pour désactiver le champ owner si la voiture existe déjà (édition)
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
+            $car = $event->getData();
+            $form = $event->getForm();
+
+            if ($car && $car->getId()) {
+                // voiture existante => désactiver le champ owner
+                $form->add('owner', EntityType::class, [
+                    'class' => User::class,
+                    'choice_label' => fn(User $user) => $user->getFirstName() . ' ' . $user->getLastName(),
+                    'label' => 'Propriétaire',
+                    'disabled' => true,
+                    'required' => true,
+                ]);
+            }
+        });
     }
 
     public function configureOptions(OptionsResolver $resolver): void

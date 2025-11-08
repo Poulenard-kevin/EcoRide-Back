@@ -5,8 +5,8 @@
         {{ form_label(field) }}
         {{ form_widget(field, {'attr': {'class': 'form-control' ~ (form_errors(field) ? ' is-invalid' : '')}}) }}
 
+        {# Message d'aide spécifique pour pricePerSeat #}
         {% if field.vars.name == 'pricePerSeat' %}
-            <small class="form-text text-muted">Le prix doit être un multiple de 5 crédits, minimum 5.</small>
         {% endif %}
 
         {% if form_errors(field) %}

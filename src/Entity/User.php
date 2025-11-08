@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use App\Entity\Carpool;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
@@ -76,26 +77,32 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $about = null;
 
     #[ORM\OneToMany(mappedBy: 'owner', targetEntity: Car::class, orphanRemoval: true)]
-    #[ORM\JoinColumn(name: 'voitures', referencedColumnName: 'id')] 
     private Collection $cars;
 
     #[ORM\OneToMany(mappedBy: 'driver', targetEntity: Carpool::class)]
-    #[ORM\JoinColumn(name: 'covoiturages_proposes', referencedColumnName: 'id')] 
     private Collection $carpools;
 
     #[ORM\OneToMany(mappedBy: 'passenger', targetEntity: Booking::class)]
-    #[ORM\JoinColumn(name: 'reservations', referencedColumnName: 'id')] 
     private Collection $bookings;
 
     #[ORM\OneToMany(mappedBy: 'author', targetEntity: Review::class, orphanRemoval: true)]
-    #[ORM\JoinColumn(name: 'avis', referencedColumnName: 'id')] 
     private Collection $reviews;
 
     #[ORM\OneToMany(mappedBy: 'target', targetEntity: Review::class, orphanRemoval: true)]
-    #[ORM\JoinColumn(name: 'avis_recus', referencedColumnName: 'id')] 
+    private Collection $receivedReviews;
 
     #[ORM\Column(type: 'datetime', nullable: true)]
     private ?\DateTimeInterface $lastPasswordResetRequestAt = null;
+
+    public function __construct()
+    {
+        $this->role = self::ROLE_USER;
+        $this->cars = new ArrayCollection();
+        $this->carpools = new ArrayCollection();
+        $this->bookings = new ArrayCollection();
+        $this->reviews = new ArrayCollection();
+        $this->receivedReviews = new ArrayCollection();
+    }
 
     public function getLastPasswordResetRequestAt(): ?\DateTimeInterface
     {
@@ -106,18 +113,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         $this->lastPasswordResetRequestAt = $date;
         return $this;
-    }
-    
-    private Collection $receivedReviews;
-
-    public function __construct()
-    {
-        $this->role = self::ROLE_USER;
-        $this->receivedReviews = new ArrayCollection();
-        $this->cars = new ArrayCollection();
-        $this->carpools = new ArrayCollection();
-        $this->bookings = new ArrayCollection();
-        $this->reviews = new ArrayCollection();
     }
 
     public function getId(): ?int

@@ -18,11 +18,15 @@ class CarControllerTest extends WebTestCase
     protected function setUp(): void
     {
         $this->client = static::createClient();
-        $this->repository = static::getContainer()->get('doctrine')->getRepository(Car::class);
+        $container = static::getContainer();
+        $this->repository = $container->get('doctrine')->getRepository(Car::class);
+        $this->manager = $container->get('doctrine')->getManager();
 
+        // Nettoyer la base si besoin
         foreach ($this->repository->findAll() as $object) {
             $this->manager->remove($object);
         }
+        $this->manager->flush();
     }
 
     public function testIndex(): void
@@ -40,24 +44,32 @@ class CarControllerTest extends WebTestCase
     {
         $originalNumObjectsInRepository = count($this->repository->findAll());
 
-        $this->markTestIncomplete();
-        $this->client->request('GET', sprintf('%snew', $this->path));
+        // Créer un utilisateur pour le propriétaire
+        $user = new User();
+        $user->setFirstName('John');
+        $user->setLastName('Doe');
+        $user->setEmail('john.doe@example.com');
+        $user->setPassword('password'); // Attention : en vrai, hasher le mot de passe
+        $this->manager->persist($user);
+        $this->manager->flush();
+
+        $crawler = $this->client->request('GET', $this->path . 'new');
 
         self::assertResponseStatusCodeSame(200);
 
-        $this->client->submitForm('Save', [
-            'car[brand]' => 'Testing',
-            'car[model]' => 'Testing',
-            'car[color]' => 'Testing',
-            'car[fuelType]' => 'Testing',
-            'car[registration]' => 'Testing',
-            'car[seats]' => 'Testing',
-            'car[driverPreferences]' => 'Testing',
-            'car[otherPreferences]' => 'Testing',
-            'car[owner]' => 'Testing',
+        $this->client->submitForm('Enregistrer', [
+            'car[brand]' => 'TestBrand',
+            'car[model]' => 'TestModel',
+            'car[color]' => 'Red',
+            'car[fuelType]' => 'Electrique',
+            'car[registration]' => 'ABC-123',
+            'car[seats]' => 4,
+            'car[driverPreferences]' => ['Fumeur'], // tableau car champ multiple
+            'car[otherPreferences]' => 'Aucune',
+            'car[owner]' => $user->getId(), // id de l’utilisateur
         ]);
 
-        self::assertResponseRedirects('/car/');
+        self::assertResponseRedirects($this->path);
 
         self::assertSame($originalNumObjectsInRepository + 1, count($this->repository->findAll()));
     }
