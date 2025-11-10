@@ -1,40 +1,78 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Mon profil{% endblock %}
+{% block title %}Liste des utilisateurs{% endblock %}
 
 {% block body %}
-<h1>Mon profil</h1>
-
-{% if user %}
-    <div class="table-responsive">
-        <table class="table table-bordered table-striped table-hover align-middle">
-            <thead class="table-dark">
-                <tr>
-                    <th>Id</th>
-                    <th>Nom</th>
-                    <th>Prénom</th>
-                    <th>Email</th>
-                    <th>Rôle</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>{{ user.id }}</td>
-                    <td>{{ user.lastName }}</td>
-                    <td>{{ user.firstName }}</td>
-                    <td>{{ user.email }}</td>
-                    <td>{{ user.role }}</td>
-                    <td>
-                        <a href="{{ path('app_user_show', {'id': user.id}) }}" class="btn btn-sm btn-primary" title="Voir">
-                            <i class="bi bi-eye"></i> Voir
-                        </a>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="mb-0"><i class="bi bi-people"></i> Liste des utilisateurs</h1>
+        <a href="{{ path('app_dashboard') }}" class="btn btn-secondary">
+            <i class="bi bi-house"></i> Tableau de bord
+        </a>
     </div>
-{% else %}
-    <p>Aucun utilisateur connecté.</p>
-{% endif %}
+
+    {% if users|length > 0 %}
+        <div class="table-responsive shadow-sm">
+            <table class="table table-bordered table-striped table-hover align-middle">
+                <thead class="table-dark">
+                    <tr>
+                        <th>ID</th>
+                        <th>Nom complet</th>
+                        <th>Email</th>
+                        <th>Rôles</th>
+                        <th>Date d’inscription</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in users %}
+                        <tr>
+                            <td class="text-center">{{ user.id }}</td>
+                            <td>{{ user.firstName }} {{ user.lastName }}</td>
+                            <td>{{ user.email }}</td>
+                            <td>
+                                {% for role in user.roles %}
+                                    <span class="badge bg-{{ 'ADMIN' in role ? 'danger' : ( 'DRIVER' in role ? 'info text-dark' : 'secondary' ) }}">
+                                        {{ role|replace({'ROLE_':''})|capitalize }}
+                                    </span>
+                                {% endfor %}
+                            </td>
+                            <td>
+                                {% if user.createdAt is defined %}
+                                    {{ user.createdAt|date('d/m/Y') }}
+                                {% else %}
+                                    <span class="text-muted">—</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <div class="d-flex gap-2 justify-content-center flex-wrap">
+                                    <a href="{{ path('app_user_show', {'id': user.id}) }}" class="btn btn-sm btn-primary" title="Voir">
+                                        <i class="bi bi-eye"></i> Voir
+                                    </a>
+
+                                    {# 🔒 Visible uniquement pour ROLE_ADMIN #}
+                                    {% if 'ROLE_ADMIN' in app.user.roles %}
+                                        <a href="{{ path('app_admin_user_edit', {'id': user.id}) }}" class="btn btn-sm btn-warning" title="Modifier">
+                                            <i class="bi bi-pencil"></i> Modifier
+                                        </a>
+                                        <form method="post" action="{{ path('app_admin_user_delete', {'id': user.id}) }}" onsubmit="return confirm('Supprimer cet utilisateur ?');" style="display:inline;">
+                                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ user.id) }}">
+                                            <button type="submit" class="btn btn-sm btn-danger" title="Supprimer">
+                                                <i class="bi bi-trash"></i> Supprimer
+                                            </button>
+                                        </form>
+                                    {% endif %}
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <div class="alert alert-info mt-3">
+            <i class="bi bi-info-circle"></i> Aucun utilisateur trouvé.
+        </div>
+    {% endif %}
+</div>
 {% endblock %}

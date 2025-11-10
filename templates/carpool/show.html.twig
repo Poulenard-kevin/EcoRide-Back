@@ -10,14 +10,14 @@
             <table class="table table-bordered table-striped">
                 <tbody>
                     <tr><th>Id</th><td>{{ carpool.id }}</td></tr>
-                    <tr><th>Date départ</th><td>{{ carpool.departureDate ? carpool.departureDate|date('Y-m-d') : '' }}</td></tr>
+                    <tr><th>Date départ</th><td>{{ carpool.departureDate ? carpool.departureDate|date('d/m/Y') : '' }}</td></tr>
                     <tr><th>Heure départ</th><td>{{ carpool.departureTime ? carpool.departureTime|date('H:i') : '' }}</td></tr>
                     <tr><th>Lieu départ</th><td>{{ carpool.departureLocation }}</td></tr>
-                    <tr><th>Date arrivée</th><td>{{ carpool.arrivalDate ? carpool.arrivalDate|date('Y-m-d') : '' }}</td></tr>
+                    <tr><th>Date arrivée</th><td>{{ carpool.arrivalDate ? carpool.arrivalDate|date('d/m/Y') : '' }}</td></tr>
                     <tr><th>Heure arrivée</th><td>{{ carpool.arrivalTime ? carpool.arrivalTime|date('H:i') : '' }}</td></tr>
                     <tr><th>Lieu arrivée</th><td>{{ carpool.arrivalLocation }}</td></tr>
                     <tr><th>Prix par place</th><td>{{ carpool.pricePerSeat }} crédits</td></tr>
-                    <tr><th>Places disponibles</th><td>{{ carpool.remainingSeats }}</td></tr>
+                    <tr><th>Places disponibles</th><td>{{ carpool.availableSeats }}</td></tr>
                     <tr><th>Nombre total de places</th><td>{{ carpool.totalSeats }}</td></tr>
                     <tr>
                         <th>Statut</th>
@@ -65,8 +65,12 @@
 
             <div class="mt-3 d-flex gap-2">
                 <a href="{{ path('app_carpool_index') }}" class="btn btn-secondary">Retour à la liste</a>
-                <a href="{{ path('app_carpool_edit', {'id': carpool.id}) }}" class="btn btn-warning">Modifier</a>
-                {{ include('carpool/_delete_form.html.twig') }}
+                
+                {# ✅ Seul le conducteur peut modifier/supprimer #}
+                {% if app.user == carpool.driver %}
+                    <a href="{{ path('app_carpool_edit', {'id': carpool.id}) }}" class="btn btn-warning">Modifier</a>
+                    {{ include('carpool/_delete_form.html.twig') }}
+                {% endif %}
             </div>
         </div>
     </div>
@@ -107,18 +111,72 @@
                                     <span class="badge bg-danger">Annulée</span>
                                 {% elseif status == constant('App\\Entity\\Booking::STATUS_PENDING') %}
                                     <span class="badge bg-warning text-dark">En attente</span>
+                                {% elseif status == constant('App\\Entity\\Booking::STATUS_REFUSED') %}
+                                    <span class="badge bg-danger">Refusée</span>
                                 {% else %}
                                     <span class="badge bg-secondary">Inconnu</span>
                                 {% endif %}
                             </td>
                             <td>
-                                <div class="d-flex gap-2">
+                                <div class="d-flex gap-2 flex-wrap">
+                                    {# ✅ Bouton "Voir" pour tout le monde #}
                                     <a href="{{ path('app_booking_show', {'id': booking.id}) }}" class="btn btn-sm btn-primary" title="Voir">
                                         <i class="bi bi-eye"></i> Voir
                                     </a>
-                                    <a href="{{ path('app_booking_edit', {'id': booking.id}) }}" class="btn btn-sm btn-warning" title="Modifier">
-                                        <i class="bi bi-pencil"></i> Modifier
-                                    </a>
+
+                                    {# ✅ Actions pour le CONDUCTEUR uniquement #}
+                                    {% if app.user == carpool.driver %}
+                                        
+                                        {# Accepter (si en attente) #}
+                                        {% if status == constant('App\\Entity\\Booking::STATUS_PENDING') %}
+                                            <form method="post" action="{{ path('app_booking_confirm', {'id': booking.id}) }}" style="display:inline;">
+                                                <input type="hidden" name="_token" value="{{ csrf_token('confirm' ~ booking.id) }}">
+                                                <button type="submit" class="btn btn-sm btn-success" title="Accepter" onclick="return confirm('Confirmer cette réservation ?')">
+                                                    <i class="bi bi-check-circle"></i> Accepter
+                                                </button>
+                                            </form>
+
+                                            <form method="post" action="{{ path('app_booking_refuse', {'id': booking.id}) }}" style="display:inline;">
+                                                <input type="hidden" name="_token" value="{{ csrf_token('refuse' ~ booking.id) }}">
+                                                <button type="submit" class="btn btn-sm btn-danger" title="Refuser" onclick="return confirm('Refuser cette réservation ?')">
+                                                    <i class="bi bi-x-circle"></i> Refuser
+                                                </button>
+                                            </form>
+                                        {% endif %}
+
+                                        {# Annuler (si confirmée) #}
+                                        {% if status == constant('App\\Entity\\Booking::STATUS_CONFIRMED') %}
+                                            <form method="post" action="{{ path('app_booking_cancel', {'id': booking.id}) }}" style="display:inline;">
+                                                <input type="hidden" name="_token" value="{{ csrf_token('cancel' ~ booking.id) }}">
+                                                <button type="submit" class="btn btn-sm btn-warning" title="Annuler" onclick="return confirm('Annuler cette réservation ?')">
+                                                    <i class="bi bi-exclamation-triangle"></i> Annuler
+                                                </button>
+                                            </form>
+                                        {% endif %}
+
+                                    {% endif %}
+
+                                    {# ✅ Actions pour le PASSAGER uniquement #}
+                                    {% if app.user == booking.passenger %}
+                                        
+                                        {# Modifier (si en attente ou confirmée) #}
+                                        {% if status == constant('App\\Entity\\Booking::STATUS_PENDING') or status == constant('App\\Entity\\Booking::STATUS_CONFIRMED') %}
+                                            <a href="{{ path('app_booking_edit', {'id': booking.id}) }}" class="btn btn-sm btn-warning" title="Modifier">
+                                                <i class="bi bi-pencil"></i> Modifier
+                                            </a>
+                                        {% endif %}
+
+                                        {# Annuler (si en attente ou confirmée) #}
+                                        {% if status == constant('App\\Entity\\Booking::STATUS_PENDING') or status == constant('App\\Entity\\Booking::STATUS_CONFIRMED') %}
+                                            <form method="post" action="{{ path('app_booking_cancel', {'id': booking.id}) }}" style="display:inline;">
+                                                <input type="hidden" name="_token" value="{{ csrf_token('cancel' ~ booking.id) }}">
+                                                <button type="submit" class="btn btn-sm btn-danger" title="Annuler ma réservation" onclick="return confirm('Annuler votre réservation ?')">
+                                                    <i class="bi bi-x-circle"></i> Annuler
+                                                </button>
+                                            </form>
+                                        {% endif %}
+
+                                    {% endif %}
                                 </div>
                             </td>
                         </tr>
@@ -127,6 +185,17 @@
             </table>
         </div>
     {% else %}
-        <p>Aucune réservation pour ce covoiturage.</p>
+        <div class="alert alert-info">
+            <i class="bi bi-info-circle"></i> Aucune réservation pour ce covoiturage.
+        </div>
+    {% endif %}
+
+    {# ✅ Bouton pour réserver (si l'utilisateur n'est PAS le conducteur) #}
+    {% if app.user != carpool.driver and carpool.availableSeats > 0 %}
+        <div class="mt-4">
+            <a href="{{ path('app_booking_new', {'carpool': carpool.id}) }}" class="btn btn-success btn-lg">
+                <i class="bi bi-plus-circle"></i> Réserver ce covoiturage
+            </a>
+        </div>
     {% endif %}
 {% endblock %}

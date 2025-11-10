@@ -38,23 +38,39 @@ class CarpoolController extends AbstractController
 
         $form = $this->createForm(CarpoolType::class, $carpool, [
             'user_cars' => $userCars,
+            'is_edit' => false, // Ajouté pour le CarpoolType modifié
         ]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $carpool->setDriver($this->getUser());
+           
+            $carpool->setDriver($user);
 
-            // Récupérer le nombre total de places depuis la voiture sélectionnée
-            $carpool->setTotalSeats($carpool->getCar()->getSeats());
+            $carpool->setStatus(Carpool::STATUS_ACTIVE);
 
-            // Initialiser les places disponibles à la valeur totale
-            $carpool->setAvailableSeats($carpool->getTotalSeats());
+            $car = $carpool->getCar();
+
+            // ✅ Vérifier qu’une voiture a bien été sélectionnée (déjà fait par NotBlank sur le champ 'car')
+            // if (!$car) {
+            //     $this->addFlash('error', 'Vous devez sélectionner une voiture.');
+            //     return $this->redirectToRoute('app_carpool_new');
+            // }
+    
+            if ($car->getSeats() <= 0) {
+                $this->addFlash('error', 'Le véhicule sélectionné doit avoir au moins une place.');
+                // Redirige vers le formulaire de création de covoiturage pour corriger
+                return $this->redirectToRoute('app_carpool_new');
+            }
+
+            // ✅ Déterminer le nombre de places depuis la voiture
+            $totalSeats = $car->getSeats();
+            $carpool->setTotalSeats($totalSeats);
+            $carpool->setAvailableSeats($totalSeats); // toutes dispo au départ
 
             $entityManager->persist($carpool);
             $entityManager->flush();
 
             $this->addFlash('success', 'Covoiturage créé avec succès.');
-
             return $this->redirectToRoute('app_carpool_index');
         }
 

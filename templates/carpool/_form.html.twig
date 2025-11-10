@@ -1,15 +1,25 @@
 {{ form_start(form) }}
 
 {% for field in form %}
-    <div class="mb-3">
-        {{ form_label(field) }}
-        {{ form_widget(field, {'attr': {'class': 'form-control' ~ (form_errors(field) ? ' is-invalid' : '')}}) }}
-
-        {# Affiche les erreurs spécifiques au champ #}
-        {{ form_errors(field) }}
-    </div>
+    {# On masque automatiquement les champs calculés ou inutiles ici #}
+    {% if field.vars.name not in ['availableSeats', 'totalSeats'] %}
+        {# Le champ "status" s'affiche uniquement si défini (en édition) #}
+        {% if field.vars.name != 'status' or form.status is defined %}
+            <div class="mb-3">
+                {{ form_label(field) }}
+                {{ form_widget(field, {
+                    'attr': {
+                        'class': 'form-control' ~ (form_errors(field) ? ' is-invalid' : '')
+                    }
+                }) }}
+                {{ form_errors(field) }}
+            </div>
+        {% endif %}
+    {% endif %}
 {% endfor %}
 
-<button type="submit" class="btn btn-success">{{ button_label|default('Enregistrer') }}</button>
+<button type="submit" class="btn btn-success">
+    {{ button_label|default('Enregistrer') }}
+</button>
 
 {{ form_end(form) }}

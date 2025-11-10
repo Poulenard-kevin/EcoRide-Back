@@ -27,11 +27,13 @@ class Booking
     private ?int $reservedSeats = null;
 
     #[ORM\Column(name: "statut", length: 50, nullable: true)] // TODO: rendre NOT NULL après API
-    private ?string $status = null; 
+    private ?string $status = 'pending'; // Valeur par défaut
 
-    public const STATUS_CONFIRMED = 'confirmed';
-    public const STATUS_CANCELLED = 'cancelled';
-    public const STATUS_PENDING = 'pending';
+    // Constantes de statut
+    public const STATUS_PENDING = 'pending';        // En attente
+    public const STATUS_CONFIRMED = 'confirmed';    // Confirmée
+    public const STATUS_REFUSED = 'refused';        // Refusée 
+    public const STATUS_CANCELLED = 'cancelled';    // Annulée
 
     #[ORM\ManyToOne(inversedBy: 'bookings', targetEntity: User::class)]
     #[ORM\JoinColumn(name: "passager_id", nullable: true)] // TODO: rendre NOT NULL après API 
@@ -39,7 +41,14 @@ class Booking
 
     #[ORM\ManyToOne(inversedBy: 'bookings', targetEntity: Carpool::class)]
     #[ORM\JoinColumn(name: "covoiturage_id", nullable: true)] // TODO: rendre NOT NULL après API
-    private ?Carpool $carpool = null; 
+    private ?Carpool $carpool = null;
+
+    // Constructeur pour initialiser la date et le statut
+    public function __construct()
+    {
+        $this->bookingDate = new \DateTime();
+        $this->status = self::STATUS_PENDING;
+    }
 
     public function getId(): ?int
     {
@@ -85,9 +94,10 @@ class Booking
     public static function getStatusLabels(): array
     {
         return [
-            self::STATUS_CONFIRMED => 'Confirmée',
-            self::STATUS_CANCELLED => 'Annulée',
             self::STATUS_PENDING => 'En attente',
+            self::STATUS_CONFIRMED => 'Confirmée',
+            self::STATUS_REFUSED => 'Refusée',      
+            self::STATUS_CANCELLED => 'Annulée',
         ];
     }
 
@@ -95,6 +105,45 @@ class Booking
     {
         $labels = self::getStatusLabels();
         return $labels[$this->status] ?? 'Statut inconnu';
+    }
+
+    // Méthodes utiles pour vérifier le statut
+    public function isPending(): bool
+    {
+        return $this->status === self::STATUS_PENDING;
+    }
+
+    public function isConfirmed(): bool
+    {
+        return $this->status === self::STATUS_CONFIRMED;
+    }
+
+    public function isRefused(): bool
+    {
+        return $this->status === self::STATUS_REFUSED;
+    }
+
+    public function isCancelled(): bool
+    {
+        return $this->status === self::STATUS_CANCELLED;
+    }
+
+    // Vérifier si la réservation peut être annulée
+    public function canBeCancelled(): bool
+    {
+        return in_array($this->status, [self::STATUS_PENDING, self::STATUS_CONFIRMED]);
+    }
+
+    // Vérifier si la réservation peut être confirmée
+    public function canBeConfirmed(): bool
+    {
+        return $this->status === self::STATUS_PENDING;
+    }
+
+    // Vérifier si la réservation peut être refusée
+    public function canBeRefused(): bool
+    {
+        return $this->status === self::STATUS_PENDING;
     }
 
     public function getPassenger(): ?User

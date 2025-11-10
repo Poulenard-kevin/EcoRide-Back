@@ -20,12 +20,12 @@ class Carpool
 
     #[ORM\Column(name: 'date_depart', type: Types::DATE_MUTABLE)]
     #[Assert\NotBlank(message: "La date de départ est obligatoire.")]
-    #[Assert\Date(message: "La date de départ doit être une date valide.")]
+   
     private ?\DateTimeInterface $departureDate = null;
 
     #[ORM\Column(name: 'heure_depart', type: Types::TIME_MUTABLE)]
     #[Assert\NotBlank(message: "L'heure de départ est obligatoire.")]
-    #[Assert\Time(message: "L'heure de départ doit être une heure valide.")]
+   
     private ?\DateTimeInterface $departureTime = null;
 
     #[ORM\Column(name: 'lieu_depart', length: 255)]
@@ -35,12 +35,10 @@ class Carpool
 
     #[ORM\Column(name: 'date_arrivee', type: Types::DATE_MUTABLE)]
     #[Assert\NotBlank(message: "La date d'arrivée est obligatoire.")]
-    #[Assert\Date(message: "La date d'arrivée doit être une date valide.")]
     private ?\DateTimeInterface $arrivalDate = null;
 
     #[ORM\Column(name: 'heure_arrivee', type: Types::TIME_MUTABLE)]
     #[Assert\NotBlank(message: "L'heure d'arrivée est obligatoire.")]
-    #[Assert\Time(message: "L'heure d'arrivée doit être une heure valide.")]
     private ?\DateTimeInterface $arrivalTime = null;
 
     #[ORM\Column(name: 'lieu_arrivee', length: 255)] 
@@ -55,9 +53,8 @@ class Carpool
     private ?int $totalSeats = null; 
 
     #[ORM\Column(name: 'nb_places_dispo')]
-    #[Assert\NotBlank(message: "Le nombre de places disponibles est obligatoire.")]
-    #[Assert\GreaterThan(value: 0, message: "Le nombre de places disponibles doit être supérieur à zéro.")]
-    private ?int $availableSeats = null; 
+    #[Assert\GreaterThanOrEqual(value: 0, message: "Le nombre de places disponibles doit être supérieur ou égal à zéro.")]
+    private ?int $availableSeats = null;
 
     #[ORM\Column(name: "statut", length: 50, nullable: true)] // TODO: rendre NOT NULL après API
     private ?string $status = null;

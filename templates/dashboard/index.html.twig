@@ -3,13 +3,14 @@
 {% block title %}Mon tableau de bord{% endblock %}
 
 {% block body %}
-    <h1 class="mb-4">Bienvenue, {{ app.user.firstName }} !</h1>
+    <h1 class="mb-4">Bienvenue, {{ app.user.firstName }} 👋</h1>
 
     <div class="row">
+        {# 🔹 Bloc : Réservations #}
         <div class="col-md-6">
             <div class="card shadow-sm mb-4">
-                <div class="card-header">
-                    <h5 class="card-title mb-0">Mes prochaines réservations</h5>
+                <div class="card-header bg-primary text-white">
+                    <h5 class="card-title mb-0"><i class="bi bi-calendar-check"></i> Mes prochaines réservations</h5>
                 </div>
                 <div class="card-body">
                     {% if myBookings is not empty %}
@@ -19,7 +20,8 @@
                                     Réservation n°{{ booking.id }} pour 
                                     <a href="{{ path('app_carpool_show', {'id': booking.carpool.id}) }}">
                                         {{ booking.carpool.departureLocation }} → {{ booking.carpool.arrivalLocation }}
-                                    </a> le {{ booking.carpool.departureDate|date('d/m/Y') }}
+                                    </a>
+                                    le {{ booking.carpool.departureDate|date('d/m/Y') }}
                                     <span class="badge bg-info text-dark float-end">{{ booking.reservedSeats }} place(s)</span>
                                 </li>
                             {% endfor %}
@@ -28,16 +30,18 @@
                             <a href="{{ path('app_booking_index') }}" class="btn btn-sm btn-outline-primary">Voir toutes mes réservations</a>
                         </div>
                     {% else %}
-                        <p class="card-text">Vous n'avez pas de réservations à venir.</p>
+                        <p>Vous n'avez pas de réservations à venir.</p>
                         <a href="{{ path('app_carpool_index') }}" class="btn btn-primary">Rechercher un covoiturage</a>
                     {% endif %}
                 </div>
             </div>
         </div>
+
+        {# 🔹 Bloc : Covoiturages #}
         <div class="col-md-6">
             <div class="card shadow-sm mb-4">
-                <div class="card-header">
-                    <h5 class="card-title mb-0">Mes covoiturages proposés</h5>
+                <div class="card-header bg-success text-white">
+                    <h5 class="card-title mb-0"><i class="bi bi-car-front-fill"></i> Mes covoiturages proposés</h5>
                 </div>
                 <div class="card-body">
                     {% if myCarpools is not empty %}
@@ -55,10 +59,53 @@
                             <a href="{{ path('app_carpool_index') }}" class="btn btn-sm btn-outline-primary">Voir tous mes covoiturages</a>
                         </div>
                     {% else %}
-                        <p class="card-text">Vous n'avez pas encore proposé de covoiturage.</p>
+                        <p>Vous n'avez pas encore proposé de covoiturage.</p>
                         <a href="{{ path('app_carpool_new') }}" class="btn btn-primary">Proposer un covoiturage</a>
                     {% endif %}
                 </div>
+            </div>
+        </div>
+    </div>
+
+    {# ✅ Bloc : Véhicules #}
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-dark text-white">
+                    <h5 class="card-title mb-0"><i class="bi bi-car-front"></i> Mes véhicules</h5>
+                </div>
+                <div class="card-body">
+                    {% if myCars is not empty %}
+                        <ul class="list-group list-group-flush">
+                            {% for car in myCars %}
+                                <li class="list-group-item">
+                                    <a href="{{ path('app_car_show', {'id': car.id}) }}">
+                                        {{ car.brand }} {{ car.model }}
+                                    </a>
+                                    <span class="text-muted ms-2">({{ car.registration }})</span>
+                                    <span class="badge bg-secondary float-end">{{ car.seats }} places</span>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                        <div class="text-end mt-3">
+                            <a href="{{ path('app_car_index') }}" class="btn btn-sm btn-outline-primary">Voir tous mes véhicules</a>
+                        </div>
+                    {% else %}
+                        <p>Vous n'avez pas encore enregistré de véhicule.</p>
+                        <a href="{{ path('app_car_new') }}" class="btn btn-primary">Ajouter un véhicule</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# 🔜 Bloc "Mes avis" (future section à venir) #}
+    <div class="row mt-4">
+        <div class="col-md-12">
+            <div class="card shadow-sm text-center p-4">
+                <h5 class="text-muted">
+                    <i class="bi bi-chat-quote"></i> Bientôt disponible : vos avis laissés et reçus 🌟
+                </h5>
             </div>
         </div>
     </div>

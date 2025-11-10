@@ -1,85 +1,125 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Liste des réservations{% endblock %}
+{% block title %}Mes réservations{% endblock %}
 
 {% block body %}
-    <h1 class="mb-4">Liste des réservations</h1>
-
-    <a href="{{ path('app_booking_new') }}" class="btn btn-primary mb-3">Créer une nouvelle réservation</a>
-
-    <div class="table-responsive">
-        <table class="table table-bordered table-striped table-hover align-middle">
-            <thead class="table-dark">
-                <tr>
-                    <th scope="col">ID</th>
-                    <th>Passager</th>
-                    <th scope="col">Date de réservation</th>
-                    <th scope="col">Nombre de places</th>
-                    <th scope="col">Statut</th>
-                    <th scope="col">Covoiturage</th>
-                    <th scope="col" class="text-center">Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for booking in bookings %}
-                    <tr>
-                        <td>{{ booking.id }}</td>
-                        <td>
-                           {% if booking.passenger %}
-                                <a href="{{ path('app_user_show', {'id': booking.passenger.id}) }}">
-                                    {{ booking.passenger.firstName }} {{ booking.passenger.lastName }}
-                                </a>
-                            {% else %}
-                                <span class="text-muted fst-italic">Inconnu</span>
-                            {% endif %}
-                        </td>
-                        <td>{{ booking.bookingDate ? booking.bookingDate|date('d/m/Y H:i') : '' }}</td>
-                        <td>{{ booking.reservedSeats }}</td>
-                        <td>
-                            {% set status = booking.status %}
-                            {% if status == constant('App\\Entity\\Booking::STATUS_CONFIRMED') %}
-                                <span class="badge bg-success">Confirmée</span>
-                            {% elseif status == constant('App\\Entity\\Booking::STATUS_CANCELLED') %}
-                                <span class="badge bg-danger">Annulée</span>
-                            {% elseif status == constant('App\\Entity\\Booking::STATUS_PENDING') %}
-                                <span class="badge bg-warning text-dark">En attente</span>
-                            {% else %}
-                                <span class="badge bg-secondary">Inconnu</span>
-                            {% endif %}
-                        </td>
-                        <td>
-                            {% if booking.carpool %}
-                                <a href="{{ path('app_carpool_show', {'id': booking.carpool.id}) }}">
-                                    {{ booking.carpool.departureLocation }} → {{ booking.carpool.arrivalLocation }}
-                                    ({{ booking.carpool.departureDate ? booking.carpool.departureDate|date('d/m/Y') : 'N/A' }})
-                                </a>
-                            {% else %}
-                                <span class="text-muted fst-italic">Aucun covoiturage</span>
-                            {% endif %}
-                        </td>
-                        <td>
-                            <div class="d-flex justify-content-center align-items-center gap-2">
-                                <a href="{{ path('app_booking_show', {'id': booking.id}) }}" class="btn btn-sm btn-primary" title="Voir">
-                                    <i class="bi bi-eye"></i> Voir
-                                </a>
-                                <a href="{{ path('app_booking_edit', {'id': booking.id}) }}" class="btn btn-sm btn-warning" title="Modifier">
-                                    <i class="bi bi-pencil"></i> Modifier
-                                </a>
-                                <form method="post" action="{{ path('app_booking_delete', {'id': booking.id}) }}" onsubmit="return confirm('Voulez-vous vraiment supprimer cette réservation ?');" style="display:inline-block;">
-                                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ booking.id) }}">
-                                    <button class="btn btn-sm btn-danger" title="Supprimer" type="submit">
-                                        <i class="bi bi-trash"></i> Supprimer
-                                    </button>
-                                </form>
-                            </div>
-                        </td>
-                    </tr>
-                {% else %}
-                    <tr>
-                        <td colspan="7" class="text-center fst-italic">Aucune réservation trouvée</td>
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="mb-0"><i class="bi bi-calendar-check"></i> Mes réservations</h1>
+        <div class="d-flex gap-2">
+            <a href="{{ path('app_dashboard') }}" class="btn btn-secondary">
+                <i class="bi bi-house"></i> Tableau de bord
+            </a>
+            <a href="{{ path('app_carpool_index') }}" class="btn btn-success">
+                <i class="bi bi-plus-circle"></i> Réserver un covoiturage
+            </a>
+        </div>
     </div>
+
+    {% if bookings|length > 0 %}
+        <div class="table-responsive shadow-sm">
+            <table class="table table-bordered table-striped table-hover align-middle">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Covoiturage</th>
+                        <th>Date de réservation</th>
+                        <th>Places</th>
+                        <th>Prix total</th>
+                        <th>Statut</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for booking in bookings %}
+                        <tr>
+                            <td>
+                                {% if booking.carpool %}
+                                    <a href="{{ path('app_carpool_show', {'id': booking.carpool.id}) }}">
+                                        <strong>{{ booking.carpool.departureLocation }}</strong> 
+                                        → 
+                                        <strong>{{ booking.carpool.arrivalLocation }}</strong>
+                                    </a>
+                                    <br>
+                                    <small class="text-muted">
+                                        {{ booking.carpool.departureDate ? booking.carpool.departureDate|date('d/m/Y') : '' }}
+                                        à 
+                                        {{ booking.carpool.departureTime ? booking.carpool.departureTime|date('H:i') : '' }}
+                                    </small>
+                                {% else %}
+                                    <span class="text-muted fst-italic">Covoiturage supprimé</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ booking.bookingDate ? booking.bookingDate|date('d/m/Y H:i') : 'N/A' }}</td>
+                            <td class="text-center">
+                                <span class="badge bg-info text-dark">{{ booking.reservedSeats }}</span>
+                            </td>
+                            <td class="text-center">
+                                {% if booking.carpool %}
+                                    <span class="badge bg-warning text-dark">
+                                        {{ booking.reservedSeats * booking.carpool.pricePerSeat }} crédits
+                                    </span>
+                                {% else %}
+                                    <span class="text-muted">—</span>
+                                {% endif %}
+                            </td>
+                            <td class="text-center">
+                                {% set status = booking.status %}
+                                {% if status == constant('App\\Entity\\Booking::STATUS_CONFIRMED') %}
+                                    <span class="badge bg-success">Confirmée</span>
+                                {% elseif status == constant('App\\Entity\\Booking::STATUS_CANCELLED') %}
+                                    <span class="badge bg-danger">Annulée</span>
+                                {% elseif status == constant('App\\Entity\\Booking::STATUS_PENDING') %}
+                                    <span class="badge bg-warning text-dark">En attente</span>
+                                {% elseif status == constant('App\\Entity\\Booking::STATUS_REFUSED') %}
+                                    <span class="badge bg-danger">Refusée</span>
+                                {% else %}
+                                    <span class="badge bg-secondary">Inconnu</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <div class="d-flex gap-2 flex-wrap justify-content-center">
+                                    {# Voir #}
+                                    <a href="{{ path('app_booking_show', {'id': booking.id}) }}" class="btn btn-sm btn-primary" title="Voir">
+                                        <i class="bi bi-eye"></i> Voir
+                                    </a>
+
+                                    {# Modifier (si en attente ou confirmée) #}
+                                    {% if status == constant('App\\Entity\\Booking::STATUS_PENDING') or status == constant('App\\Entity\\Booking::STATUS_CONFIRMED') %}
+                                        <a href="{{ path('app_booking_edit', {'id': booking.id}) }}" class="btn btn-sm btn-warning" title="Modifier">
+                                            <i class="bi bi-pencil"></i> Modifier
+                                        </a>
+                                    {% endif %}
+
+                                    {# Annuler (si en attente ou confirmée) #}
+                                    {% if status == constant('App\\Entity\\Booking::STATUS_PENDING') or status == constant('App\\Entity\\Booking::STATUS_CONFIRMED') %}
+                                        <form method="post" action="{{ path('app_booking_cancel', {'id': booking.id}) }}" style="display:inline;">
+                                            <input type="hidden" name="_token" value="{{ csrf_token('cancel' ~ booking.id) }}">
+                                            <button type="submit" class="btn btn-sm btn-danger" title="Annuler" onclick="return confirm('Annuler cette réservation ?')">
+                                                <i class="bi bi-x-circle"></i> Annuler
+                                            </button>
+                                        </form>
+                                    {% endif %}
+
+                                    {# Supprimer (si annulée ou refusée) #}
+                                    {% if status == constant('App\\Entity\\Booking::STATUS_CANCELLED') or status == constant('App\\Entity\\Booking::STATUS_REFUSED') %}
+                                        <form method="post" action="{{ path('app_booking_delete', {'id': booking.id}) }}" style="display:inline;">
+                                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ booking.id) }}">
+                                            <button type="submit" class="btn btn-sm btn-danger" title="Supprimer" onclick="return confirm('Supprimer définitivement cette réservation ?')">
+                                                <i class="bi bi-trash"></i> Supprimer
+                                            </button>
+                                        </form>
+                                    {% endif %}
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <div class="alert alert-info">
+            <i class="bi bi-info-circle"></i> Vous n'avez aucune réservation pour le moment.
+        </div>
+    {% endif %}
+</div>
 {% endblock %}

@@ -1,142 +1,128 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Liste des covoiturages{% endblock %}
+{% block title %}Mes covoiturages{% endblock %}
 
 {% block body %}
-    <h1 class="mb-4">Liste des covoiturages</h1>
-
-    <a href="{{ path('app_carpool_new') }}" class="btn btn-primary mb-3">Créer un nouveau covoiturage</a>
-
-    <div class="table-responsive">
-        <table class="table table-bordered table-striped table-hover align-middle">
-            <thead class="table-dark">
-    <tr>
-        <th>Id</th>
-        <th>Départ</th>
-        <th>Arrivée</th>
-        <th>Prix / place</th>
-        <th>Places total</th>
-        <th>Places dispo</th>
-        <th>Statut</th>
-        <th>Chauffeur</th>
-        <th>Voiture</th>
-        <th>Actions</th>
-    </tr>
-        </thead>
-            <tbody>
-                {% for carpool in carpools %}
-                    <tr>
-                        <td>{{ carpool.id }}</td>
-                        <td>
-                            {{ carpool.departureLocation }}
-                            {{ carpool.departureDate ? carpool.departureDate|date('Y-m-d') : '' }}
-                            {{ carpool.departureTime ? carpool.departureTime|date('H:i') : '' }}
-                        </td>
-                        <td>
-                            {{ carpool.arrivalLocation }}   
-                            {{ carpool.arrivalDate ? carpool.arrivalDate|date('Y-m-d') : '' }}
-                            {{ carpool.arrivalTime ? carpool.arrivalTime|date('H:i') : '' }}
-                        </td>
-                        {% set price = carpool.pricePerSeat %}
-                        {% set roundedPrice = (price // 5) * 5 %}
-                        <td>{{ roundedPrice }} crédits</td>
-                        <td>{{ carpool.totalSeats }}</td>
-                        <td>{{ carpool.remainingSeats }}</td>
-                        <td>
-                            {% set status = carpool.status %}
-                            {% if status == constant('App\\Entity\\Carpool::STATUS_ACTIVE') %}
-                                <span class="badge bg-success">Actif</span>
-                            {% elseif status == constant('App\\Entity\\Carpool::STATUS_COMPLETED') %}
-                                <span class="badge bg-primary">Terminé</span>
-                            {% elseif status == constant('App\\Entity\\Carpool::STATUS_CANCELLED') %}
-                                <span class="badge bg-danger">Annulé</span>
-                            {% elseif status == constant('App\\Entity\\Carpool::STATUS_ARCHIVED') %}
-                                <span class="badge bg-secondary">Archivé</span>
-                            {% else %}
-                                <span class="badge bg-light text-dark">Inconnu</span>
-                            {% endif %}
-                        </td>
-                        <td>
-                            {% if carpool.driver %}
-                                <a href="{{ path('app_user_show', {'id': carpool.driver.id}) }}">
-                                    {{ carpool.driver.firstName }} {{ carpool.driver.lastName }}
-                                </a>
-                            {% else %}
-                                N/A
-                            {% endif %}
-                        </td>
-                        <td>
-                            {% if carpool.car %}
-                                <a href="{{ path('app_car_show', {'id': carpool.car.id}) }}">
-                                    {{ carpool.car.brand }} {{ carpool.car.model }} ({{ carpool.car.registration }})
-                                </a>
-                            {% else %}
-                                N/A
-                            {% endif %}
-                        </td>
-                        <td>
-                            <div class="d-flex justify-content-center align-items-center gap-2">
-                                <a href="{{ path('app_carpool_show', {'id': carpool.id}) }}" class="btn btn-sm btn-primary" title="Voir">
-                                    <i class="bi bi-eye"></i> Voir
-                                </a>
-                                <a href="{{ path('app_carpool_edit', {'id': carpool.id}) }}" class="btn btn-sm btn-warning" title="Modifier">
-                                    <i class="bi bi-pencil"></i> Modifier
-                                </a>
-                                <form method="post" action="{{ path('app_carpool_delete', {'id': carpool.id}) }}" onsubmit="return confirm('Voulez-vous vraiment supprimer ce covoiturage ?');" style="margin: 0;">
-                                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ carpool.id) }}">
-                                    <button class="btn btn-sm btn-danger" title="Supprimer" type="submit">
-                                        <i class="bi bi-trash"></i> Supprimer
-                                    </button>
-                                </form>
-                            </div>
-                        </td>
-                    </tr>
-                {% else %}
-                    <tr>
-                        <td colspan="10" class="text-center fst-italic">Aucun covoiturage trouvé</td>
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="mb-0"><i class="bi bi-people-fill"></i> Liste des covoiturages</h1>
+        <div class="d-flex gap-2">
+            <a href="{{ path('app_dashboard') }}" class="btn btn-secondary">
+                <i class="bi bi-house"></i> Tableau de bord
+            </a>
+            <a href="{{ path('app_carpool_new') }}" class="btn btn-success">
+                <i class="bi bi-plus-circle"></i> Créer un covoiturage
+            </a>
+        </div>
     </div>
 
-    <style>
-        /* Colonne ID */
-        table th:nth-child(1),
-        table td:nth-child(1) {
-            width: 50px;
-            text-align: center;
-        }
-        /* Colonne Prix / place */
-        table th:nth-child(4),
-        table td:nth-child(4) {
-            width: 100px;
-            text-align: center;
-        }
-        /* Colonne Place total */
-        table th:nth-child(5),
-        table td:nth-child(5) {
-            width: 80px;
-            text-align: center;
-        }
-        /* Colonne Places dispo */
-        table th:nth-child(6),
-        table td:nth-child(6) {
-            width: 80px;
-            text-align: center;
-        }
-        /* Colonne Statut */
-        table th:nth-child(7),
-        table td:nth-child(7) {
-            width: 100px;
-            text-align: center;
-        }
-        /* Colonne Actions */
-        table th:nth-child(10),
-        table td:nth-child(10) {
-            width: 180px;
-            text-align: center;
-        }
-    </style>
+    {% if carpools|length > 0 %}
+        <div class="table-responsive shadow-sm">
+            <table class="table table-bordered table-striped table-hover align-middle">
+                <thead class="table-dark">
+                    <tr>
+                        <th>ID</th>
+                        <th>Départ</th>
+                        <th>Arrivée</th>
+                        <th>Prix/place</th>
+                        <th>Places</th>
+                        <th>Statut</th>
+                        <th>Conducteur</th>
+                        <th>Voiture</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for carpool in carpools %}
+                        <tr>
+                            <td class="text-center">{{ carpool.id }}</td>
+                            <td>
+                                <strong>{{ carpool.departureLocation }}</strong><br>
+                                <small class="text-muted">
+                                    {{ carpool.departureDate ? carpool.departureDate|date('d/m/Y') : '' }}
+                                    à {{ carpool.departureTime ? carpool.departureTime|date('H:i') : '' }}
+                                </small>
+                            </td>
+                            <td>
+                                <strong>{{ carpool.arrivalLocation }}</strong><br>
+                                <small class="text-muted">
+                                    {{ carpool.arrivalDate ? carpool.arrivalDate|date('d/m/Y') : '' }}
+                                    à {{ carpool.arrivalTime ? carpool.arrivalTime|date('H:i') : '' }}
+                                </small>
+                            </td>
+                            <td class="text-center">
+                                {% set price = carpool.pricePerSeat %}
+                                {% set roundedPrice = (price // 5) * 5 %}
+                                <span class="badge bg-warning text-dark">{{ roundedPrice }} crédits</span>
+                            </td>
+                            <td class="text-center">
+                                <span class="badge bg-info text-dark">
+                                    {{ carpool.availableSeats }}/{{ carpool.totalSeats }}
+                                </span>
+                            </td>
+                            <td class="text-center">
+                                {% set status = carpool.status %}
+                                {% if status == constant('App\\Entity\\Carpool::STATUS_ACTIVE') %}
+                                    <span class="badge bg-success">Actif</span>
+                                {% elseif status == constant('App\\Entity\\Carpool::STATUS_COMPLETED') %}
+                                    <span class="badge bg-primary">Terminé</span>
+                                {% elseif status == constant('App\\Entity\\Carpool::STATUS_CANCELLED') %}
+                                    <span class="badge bg-danger">Annulé</span>
+                                {% elseif status == constant('App\\Entity\\Carpool::STATUS_ARCHIVED') %}
+                                    <span class="badge bg-secondary">Archivé</span>
+                                {% else %}
+                                    <span class="badge bg-light text-dark">Inconnu</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if carpool.driver %}
+                                    <a href="{{ path('app_user_show', {'id': carpool.driver.id}) }}">
+                                        {{ carpool.driver.firstName }} {{ carpool.driver.lastName }}
+                                    </a>
+                                {% else %}
+                                    <span class="text-muted">—</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if carpool.car %}
+                                    <a href="{{ path('app_car_show', {'id': carpool.car.id}) }}">
+                                        {{ carpool.car.brand }} {{ carpool.car.model }}
+                                    </a>
+                                    <br>
+                                    <small class="text-muted">({{ carpool.car.registration }})</small>
+                                {% else %}
+                                    <span class="text-muted">—</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <div class="d-flex gap-2 flex-wrap justify-content-center">
+                                    <a href="{{ path('app_carpool_show', {'id': carpool.id}) }}" class="btn btn-sm btn-primary" title="Voir">
+                                        <i class="bi bi-eye"></i> Voir
+                                    </a>
 
+                                    {# Seul le conducteur peut modifier/supprimer #}
+                                    {% if app.user == carpool.driver %}
+                                        <a href="{{ path('app_carpool_edit', {'id': carpool.id}) }}" class="btn btn-sm btn-warning" title="Modifier">
+                                            <i class="bi bi-pencil"></i> Modifier
+                                        </a>
+                                        <form method="post" action="{{ path('app_carpool_delete', {'id': carpool.id}) }}" style="display:inline;" onsubmit="return confirm('Voulez-vous vraiment supprimer ce covoiturage ?');">
+                                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ carpool.id) }}">
+                                            <button type="submit" class="btn btn-sm btn-danger" title="Supprimer">
+                                                <i class="bi bi-trash"></i> Supprimer
+                                            </button>
+                                        </form>
+                                    {% endif %}
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <div class="alert alert-info">
+            <i class="bi bi-info-circle"></i> Aucun covoiturage trouvé.
+        </div>
+    {% endif %}
+</div>
 {% endblock %}

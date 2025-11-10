@@ -1,4 +1,9 @@
 security:
+
+    role_hierarchy:
+        ROLE_EMPLOYE: ROLE_USER
+        ROLE_ADMIN: [ROLE_EMPLOYE, ROLE_USER]
+
     password_hashers:
         App\Entity\User:
             algorithm: auto
@@ -14,27 +19,8 @@ security:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
 
-        admin:
-            pattern: ^/admin
-            context: admin
-            anonymous: lazy
-            provider: app_user_provider
-
-            form_login:
-                login_path: admin_login
-                check_path: admin_login
-                username_parameter: email
-                password_parameter: password
-                csrf_token_generator: security.csrf.token_manager
-                # success_handler: App\Security\AdminLoginSuccessHandler # optionnel
-
-            logout:
-                path: admin_logout
-                target: admin_login
-
         main:
             pattern: ^/
-            context: main
             anonymous: lazy
             provider: app_user_provider
 
@@ -44,35 +30,32 @@ security:
                 username_parameter: email
                 password_parameter: password
                 csrf_token_generator: security.csrf.token_manager
-                # success_handler: App\Security\LoginSuccessHandler
+                default_target_path: /
+                always_use_default_target_path: false
 
             logout:
                 path: app_logout
                 target: app_login
 
     access_control:
-        # Routes accessibles sans authentification
+        # Routes publiques (accessibles sans authentification)
         - { path: ^/$, roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/test-create-admin$, roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/test-email$, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/login$, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/register$, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/reset-password, roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/admin/login$, roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/admin/reset-password, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/create-users$, roles: IS_AUTHENTICATED_ANONYMOUSLY }
 
-        # Route spécifique pour création utilisateur réservée aux admins
-        - { path: ^/user/new$, roles: ROLE_ADMIN }
-
-        # Routes admin
+        # Routes admin (protégées)
         - { path: ^/admin, roles: ROLE_ADMIN }
 
         # Routes employé
         - { path: ^/employe, roles: ROLE_EMPLOYE }
 
-        # Routes utilisateur standard
+        # Routes utilisateur
         - { path: ^/user, roles: ROLE_USER }
         - { path: ^/carpool, roles: ROLE_USER }
+        - { path: ^/booking, roles: ROLE_USER }
+        - { path: ^/car, roles: ROLE_USER }
 
-        # Règle générale pour toutes les autres routes (à placer en dernier)
+        # Règle par défaut (à placer en dernier)
         - { path: ^/, roles: ROLE_USER }

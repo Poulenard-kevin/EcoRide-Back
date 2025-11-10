@@ -16,8 +16,6 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 
-
-
 class CarpoolType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
@@ -25,7 +23,7 @@ class CarpoolType extends AbstractType
         $builder
             ->add('car', EntityType::class, [
                 'class' => Car::class,
-                'choices' => $options['user_cars'], // voitures de l’utilisateur uniquement
+                'choices' => $options['user_cars'], // voitures de l'utilisateur uniquement
                 'choice_label' => function (Car $car) {
                     return sprintf('%s %s (%s) - %d places', $car->getBrand(), $car->getModel(), $car->getRegistration(), $car->getSeats());
                 },
@@ -34,32 +32,43 @@ class CarpoolType extends AbstractType
                 'constraints' => [
                     new Assert\NotBlank(['message' => 'Veuillez choisir une voiture.']),
                 ],
+                'required' => true,
             ])
             ->add('departureDate', DateType::class, [
+                'label' => 'Date de départ',
                 'widget' => 'single_text',
                 'html5' => true,
-                'label' => 'Date de départ',
+                'input' => 'datetime', 
+                'required' => true,
             ])
             ->add('departureLocation', TextType::class, [
                 'label' => 'Lieu de départ',
+                'required' => true,
             ])
             ->add('departureTime', TimeType::class, [
+                'label' => 'Heure de départ',
                 'widget' => 'single_text',
                 'html5' => true,
-                'label' => 'Heure de départ',
+                'input' => 'datetime',
+                'required' => true,
             ])
             ->add('arrivalDate', DateType::class, [
+                'label' => 'Date d\'arrivée',
                 'widget' => 'single_text',
                 'html5' => true,
-                'label' => 'Date d\'arrivée',
+                'input' => 'datetime',
+                'required' => true,
             ])
             ->add('arrivalLocation', TextType::class, [
                 'label' => 'Lieu d\'arrivée',
+                'required' => true,
             ])
             ->add('arrivalTime', TimeType::class, [
+                'label' => 'Heure d\'arrivée',
                 'widget' => 'single_text',
                 'html5' => true,
-                'label' => 'Heure d\'arrivée',
+                'input' => 'datetime',
+                'required' => true,
             ])
             ->add('pricePerSeat', IntegerType::class, [
                 'label' => 'Prix par place (en crédits)',
@@ -67,6 +76,7 @@ class CarpoolType extends AbstractType
                     'step' => 5,
                     'min' => 5,
                 ],
+                'required' => true,
                 'constraints' => [
                     new Assert\GreaterThanOrEqual([
                         'value' => 5,
@@ -79,8 +89,11 @@ class CarpoolType extends AbstractType
                         }
                     }),
                 ],
-            ])
-            ->add('status', ChoiceType::class, [
+            ]);
+            
+        //  Ajouter le champ status uniquement en mode édition (pas en création)
+        if ($options['is_edit']) {
+            $builder->add('status', ChoiceType::class, [
                 'choices' => [
                     'Actif' => Carpool::STATUS_ACTIVE,
                     'Terminé' => Carpool::STATUS_COMPLETED,
@@ -93,6 +106,7 @@ class CarpoolType extends AbstractType
                     new Assert\NotBlank(['message' => 'Le statut est obligatoire.']),
                 ],
             ]);
+        }
     }
 
     public function configureOptions(OptionsResolver $resolver): void
@@ -100,6 +114,7 @@ class CarpoolType extends AbstractType
         $resolver->setDefaults([
             'data_class' => Carpool::class,
             'user_cars' => [], // option personnalisée pour passer les voitures
+            'is_edit' => false, 
         ]);
     }
 }

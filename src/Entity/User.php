@@ -48,15 +48,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(name: 'email', length: 180)]
     private ?string $email = null;
 
-    /**
-     * @Assert\NotBlank(message="Le mot de passe est obligatoire.")
-     * @Assert\Regex(
-     *     pattern="/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_])[A-Za-z\d\W_]{8,}$/",
-     *     message="Le mot de passe doit contenir au moins 8 caractères, une majuscule, un chiffre et un symbole."
-     * )
-     */
     #[ORM\Column(length: 255)] 
     private ?string $password = null;
+
+    /**
+     * @Assert\NotBlank(message="Le mot de passe est obligatoire.", groups={"Registration"})
+     * @Assert\Regex(
+     *     pattern="/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_])[A-Za-z\d\W_]{8,}$/",
+     *     message="Le mot de passe doit contenir au moins 8 caractères, une majuscule, un chiffre et un symbole.",
+     *     groups={"Registration"}
+     * )
+     */
+    private ?string $plainPassword = null;
 
     public const ROLE_VISITEUR = 'ROLE_VISITEUR';
     public const ROLE_USER = 'ROLE_USER';
@@ -190,9 +193,21 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function eraseCredentials()
+    public function getPlainPassword(): ?string
     {
-        // Si tu stockes des données sensibles temporaires, les effacer ici
+        return $this->plainPassword;
+    }
+
+    public function setPlainPassword(?string $plainPassword): self
+    {
+        $this->plainPassword = $plainPassword;
+        return $this;
+    }
+
+    public function eraseCredentials(): void
+    {
+        // Efface le mot de passe en clair après hashage
+        $this->plainPassword = null;
     }
 
     public function getSalt(): ?string

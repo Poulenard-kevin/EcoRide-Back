@@ -1,89 +1,124 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Détails de l'utilisateur{% endblock %}
+{% block title %}Profil de {{ user.firstName }} {{ user.lastName }}{% endblock %}
 
 {% block body %}
-    <h1 class="mb-4">Profil</h1>
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="mb-0">
+            <i class="bi bi-person-circle"></i> Profil de {{ user.firstName }} {{ user.lastName }}
+        </h1>
+        <a href="javascript:history.back()" class="btn btn-secondary">
+            <i class="bi bi-arrow-left"></i> Retour
+        </a>
+    </div>
 
-    <div class="card shadow-sm mb-4">
-        <div class="card-body">
-            <table class="table table-bordered table-striped">
-                <tbody>
-                    <tr><th>Id</th><td>{{ user.id }}</td></tr>
-                    <tr><th>Nom</th><td>{{ user.lastName }}</td></tr>
-                    <tr><th>Prénom</th><td>{{ user.firstName }}</td></tr>
-                    <tr><th>Email</th><td>{{ user.email }}</td></tr>
-                    <tr><th>Mot de passe</th><td>••••••••</td></tr>
-                    <tr><th>Rôle</th><td>{{ user.role }}</td></tr>
-                    <tr><th>Note moyenne</th><td>{{ user.averageRating }}</td></tr>
-                    <tr><th>À propos</th><td>{{ user.about }}</td></tr>
-                    <tr><th>Dernière réinitialisation</th><td>{{ user.lastPasswordResetRequestAt ? user.lastPasswordResetRequestAt|date('Y-m-d H:i:s') : '' }}</td></tr>
-                </tbody>
-            </table>
+    <div class="row">
+        {# Colonne gauche : Informations publiques #}
+        <div class="col-md-4">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Informations</h5>
+                </div>
+                <div class="card-body text-center">
+                    <div class="mb-3">
+                        <i class="bi bi-person-circle" style="font-size: 5rem; color: #0d6efd;"></i>
+                    </div>
+                    <h4>{{ user.firstName }} {{ user.lastName }}</h4>
+                    
+                    {# Badges de rôles #}
+                    <div class="mb-3">
+                        {% for role in user.roles %}
+                            <span class="badge bg-{{ 'ADMIN' in role ? 'danger' : ('EMPLOYE' in role ? 'warning text-dark' : 'secondary') }}">
+                                {{ role|replace({'ROLE_':''})|capitalize }}
+                            </span>
+                        {% endfor %}
+                    </div>
+
+                    {# À propos - NOUVEAU #}
+                    {% if user.about %}
+                        <div class="alert alert-light text-start mb-3">
+                            <strong><i class="bi bi-chat-left-text"></i> À propos :</strong>
+                            <p class="mb-0 mt-2">{{ user.about }}</p>
+                        </div>
+                    {% endif %}
+
+                    {# Note moyenne (à venir avec les avis) #}
+                    <div class="alert alert-light">
+                        <i class="bi bi-star-fill text-warning"></i>
+                        <strong>Note moyenne :</strong>
+                        <span class="text-muted">Bientôt disponible</span>
+                    </div>
+
+                    {# Informations sensibles uniquement pour l'admin #}
+                    {% if app.user and 'ROLE_ADMIN' in app.user.roles %}
+                        <hr>
+                        <p class="text-start mb-1">
+                            <strong>Email :</strong><br>
+                            <a href="mailto:{{ user.email }}">{{ user.email }}</a>
+                        </p>
+                        {% if user.phone is defined and user.phone %}
+                            <p class="text-start mb-1">
+                                <strong>Téléphone :</strong><br>
+                                <a href="tel:{{ user.phone }}">{{ user.phone }}</a>
+                            </p>
+                        {% endif %}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        {# Colonne droite : Avis reçus #}
+        <div class="col-md-8">
+            <div class="card shadow-sm">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0">
+                        <i class="bi bi-chat-quote"></i> Avis reçus
+                    </h5>
+                </div>
+                <div class="card-body">
+                    {# Placeholder en attendant l'entité Review #}
+                    <div class="alert alert-info">
+                        <i class="bi bi-info-circle"></i> 
+                        Les avis seront bientôt disponibles. Vous pourrez consulter les retours d'expérience des autres utilisateurs.
+                    </div>
+
+                    {# Exemple de structure future pour les avis #}
+                    {# {% if user.receivedReviews|length > 0 %}
+                        {% for review in user.receivedReviews %}
+                            <div class="card mb-3">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <strong>{{ review.author.firstName }} {{ review.author.lastName }}</strong>
+                                        <span class="text-warning">
+                                            {% for i in 1..review.rating %}
+                                                <i class="bi bi-star-fill"></i>
+                                            {% endfor %}
+                                            {% for i in review.rating + 1..5 %}
+                                                <i class="bi bi-star"></i>
+                                            {% endfor %}
+                                        </span>
+                                    </div>
+                                    <p class="text-muted small mb-2">{{ review.createdAt|date('d/m/Y à H:i') }}</p>
+                                    <p class="mb-0">{{ review.comment }}</p>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <p class="text-muted">Aucun avis pour le moment.</p>
+                    {% endif %} #}
+                </div>
+            </div>
         </div>
     </div>
 
-    <h2 class="mt-5">Véhicules possédés</h2>
-
-    {% if user.cars|length > 0 %}
-        <div class="table-responsive">
-            <table class="table table-bordered table-striped table-hover align-middle">
-                <thead>
-                    <tr>
-                        <th>Marque</th>
-                        <th>Modèle</th>
-                        <th>Immatriculation</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for car in user.cars %}
-                        <tr>
-                            <td>{{ car.brand }}</td>
-                            <td>{{ car.model }}</td>
-                            <td>{{ car.registration }}</td>
-                            <td>
-                                <a href="{{ path('app_car_show', {'id': car.id}) }}" class="btn btn-sm btn-primary">Voir</a>
-                                <a href="{{ path('app_car_edit', {'id': car.id}) }}" class="btn btn-sm btn-warning">Modifier</a>
-                            </td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+    {# Boutons d'action pour l'utilisateur lui-même #}
+    {% if app.user and app.user.id == user.id %}
+        <div class="mt-4">
+            <a href="{{ path('app_user_edit') }}" class="btn btn-warning">
+                <i class="bi bi-pencil"></i> Modifier mon profil
+            </a>
         </div>
-    {% else %}
-        <p>Aucun véhicule associé.</p>
     {% endif %}
-
-    <h2 class="mt-5">Covoiturages proposés</h2>
-
-    {% if user.carpools|length > 0 %}
-        <div class="table-responsive">
-            <table class="table table-bordered table-striped table-hover align-middle">
-                <thead>
-                    <tr>
-                        <th>Départ</th>
-                        <th>Arrivée</th>
-                        <th>Date</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for carpool in user.carpools %}
-                        <tr>
-                            <td>{{ carpool.departureLocation }}</td>
-                            <td>{{ carpool.arrivalLocation }}</td>
-                            <td>{{ carpool.departureDate ? carpool.departureDate|date('d/m/Y') : 'N/A' }}</td>
-                            <td>
-                                <a href="{{ path('app_carpool_show', {'id': carpool.id}) }}" class="btn btn-sm btn-primary">Voir</a>
-                                <a href="{{ path('app_carpool_edit', {'id': carpool.id}) }}" class="btn btn-sm btn-warning">Modifier</a>
-                            </td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-    {% else %}
-        <p>Aucun covoiturage proposé.</p>
-    {% endif %}
+</div>
 {% endblock %}
