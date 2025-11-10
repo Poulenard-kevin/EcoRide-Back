@@ -17,8 +17,13 @@ class CarController extends AbstractController
     #[Route('/', name: 'app_car_index', methods: ['GET'])]
     public function index(CarRepository $carRepository): Response
     {
+        $user = $this->getUser();
+
+        // Récupérer uniquement les voitures de l'utilisateur connecté
+        $cars = $carRepository->findBy(['owner' => $user]);
+
         return $this->render('car/index.html.twig', [
-            'cars' => $carRepository->findAll(),
+            'cars' => $cars,
         ]);
     }
 
@@ -26,10 +31,12 @@ class CarController extends AbstractController
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
         $car = new Car();
-        $form = $this->createForm(CarType::class, $car);
+        $form = $this->createForm(CarType::class, $car, ['is_admin' => false]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $car->setOwner($this->getUser()); // Associer la voiture à l'utilisateur connecté
+
             $entityManager->persist($car);
             $entityManager->flush();
 
@@ -45,6 +52,12 @@ class CarController extends AbstractController
     #[Route('/{id}', name: 'app_car_show', methods: ['GET'])]
     public function show(Car $car): Response
     {
+        $user = $this->getUser();
+
+        if ($car->getOwner() !== $user) {
+            throw $this->createAccessDeniedException('Accès refusé.');
+        }
+
         return $this->render('car/show.html.twig', [
             'car' => $car,
         ]);
@@ -53,7 +66,13 @@ class CarController extends AbstractController
     #[Route('/{id}/edit', name: 'app_car_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Car $car, EntityManagerInterface $entityManager): Response
     {
-        $form = $this->createForm(CarType::class, $car);
+        $user = $this->getUser();
+
+        if ($car->getOwner() !== $user) {
+            throw $this->createAccessDeniedException('Vous ne pouvez pas modifier cette voiture.');
+        }
+
+        $form = $this->createForm(CarType::class, $car, ['is_admin' => false]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -71,6 +90,12 @@ class CarController extends AbstractController
     #[Route('/{id}', name: 'app_car_delete', methods: ['POST'])]
     public function delete(Request $request, Car $car, EntityManagerInterface $entityManager): Response
     {
+        $user = $this->getUser();
+
+        if ($car->getOwner() !== $user) {
+            throw $this->createAccessDeniedException('Accès refusé.');
+        }
+
         if ($this->isCsrfTokenValid('delete'.$car->getId(), $request->request->get('_token'))) {
             $entityManager->remove($car);
             $entityManager->flush();

@@ -18,26 +18,38 @@ class Carpool
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(name: 'date_depart', type: Types::DATE_MUTABLE)] 
-    private ?\DateTimeInterface $departureDate = null; 
+    #[ORM\Column(name: 'date_depart', type: Types::DATE_MUTABLE)]
+    #[Assert\NotBlank(message: "La date de départ est obligatoire.")]
+    #[Assert\Date(message: "La date de départ doit être une date valide.")]
+    private ?\DateTimeInterface $departureDate = null;
 
-    #[ORM\Column(name: 'heure_depart', type: Types::TIME_MUTABLE)] 
-    private ?\DateTimeInterface $departureTime = null; 
+    #[ORM\Column(name: 'heure_depart', type: Types::TIME_MUTABLE)]
+    #[Assert\NotBlank(message: "L'heure de départ est obligatoire.")]
+    #[Assert\Time(message: "L'heure de départ doit être une heure valide.")]
+    private ?\DateTimeInterface $departureTime = null;
 
-    #[ORM\Column(name: 'lieu_depart', length: 255)] 
-    private ?string $departureLocation = null; 
+    #[ORM\Column(name: 'lieu_depart', length: 255)]
+    #[Assert\NotBlank(message: "Le lieu de départ est obligatoire.")]
+    #[Assert\Length(max: 255, maxMessage: "Le lieu de départ ne peut pas dépasser {{ limit }} caractères.")]
+    private ?string $departureLocation = null;
 
-    #[ORM\Column(name: 'date_arrivee', type: Types::DATE_MUTABLE)] 
-    private ?\DateTimeInterface $arrivalDate = null; 
+    #[ORM\Column(name: 'date_arrivee', type: Types::DATE_MUTABLE)]
+    #[Assert\NotBlank(message: "La date d'arrivée est obligatoire.")]
+    #[Assert\Date(message: "La date d'arrivée doit être une date valide.")]
+    private ?\DateTimeInterface $arrivalDate = null;
 
-    #[ORM\Column(name: 'heure_arrivee', type: Types::TIME_MUTABLE)] 
-    private ?\DateTimeInterface $arrivalTime = null; 
+    #[ORM\Column(name: 'heure_arrivee', type: Types::TIME_MUTABLE)]
+    #[Assert\NotBlank(message: "L'heure d'arrivée est obligatoire.")]
+    #[Assert\Time(message: "L'heure d'arrivée doit être une heure valide.")]
+    private ?\DateTimeInterface $arrivalTime = null;
 
     #[ORM\Column(name: 'lieu_arrivee', length: 255)] 
+    #[Assert\NotBlank(message: "Le lieu d'arrivée est obligatoire.")]
+    #[Assert\Length(max: 255, maxMessage: "Le lieu d'arrivée ne peut pas dépasser {{ limit }} caractères.")]
     private ?string $arrivalLocation = null; 
 
     #[ORM\Column(name: 'prix_par_place')] 
-    private ?float $pricePerSeat = null; 
+    private ?int $pricePerSeat = null; 
 
     #[ORM\Column(name: 'nb_places_total')] 
     private ?int $totalSeats = null; 
@@ -187,6 +199,19 @@ class Carpool
         $this->availableSeats = $availableSeats;
 
         return $this;
+    }
+
+    public function getRemainingSeats(?Booking $excludeBooking = null): int
+    {
+        $totalReserved = 0;
+        foreach ($this->bookings as $booking) {
+            if ($excludeBooking && $booking->getId() === $excludeBooking->getId()) {
+                continue; // Exclure la réservation en cours
+            }
+            $totalReserved += $booking->getReservedSeats();
+        }
+
+        return max(0, $this->totalSeats - $totalReserved);
     }
 
     public function getDriver(): ?User

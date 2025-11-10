@@ -2,10 +2,12 @@
 
 namespace App\Entity;
 
-use App\Repository\BookingRepository;
+use DateTimeInterface;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\BookingRepository;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 #[ORM\Entity(repositoryClass: BookingRepository::class)]
 #[ORM\Table(name: 'reservation')] 
@@ -17,7 +19,7 @@ class Booking
     private ?int $id = null;
 
     #[ORM\Column(name: 'date_reservation', type: Types::DATETIME_MUTABLE)] 
-    private ?\DateTimeInterface $reservationDate = null; 
+    private ?DateTimeInterface $bookingDate = null;
 
     #[Assert\NotNull(message: "Le nombre de places réservées est obligatoire.")]
     #[Assert\Positive(message: "Le nombre de places réservées doit être un entier positif.")]
@@ -44,14 +46,14 @@ class Booking
         return $this->id;
     }
 
-    public function getBookingDate(): ?\DateTimeInterface
+    public function getBookingDate(): ?DateTimeInterface
     {
-        return $this->reservationDate;
+        return $this->bookingDate;
     }
 
-    public function setBookingDate(\DateTimeInterface $reservationDate): static
+    public function setBookingDate(DateTimeInterface $bookingDate): static
     {
-        $this->reservationDate = $reservationDate;
+        $this->bookingDate = $bookingDate;
 
         return $this;
     }
@@ -117,5 +119,23 @@ class Booking
         $this->carpool = $carpool;
 
         return $this;
+    }
+
+    #[Assert\Callback]
+    public function validateReservedSeats(ExecutionContextInterface $context): void
+    {
+        $carpool = $this->getCarpool();
+        if (!$carpool) {
+            return;
+        }
+
+        // Calculer les places restantes en excluant la réservation en cours
+        $remainingSeats = $carpool->getRemainingSeats($this);
+
+        if ($this->reservedSeats > $remainingSeats) {
+            $context->buildViolation('Le nombre de places demandées dépasse les places disponibles (' . $remainingSeats . ').')
+                ->atPath('reservedSeats')
+                ->addViolation();
+        }
     }
 }

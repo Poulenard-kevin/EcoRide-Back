@@ -55,7 +55,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      *     message="Le mot de passe doit contenir au moins 8 caractères, une majuscule, un chiffre et un symbole."
      * )
      */
-    #[ORM\Column(name: 'mot_de_passe', length: 255)] 
+    #[ORM\Column(length: 255)] 
     private ?string $password = null;
 
     public const ROLE_VISITEUR = 'ROLE_VISITEUR';

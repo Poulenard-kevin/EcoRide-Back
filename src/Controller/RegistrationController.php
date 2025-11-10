@@ -29,16 +29,12 @@ class RegistrationController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            // Récupérer le mot de passe en clair depuis le formulaire (non mappé)
             $plainPassword = $form->get('plainPassword')->getData();
-
-            // Hasher le mot de passe
             $hashedPassword = $passwordHasher->hashPassword($user, $plainPassword);
             $user->setPassword($hashedPassword);
-
-            // Définir un rôle par défaut
-            $user->setRole(User::ROLE_USER);
-
+        
+            $user->setRole('ROLE_USER');
+        
             $em->persist($user);
             $em->flush();
 

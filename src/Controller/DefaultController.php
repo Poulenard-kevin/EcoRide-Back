@@ -7,9 +7,10 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class DefaultController extends AbstractController
 {
-    #[Route('/')]
+    /*#[Route('/')]
     public function home(): Response
     {
         return new Response('Welcome to the home page!');
     }
+    */
 }

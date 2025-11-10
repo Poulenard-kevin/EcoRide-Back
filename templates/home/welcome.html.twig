@@ -1,0 +1,41 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Bienvenue sur EcoRide{% endblock %}
+
+{% block body %}
+    <div class="p-5 mb-4 bg-light rounded-3 text-center">
+        <div class="container-fluid py-5">
+            <h1 class="display-5 fw-bold">Voyagez malin avec EcoRide !</h1>
+            <p class="col-md-8 fs-4 mx-auto">Trouvez ou proposez des covoiturages pour vos trajets quotidiens ou vos voyages. Économisez, partagez et réduisez votre empreinte carbone.</p>
+            <a href="{{ path('app_register') }}" class="btn btn-primary btn-lg me-2">S'inscrire maintenant</a>
+            <a href="{{ path('app_carpool_index') }}" class="btn btn-outline-secondary btn-lg">Rechercher un covoiturage</a>
+        </div>
+    </div>
+
+    <div class="row text-center">
+        <div class="col-md-4">
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">Économisez de l'argent</h5>
+                    <p class="card-text">Partagez les frais de carburant et de péage.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">Réduisez votre impact</h5>
+                    <p class="card-text">Moins de voitures sur la route, c'est mieux pour la planète.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">Voyagez en bonne compagnie</h5>
+                    <p class="card-text">Faites de nouvelles rencontres et partagez des moments.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

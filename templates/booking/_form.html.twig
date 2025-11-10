@@ -1,0 +1,24 @@
+{{ form_start(form) }}
+
+{% for child in form %}
+    <div class="mb-3">
+        {{ form_label(child) }}
+        {{ form_widget(child, {
+            'attr': {
+                'class': 'form-control' ~ (form_errors(child) ? ' is-invalid' : '')
+            }
+        }) }}
+
+        {% if form_errors(child) %}
+            <div class="invalid-feedback">
+                {{ form_errors(child) }}
+            </div>
+        {% endif %}
+    </div>
+{% endfor %}
+
+<button type="submit" class="btn btn-success">
+    {{ button_label|default('Enregistrer') }}
+</button>
+
+{{ form_end(form) }}

@@ -5,38 +5,39 @@ namespace App\Form;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
-use App\Entity\User;
 use App\Entity\Car;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\TimeType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Symfony\Component\Form\Extension\Core\Type\IntegerType;
-use Symfony\Component\Form\Extension\Core\Type\NumberType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use App\Entity\Carpool;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+
+
 
 class CarpoolType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('driver', EntityType::class, [
-                'class' => User::class,
-                'choice_label' => fn(User $user) => $user->getFirstName() . ' ' . $user->getLastName(),
-                'placeholder' => 'Choisissez un chauffeur',
-                'label' => 'Chauffeur',
-            ])
             ->add('car', EntityType::class, [
                 'class' => Car::class,
-                'choice_label' => fn(Car $car) => $car->getBrand() . ' ' . $car->getModel() . ' (' . $car->getRegistration() . ')',
+                'choices' => $options['user_cars'], // voitures de l’utilisateur uniquement
+                'choice_label' => function (Car $car) {
+                    return sprintf('%s %s (%s) - %d places', $car->getBrand(), $car->getModel(), $car->getRegistration(), $car->getSeats());
+                },
                 'placeholder' => 'Choisissez une voiture',
                 'label' => 'Voiture',
+                'constraints' => [
+                    new Assert\NotBlank(['message' => 'Veuillez choisir une voiture.']),
+                ],
             ])
             ->add('departureDate', DateType::class, [
                 'widget' => 'single_text',
+                'html5' => true,
                 'label' => 'Date de départ',
             ])
             ->add('departureLocation', TextType::class, [
@@ -44,10 +45,12 @@ class CarpoolType extends AbstractType
             ])
             ->add('departureTime', TimeType::class, [
                 'widget' => 'single_text',
+                'html5' => true,
                 'label' => 'Heure de départ',
             ])
             ->add('arrivalDate', DateType::class, [
                 'widget' => 'single_text',
+                'html5' => true,
                 'label' => 'Date d\'arrivée',
             ])
             ->add('arrivalLocation', TextType::class, [
@@ -55,6 +58,7 @@ class CarpoolType extends AbstractType
             ])
             ->add('arrivalTime', TimeType::class, [
                 'widget' => 'single_text',
+                'html5' => true,
                 'label' => 'Heure d\'arrivée',
             ])
             ->add('pricePerSeat', IntegerType::class, [
@@ -76,12 +80,6 @@ class CarpoolType extends AbstractType
                     }),
                 ],
             ])
-            ->add('totalSeats', NumberType::class, [
-                'label' => 'Nombre total de places',
-            ])
-            ->add('availableSeats', NumberType::class, [
-                'label' => 'Nombre de places disponibles',
-            ])
             ->add('status', ChoiceType::class, [
                 'choices' => [
                     'Actif' => Carpool::STATUS_ACTIVE,
@@ -91,6 +89,9 @@ class CarpoolType extends AbstractType
                 ],
                 'label' => 'Statut',
                 'placeholder' => 'Choisissez un statut',
+                'constraints' => [
+                    new Assert\NotBlank(['message' => 'Le statut est obligatoire.']),
+                ],
             ]);
     }
 
@@ -98,6 +99,7 @@ class CarpoolType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Carpool::class,
+            'user_cars' => [], // option personnalisée pour passer les voitures
         ]);
     }
 }

@@ -18,9 +18,15 @@ class CarType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('brand')
-            ->add('model')
-            ->add('color')
+            ->add('brand', null, [
+                'label' => 'Marque',
+            ])
+            ->add('model', null, [
+                'label' => 'Modèle',
+            ])
+            ->add('color', null, [
+                'label' => 'Couleur',
+            ])
             ->add('fuelType', ChoiceType::class, [
                 'choices' => [
                     'Électrique' => 'Electrique',
@@ -31,8 +37,12 @@ class CarType extends AbstractType
                 'placeholder' => 'Choisissez un type d\'énergie',
                 'required' => true,
             ])
-            ->add('registration')
-            ->add('seats')
+            ->add('registration', null, [
+                'label' => 'Immatriculation',
+            ])
+            ->add('seats', null, [
+                'label' => 'Nombre de places',
+            ])
             ->add('driverPreferences', ChoiceType::class, [
                 'choices' => [
                     'Fumeur' => 'Fumeur',
@@ -41,7 +51,7 @@ class CarType extends AbstractType
                 ],
                 'expanded' => true,
                 'multiple' => true,
-                'label' => 'Préférences chauffeur',
+                'label' => 'Préférences du chauffeur',
                 'required' => false,
             ])
             ->add('otherPreferences', TextType::class, [
@@ -52,22 +62,25 @@ class CarType extends AbstractType
                     'placeholder' => 'Ex : Parler, sport mécanique...',
                 ],
             ])
-            // On ajoute le champ owner par défaut (sera modifié dans l'event listener)
-            ->add('owner', EntityType::class, [
+        ;
+
+        // Ajouter le champ owner uniquement si is_admin = true
+        if ($options['is_admin']) {
+            $builder->add('owner', EntityType::class, [
                 'class' => User::class,
                 'choice_label' => fn(User $user) => $user->getFirstName() . ' ' . $user->getLastName(),
                 'placeholder' => 'Choisissez un propriétaire',
                 'label' => 'Propriétaire',
                 'required' => true,
-            ])
-        ;
+            ]);
+        }
 
         // Event listener pour désactiver le champ owner si la voiture existe déjà (édition)
-        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) use ($options) {
             $car = $event->getData();
             $form = $event->getForm();
 
-            if ($car && $car->getId()) {
+            if ($car && $car->getId() && $options['is_admin']) {
                 // voiture existante => désactiver le champ owner
                 $form->add('owner', EntityType::class, [
                     'class' => User::class,
@@ -84,6 +97,7 @@ class CarType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Car::class,
+            'is_admin' => false, // option par défaut
         ]);
     }
 }

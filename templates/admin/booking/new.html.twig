@@ -1,0 +1,15 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Créer une nouvelle réservation{% endblock %}
+
+{% block body %}
+    <h1 class="mb-4">Créer une nouvelle réservation</h1>
+
+    <div class="card p-4 shadow-sm">
+    {{ include('booking/_form.html.twig', { button_label: 'Créer' }) }}
+    </div>
+
+    <a href="{{ path('app_booking_index') }}" class="btn btn-secondary mt-3">
+        Retour à la liste
+    </a>
+{% endblock %}

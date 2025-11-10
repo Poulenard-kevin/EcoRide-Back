@@ -3,7 +3,7 @@
 {% block title %}Détails de l'utilisateur{% endblock %}
 
 {% block body %}
-    <h1 class="mb-4">Détails de l'utilisateur</h1>
+    <h1 class="mb-4">Profil</h1>
 
     <div class="card shadow-sm mb-4">
         <div class="card-body">
@@ -20,12 +20,6 @@
                     <tr><th>Dernière réinitialisation</th><td>{{ user.lastPasswordResetRequestAt ? user.lastPasswordResetRequestAt|date('Y-m-d H:i:s') : '' }}</td></tr>
                 </tbody>
             </table>
-
-            <div class="mt-3">
-                <a href="{{ path('app_user_index') }}" class="btn btn-secondary me-2">Retour à la liste</a>
-                <a href="{{ path('app_user_edit', {'id': user.id}) }}" class="btn btn-warning me-2">Modifier</a>
-                {{ include('user/_delete_form.html.twig') }}
-            </div>
         </div>
     </div>
 

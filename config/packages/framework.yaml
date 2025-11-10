@@ -1,6 +1,6 @@
 framework:
     secret: '%env(APP_SECRET)%'
-    #csrf_protection: true
+    csrf_protection: true
     http_method_override: false
 
     session:
@@ -14,8 +14,11 @@ framework:
 
 when@test:
     framework:
-        test: true
         session:
-            storage_factory_id: session.storage.factory.mock_file
-            cookie_lifetime: 3600       # 1 heure
-            gc_maxlifetime: 3600        # 1 heure côté serveur
+            handler_id: null
+            cookie_secure: auto
+            cookie_samesite: lax
+            storage_factory_id: session.storage.factory.native
+            cookie_lifetime: 3600
+            cookie_path: /
+            

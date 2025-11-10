@@ -1,8 +1,13 @@
+{# templates/home/index.html.twig #}
 {% extends 'base.html.twig' %}
 
-{% block title %}Accueil{% endblock %}
+{% block title %}Accueil - EcoRide{% endblock %}
 
 {% block body %}
-<h1>Bienvenue sur EcoRide</h1>
-<p>Page d’accueil</p>
+    <h1>Bienvenue sur la partie Back - end de EcoRide !</h1>
+    <p></p>
+
+    <a href="{{ path('dashboard') }}" class="btn btn-primary mt-3">
+        Accéder au tableau de bord
+    </a>
 {% endblock %}

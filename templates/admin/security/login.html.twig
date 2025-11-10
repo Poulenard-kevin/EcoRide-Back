@@ -1,0 +1,27 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Connexion Admin{% endblock %}
+
+{% block body %}
+<h1>Connexion Admin</h1>
+
+{% if error %}
+    <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+{% endif %}
+
+<form action="{{ path('admin_login') }}" method="post">
+    <div class="mb-3">
+        <label for="email">Email :</label>
+        <input type="text" id="email" name="_username" value="{{ last_username }}" class="form-control" required autofocus>
+    </div>
+    <div class="mb-3">
+        <label for="password">Mot de passe :</label>
+        <input type="password" id="password" name="_password" class="form-control" required>
+        <p>
+    <a href="{{ path('app_forgot_password_request') }}">Mot de passe oublié ?</a>
+</p>
+    </div>
+    <button type="submit" class="btn btn-primary">Se connecter</button>
+</form>
+
+{% endblock %}

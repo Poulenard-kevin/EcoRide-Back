@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Carpool;
 use App\Form\CarpoolType;
 use App\Repository\CarpoolRepository;
+use App\Repository\CarRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -23,17 +24,38 @@ class CarpoolController extends AbstractController
     }
 
     #[Route('/new', name: 'app_carpool_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    public function new(Request $request, EntityManagerInterface $entityManager, CarRepository $carRepository): Response
     {
+        $user = $this->getUser();
+        $userCars = $carRepository->findBy(['owner' => $user]);
+
+        if (count($userCars) === 0) {
+            $this->addFlash('warning', 'Vous devez créer une voiture avant de créer un covoiturage.');
+            return $this->redirectToRoute('app_car_new');
+        }
+
         $carpool = new Carpool();
-        $form = $this->createForm(CarpoolType::class, $carpool);
+
+        $form = $this->createForm(CarpoolType::class, $carpool, [
+            'user_cars' => $userCars,
+        ]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $carpool->setDriver($this->getUser());
+
+            // Récupérer le nombre total de places depuis la voiture sélectionnée
+            $carpool->setTotalSeats($carpool->getCar()->getSeats());
+
+            // Initialiser les places disponibles à la valeur totale
+            $carpool->setAvailableSeats($carpool->getTotalSeats());
+
             $entityManager->persist($carpool);
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_carpool_index', [], Response::HTTP_SEE_OTHER);
+            $this->addFlash('success', 'Covoiturage créé avec succès.');
+
+            return $this->redirectToRoute('app_carpool_index');
         }
 
         return $this->renderForm('carpool/new.html.twig', [
