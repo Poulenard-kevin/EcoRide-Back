@@ -9,14 +9,18 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
-use Symfony\Component\Routing\Attribute\Route;
-use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Component\Routing\Annotation\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
-#[Route('/user')]
+/**
+ * @Route("/user")
+ */
 class UserController extends AbstractController
 {
-    #[Route('/me', name: 'app_user_me', methods: ['GET'])]
-    #[IsGranted('ROLE_USER')]
+    /**
+     * @Route("/me", name="app_user_me", methods={"GET"})
+     * @IsGranted("ROLE_USER")
+     */
     public function me(): Response
     {
         $user = $this->getUser();
@@ -26,8 +30,10 @@ class UserController extends AbstractController
         ]);
     }
 
-    #[Route('/me/edit', name: 'app_user_edit', methods: ['GET', 'POST'])]
-    #[IsGranted('ROLE_USER')]
+    /**
+     * @Route("/me/edit", name="app_user_edit", methods={"GET", "POST"})
+     * @IsGranted("ROLE_USER")
+     */
     public function edit(Request $request, EntityManagerInterface $em, UserPasswordHasherInterface $hasher): Response
     {
         $user = $this->getUser();
@@ -58,11 +64,13 @@ class UserController extends AbstractController
 
         return $this->render('user/edit.html.twig', [
             'user' => $user,
-            'form' => $form,
+            'form' => $form->createView(), 
         ]);
     }
 
-    #[Route('/{id}', name: 'app_user_show', methods: ['GET'])]
+    /**
+     * @Route("/{id}", name="app_user_show", methods={"GET"})
+     */
     public function show(User $user): Response
     {
         return $this->render('user/show.html.twig', [

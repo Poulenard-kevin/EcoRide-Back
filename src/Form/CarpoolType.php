@@ -90,31 +90,13 @@ class CarpoolType extends AbstractType
                     }),
                 ],
             ]);
-            
-        //  Ajouter le champ status uniquement en mode édition (pas en création)
-        if ($options['is_edit']) {
-            $builder->add('status', ChoiceType::class, [
-                'choices' => [
-                    'Actif' => Carpool::STATUS_ACTIVE,
-                    'Terminé' => Carpool::STATUS_COMPLETED,
-                    'Annulé' => Carpool::STATUS_CANCELLED,
-                    'Archivé' => Carpool::STATUS_ARCHIVED,
-                ],
-                'label' => 'Statut',
-                'placeholder' => 'Choisissez un statut',
-                'constraints' => [
-                    new Assert\NotBlank(['message' => 'Le statut est obligatoire.']),
-                ],
-            ]);
         }
-    }
 
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'data_class' => Carpool::class,
             'user_cars' => [], // option personnalisée pour passer les voitures
-            'is_edit' => false, 
         ]);
     }
 }

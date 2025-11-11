@@ -30,10 +30,10 @@ class Booking
     private ?string $status = 'pending'; // Valeur par défaut
 
     // Constantes de statut
-    public const STATUS_PENDING = 'pending';        // En attente
-    public const STATUS_CONFIRMED = 'confirmed';    // Confirmée
-    public const STATUS_REFUSED = 'refused';        // Refusée 
-    public const STATUS_CANCELLED = 'cancelled';    // Annulée
+    public const STATUS_CONFIRMED = 'confirmed';
+    public const STATUS_CANCELLED = 'cancelled';
+    public const STATUS_PENDING   = 'pending';
+    public const STATUS_REFUSED   = 'refused';
 
     #[ORM\ManyToOne(inversedBy: 'bookings', targetEntity: User::class)]
     #[ORM\JoinColumn(name: "passager_id", nullable: true)] // TODO: rendre NOT NULL après API 
@@ -94,17 +94,33 @@ class Booking
     public static function getStatusLabels(): array
     {
         return [
-            self::STATUS_PENDING => 'En attente',
             self::STATUS_CONFIRMED => 'Confirmée',
-            self::STATUS_REFUSED => 'Refusée',      
             self::STATUS_CANCELLED => 'Annulée',
+            self::STATUS_PENDING   => 'En attente',
+            self::STATUS_REFUSED   => 'Refusée',
         ];
     }
 
     public function getStatusLabel(): string
     {
         $labels = self::getStatusLabels();
-        return $labels[$this->status] ?? 'Statut inconnu';
+        return $labels[$this->status] ?? 'Inconnu';
+    }
+
+    public static function getStatusBadgeClasses(): array
+    {
+        return [
+            self::STATUS_CONFIRMED => 'bg-success',
+            self::STATUS_CANCELLED => 'bg-danger',
+            self::STATUS_PENDING   => 'bg-warning text-dark',
+            self::STATUS_REFUSED   => 'bg-danger', // ou bg-secondary si tu veux moins agressif
+        ];
+    }
+
+    public function getStatusBadgeClass(): string
+    {
+        $classes = self::getStatusBadgeClasses();
+        return $classes[$this->status] ?? 'bg-secondary';
     }
 
     // Méthodes utiles pour vérifier le statut

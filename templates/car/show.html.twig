@@ -3,96 +3,162 @@
 {% block title %}Détails de la voiture{% endblock %}
 
 {% block body %}
-    <h1 class="mb-4">Détails de la voiture</h1>
+    <h1 class="mb-4"><i class="bi bi-car-front-fill"></i> Détails de la voiture</h1>
 
-   <div class="card shadow-sm mb-4">
-    <div class="card-body">
-        <h5 class="card-title">{{ car.brand }} {{ car.model }}</h5>
-        <h6 class="card-subtitle mb-3 text-muted">Immatriculation : {{ car.registration }}</h6>
-
-        <table class="table table-bordered table-striped">
-            <tbody>
-                <tr>
-                    <th>Couleur</th>
-                    <td>{{ car.color }}</td>
-                </tr>
-                <tr>
-                    <th>Type d'énergie</th>
-                    <td>{{ car.fuelType }}</td>
-                </tr>
-                <tr>
-                    <th>Nombre de places</th>
-                    <td>{{ car.seats }}</td>
-                </tr>
-                <tr>
-                    <th>Préférences chauffeur</th>
-                    <td>
-                        {% if car.driverPreferences is not empty %}
-                            {{ car.driverPreferences|join(', ') }}
+    <div class="card shadow-sm mb-4">
+        <div class="card-body">
+            <div class="d-flex justify-content-between align-items-start mb-3">
+                <div>
+                    <h4 class="card-title mb-1">{{ car.brand }} {{ car.model }}</h4>
+                    <h6 class="card-subtitle text-muted">Immatriculation : {{ car.registration }}</h6>
+                </div>
+                <div class="text-end">
+                    <div class="mb-2">
+                        <small class="text-muted">Propriétaire</small><br>
+                        {% if car.owner %}
+                            <a href="{{ path('app_user_show', {'id': car.owner.id}) }}">
+                                {{ car.owner.firstName }} {{ car.owner.lastName }}
+                            </a>
                         {% else %}
-                            <span class="text-muted fst-italic">Aucune</span>
+                            <span class="text-muted fst-italic">Aucun</span>
                         {% endif %}
-                    </td>
-                </tr>
-                <tr>
-                    <th>Autres préférences</th>
-                    <td>
-                        {% if car.otherPreferences is not empty %}
-                            {{ car.otherPreferences|join(', ') }}
-                        {% else %}
-                            <span class="text-muted fst-italic">Aucune</span>
-                        {% endif %}
-                    </td>
-                </tr>
-                <tr>
-                <th>Propriétaire</th>
-                <td>
-                    {% if car.owner %}
-                        <a href="{{ path('app_user_show', {'id': car.owner.id}) }}">
-                            {{ car.owner.firstName }} {{ car.owner.lastName }}
-                        </a>
-                    {% else %}
-                        Aucun propriétaire
-                    {% endif %}
-                </td>
-            </tr>
-            </tbody>
-        </table>
+                    </div>
+                    <div>
+                        <a href="{{ path('app_car_index') }}" class="btn btn-sm btn-secondary">Retour</a>
+                        <a href="{{ path('app_car_edit', {'id': car.id}) }}" class="btn btn-sm btn-warning">Modifier</a>
+                    </div>
+                </div>
+            </div>
 
-        <div class="mt-3 d-flex gap-2">
-            <a href="{{ path('app_car_index') }}" class="btn btn-secondary">Retour à la liste</a>
-            <a href="{{ path('app_car_edit', {'id': car.id}) }}" class="btn btn-warning">Modifier</a>
-            {{ include('car/_delete_form.html.twig') }}
+            <table class="table table-bordered table-striped mb-3">
+                <tbody>
+                    <tr>
+                        <th style="width: 25%;">Couleur</th>
+                        <td>{{ car.color ?: '<span class="text-muted fst-italic">—</span>' }}</td>
+
+                        <th style="width: 25%;">Type d'énergie</th>
+                        <td>{{ car.fuelType ?: '<span class="text-muted fst-italic">—</span>' }}</td>
+                    </tr>
+
+                    <tr>
+                        <th>Nombre de places</th>
+                        <td>{{ car.seats ?: '<span class="text-muted fst-italic">—</span>' }}</td>
+
+                        <th>Immatriculation</th>
+                        <td>{{ car.registration ?: '<span class="text-muted fst-italic">—</span>' }}</td>
+                    </tr>
+
+                    <tr>
+                        <th>Préférences chauffeur</th>
+                        <td colspan="3">
+                            {% if car.driverPreferences is not empty %}
+                                {{ car.driverPreferences|join(', ') }}
+                            {% else %}
+                                <span class="text-muted fst-italic">Aucune</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <th>Autres préférences</th>
+                        <td colspan="3">
+                            {% if car.otherPreferences is not empty %}
+                                {{ car.otherPreferences|join(', ') }}
+                            {% else %}
+                                <span class="text-muted fst-italic">Aucune</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="d-flex gap-2">
+                {{ include('car/_delete_form.html.twig') }}
+            </div>
         </div>
     </div>
-</div>
 
-    <h2 class="mt-5">Covoiturages utilisant ce véhicule</h2>
+    <h2 class="mt-5 mb-3"><i class="bi bi-list-ul"></i> Covoiturages utilisant ce véhicule</h2>
 
-    {% if car.carpools|length > 0 %}
-        <div class="table-responsive">
-            <table class="table table-bordered table-striped table-hover align-middle">
-                <thead>
+    {% if car.carpools is defined and car.carpools|length > 0 %}
+        <div class="table-responsive shadow-sm">
+            <table class="table table-bordered table-striped table-hover align-middle mb-5">
+                <thead class="table-dark">
                     <tr>
                         <th>Départ</th>
                         <th>Arrivée</th>
-                        <th>Date</th>
-                        <th>Actions</th>
+                        <th>Date / Heure</th>
+                        <th>Places</th>
+                        <th>Statut</th>
+                        <th>Conducteur</th>
+                        <th class="text-center">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for carpool in car.carpools %}
                         <tr>
-                            <td>{{ carpool.departureLocation }}</td>
-                            <td>{{ carpool.arrivalLocation }}</td>
-                            <td>{{ carpool.departureDate ? carpool.departureDate|date('d/m/Y') : 'N/A' }}</td>
                             <td>
-                                <a href="{{ path('app_carpool_show', {'id': carpool.id}) }}" class="btn btn-sm btn-primary" title="Voir">
-                                    <i class="bi bi-eye"></i> Voir
-                                </a>
-                                <a href="{{ path('app_carpool_edit', {'id': carpool.id}) }}" class="btn btn-sm btn-warning" title="Modifier">
-                                    <i class="bi bi-pencil"></i> Modifier
-                                </a>
+                                <strong>{{ carpool.departureLocation }}</strong><br>
+                                <small class="text-muted">{{ carpool.departureDate ? carpool.departureDate|date('d/m/Y') : 'N/A' }}</small>
+                            </td>
+                            <td>
+                                <strong>{{ carpool.arrivalLocation }}</strong><br>
+                                <small class="text-muted">{{ carpool.arrivalDate ? carpool.arrivalDate|date('d/m/Y') : 'N/A' }}</small>
+                            </td>
+                            <td>
+                                <small class="text-muted">
+                                    {{ carpool.departureDate ? carpool.departureDate|date('d/m/Y') : '' }}
+                                    {{ carpool.departureTime ? ' à ' ~ carpool.departureTime|date('H:i') : '' }}
+                                </small>
+                            </td>
+                            <td class="text-center">
+                                <span class="badge bg-info text-dark">
+                                    {{ carpool.availableSeats }} / {{ carpool.totalSeats ?: (car.seats ?: '—') }}
+                                </span>
+                            </td>
+                            <td class="text-center">
+                                {% if carpool.statusBadgeClass is defined and carpool.statusLabel is defined %}
+                                    <span class="badge {{ carpool.statusBadgeClass }}">
+                                        {{ carpool.statusLabel }}
+                                    </span>
+                                {% else %}
+                                    {# Fallback simple mapping si helpers non présents #}
+                                    {% set s = carpool.status|default('') %}
+                                    {% if s == 'active' %}
+                                        <span class="badge bg-success">Actif</span>
+                                    {% elseif s == 'started' %}
+                                        <span class="badge bg-info text-dark">En cours</span>
+                                    {% elseif s == 'completed' %}
+                                        <span class="badge bg-primary">Terminé</span>
+                                    {% elseif s == 'cancelled' %}
+                                        <span class="badge bg-danger">Annulé</span>
+                                    {% elseif s == 'archived' %}
+                                        <span class="badge bg-secondary">Archivé</span>
+                                    {% else %}
+                                        <span class="badge bg-light text-dark">Inconnu</span>
+                                    {% endif %}
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if carpool.driver %}
+                                    <a href="{{ path('app_user_show', {'id': carpool.driver.id}) }}">
+                                        {{ carpool.driver.firstName }} {{ carpool.driver.lastName }}
+                                    </a>
+                                {% else %}
+                                    <span class="text-muted">—</span>
+                                {% endif %}
+                            </td>
+                            <td class="text-center">
+                                <div class="d-flex gap-1 justify-content-center">
+                                    <a href="{{ path('app_carpool_show', {'id': carpool.id}) }}" class="btn btn-sm btn-primary" title="Voir">
+                                        <i class="bi bi-eye"></i>
+                                    </a>
+                                    {% if app.user and carpool.driver and app.user == carpool.driver %}
+                                        <a href="{{ path('app_carpool_edit', {'id': carpool.id}) }}" class="btn btn-sm btn-warning" title="Modifier">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+                                    {% endif %}
+                                </div>
                             </td>
                         </tr>
                     {% endfor %}
@@ -100,6 +166,8 @@
             </table>
         </div>
     {% else %}
-        <p>Aucun covoiturage associé à ce véhicule.</p>
+        <div class="alert alert-info">
+            <i class="bi bi-info-circle"></i> Aucun covoiturage associé à ce véhicule.
+        </div>
     {% endif %}
 {% endblock %}

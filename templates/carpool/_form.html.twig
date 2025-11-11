@@ -1,15 +1,15 @@
 {{ form_start(form) }}
 
 {% for field in form %}
-    {# On masque automatiquement les champs calculés ou inutiles ici #}
+    {# On masque certains champs calculés ou inutiles #}
     {% if field.vars.name not in ['availableSeats', 'totalSeats'] %}
-        {# Le champ "status" s'affiche uniquement si défini (en édition) #}
+        {# Optionnel : n'affiche pas le champ status s'il n'existe pas ou si tu veux l'afficher seulement en édition #}
         {% if field.vars.name != 'status' or form.status is defined %}
             <div class="mb-3">
                 {{ form_label(field) }}
                 {{ form_widget(field, {
                     'attr': {
-                        'class': 'form-control' ~ (form_errors(field) ? ' is-invalid' : '')
+                        'class': 'form-control' ~ (field.vars.errors|length ? ' is-invalid' : '')
                     }
                 }) }}
                 {{ form_errors(field) }}

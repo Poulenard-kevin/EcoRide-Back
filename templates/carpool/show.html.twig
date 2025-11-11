@@ -1,201 +1,261 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Détail du covoiturage{% endblock %}
+{% block title %}Détails du covoiturage{% endblock %}
 
 {% block body %}
-    <h1 class="mb-4">Détail du covoiturage</h1>
-
-    <div class="card shadow-sm mb-4">
+<div class="container mt-4">
+    <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white">
+            <h3 class="mb-0">
+                <i class="bi bi-car-front-fill"></i> 
+                {{ carpool.departureLocation }} → {{ carpool.arrivalLocation }}
+            </h3>
+        </div>
         <div class="card-body">
-            <table class="table table-bordered table-striped">
-                <tbody>
-                    <tr><th>Id</th><td>{{ carpool.id }}</td></tr>
-                    <tr><th>Date départ</th><td>{{ carpool.departureDate ? carpool.departureDate|date('d/m/Y') : '' }}</td></tr>
-                    <tr><th>Heure départ</th><td>{{ carpool.departureTime ? carpool.departureTime|date('H:i') : '' }}</td></tr>
-                    <tr><th>Lieu départ</th><td>{{ carpool.departureLocation }}</td></tr>
-                    <tr><th>Date arrivée</th><td>{{ carpool.arrivalDate ? carpool.arrivalDate|date('d/m/Y') : '' }}</td></tr>
-                    <tr><th>Heure arrivée</th><td>{{ carpool.arrivalTime ? carpool.arrivalTime|date('H:i') : '' }}</td></tr>
-                    <tr><th>Lieu arrivée</th><td>{{ carpool.arrivalLocation }}</td></tr>
-                    <tr><th>Prix par place</th><td>{{ carpool.pricePerSeat }} crédits</td></tr>
-                    <tr><th>Places disponibles</th><td>{{ carpool.availableSeats }}</td></tr>
-                    <tr><th>Nombre total de places</th><td>{{ carpool.totalSeats }}</td></tr>
-                    <tr>
-                        <th>Statut</th>
-                        <td>
-                            {% set status = carpool.status %}
-                            {% if status == constant('App\\Entity\\Carpool::STATUS_ACTIVE') %}
-                                <span class="badge bg-success">Actif</span>
-                            {% elseif status == constant('App\\Entity\\Carpool::STATUS_COMPLETED') %}
-                                <span class="badge bg-primary">Terminé</span>
-                            {% elseif status == constant('App\\Entity\\Carpool::STATUS_CANCELLED') %}
-                                <span class="badge bg-danger">Annulé</span>
-                            {% elseif status == constant('App\\Entity\\Carpool::STATUS_ARCHIVED') %}
-                                <span class="badge bg-secondary">Archivé</span>
-                            {% else %}
-                                <span class="badge bg-light text-dark">Inconnu</span>
-                            {% endif %}
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>Chauffeur</th>
-                        <td>
-                            {% if carpool.driver %}
-                                <a href="{{ path('app_user_show', {'id': carpool.driver.id}) }}">
-                                    {{ carpool.driver.firstName }} {{ carpool.driver.lastName }}
-                                </a>
-                            {% else %}
-                                N/A
-                            {% endif %}
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>Voiture</th>
-                        <td>
-                            {% if carpool.car %}
-                                <a href="{{ path('app_car_show', {'id': carpool.car.id}) }}">
-                                    {{ carpool.car.brand }} {{ carpool.car.model }} ({{ carpool.car.registration }})
-                                </a>
-                            {% else %}
-                                N/A
-                            {% endif %}
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+            {# Informations principales #}
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <h5><i class="bi bi-geo-alt-fill text-success"></i> Départ</h5>
+                    <p class="mb-1"><strong>Lieu :</strong> {{ carpool.departureLocation }}</p>
+                    <p class="mb-1"><strong>Date :</strong> {{ carpool.departureDate|date('d/m/Y') }}</p>
+                    <p class="mb-0"><strong>Heure :</strong> {{ carpool.departureTime|date('H:i') }}</p>
+                </div>
+                <div class="col-md-6">
+                    <h5><i class="bi bi-geo-fill text-danger"></i> Arrivée</h5>
+                    <p class="mb-1"><strong>Lieu :</strong> {{ carpool.arrivalLocation }}</p>
+                    <p class="mb-1"><strong>Date :</strong> {{ carpool.arrivalDate|date('d/m/Y') }}</p>
+                    <p class="mb-0"><strong>Heure :</strong> {{ carpool.arrivalTime|date('H:i') }}</p>
+                </div>
+            </div>
 
-            <div class="mt-3 d-flex gap-2">
-                <a href="{{ path('app_carpool_index') }}" class="btn btn-secondary">Retour à la liste</a>
-                
-                {# ✅ Seul le conducteur peut modifier/supprimer #}
-                {% if app.user == carpool.driver %}
-                    <a href="{{ path('app_carpool_edit', {'id': carpool.id}) }}" class="btn btn-warning">Modifier</a>
-                    {{ include('carpool/_delete_form.html.twig') }}
+            <hr>
+
+            {# Informations sur le conducteur et le véhicule #}
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <h5><i class="bi bi-person-circle"></i> Conducteur</h5>
+                    <p class="mb-0">
+                        <a href="{{ path('app_user_show', {'id': carpool.driver.id}) }}">
+                            {{ carpool.driver.firstName }} {{ carpool.driver.lastName }}
+                        </a>
+                    </p>
+                </div>
+                <div class="col-md-6">
+                    <h5><i class="bi bi-car-front"></i> Véhicule</h5>
+                    <p class="mb-0">
+                        {{ carpool.car.brand }} {{ carpool.car.model }} 
+                        <span class="text-muted">({{ carpool.car.registration }})</span>
+                    </p>
+                </div>
+            </div>
+
+            <hr>
+
+            {# Places et prix #}
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <h5><i class="bi bi-people-fill"></i> Places disponibles</h5>
+                    <p class="mb-0">
+                        <span class="badge bg-success fs-5">{{ carpool.availableSeats }} / {{ carpool.car.seats }}</span>
+                    </p>
+                </div>
+                <div class="col-md-6">
+                    <h5><i class="bi bi-coin"></i> Prix par place</h5>
+                    <p class="mb-0">
+                        <span class="badge bg-info text-dark fs-5">{{ carpool.pricePerSeat }} crédits</span>
+                    </p>
+                </div>
+            </div>
+
+            <hr>
+
+            {# --- Section : Liste des passagers (style simplifié) --- #}
+            <div class="mt-4">
+                <h5 class="border-bottom pb-2"><i class="bi bi-person-lines-fill"></i> Passagers</h5>
+
+                {% if carpool.bookings is defined and carpool.bookings|length > 0 %}
+                    <div class="row g-3"> {# Utilise g-3 pour un petit espacement entre les cartes #}
+                        {% for booking in carpool.bookings %}
+                            <div class="col-md-6 col-lg-4"> {# Chaque passager prendra 6 colonnes sur moyen écran, 4 sur grand #}
+                                <div class="card h-100 shadow-sm"> {# h-100 pour que les cartes aient la même hauteur #}
+                                    <div class="card-body">
+                                        <h5 class="card-title mb-2">
+                                            {% if booking.passenger %}
+                                                <a href="{{ path('app_user_show', {'id': booking.passenger.id}) }}">
+                                                    {{ booking.passenger.firstName }} {{ booking.passenger.lastName }}
+                                                </a>
+                                            {% else %}
+                                                <span class="text-muted">Utilisateur supprimé</span>
+                                            {% endif %}
+                                        </h5>
+                                        <p class="card-text mb-1">
+                                            <i class="bi bi-person-check"></i> Places réservées : <span class="badge bg-primary">{{ booking.reservedSeats }}</span>
+                                        </p>
+                                        <p class="card-text mb-1">
+                                            <i class="bi bi-info-circle"></i> Statut : 
+                                            {% set status = booking.status|default('') %}
+                                            {% if status == 'pending' %}
+                                                <span class="badge bg-warning text-dark">En attente</span>
+                                            {% elseif status == 'confirmed' %}
+                                                <span class="badge bg-success">Confirmé</span>
+                                            {% elseif status == 'refused' %}
+                                                <span class="badge bg-danger">Refusé</span>
+                                            {% elseif status == 'cancelled' %}
+                                                <span class="badge bg-secondary">Annulé</span>
+                                            {% else %}
+                                                <span class="badge bg-light text-dark">Inconnu</span>
+                                            {% endif %}
+                                        </p>
+                                        <p class="card-text mb-2">
+                                            <small class="text-muted"><i class="bi bi-calendar"></i> Réservé le : {{ booking.bookingDate ? booking.bookingDate|date('d/m/Y H:i') : '—' }}</small>
+                                        </p>
+
+                                        {# Actions pour le conducteur #}
+                                        {% if app.user == carpool.driver %}
+                                            <div class="d-flex gap-1 flex-wrap mt-3">
+                                                {% if booking.canBeConfirmed() %}
+                                                    <form method="post" action="{{ path('app_booking_confirm', {'id': booking.id}) }}" style="display:inline;">
+                                                        <input type="hidden" name="_token" value="{{ csrf_token('confirm' ~ booking.id) }}">
+                                                        <button type="submit" class="btn btn-sm btn-success" title="Confirmer">
+                                                            <i class="bi bi-check-circle"></i> Confirmer
+                                                        </button>
+                                                    </form>
+                                                {% endif %}
+
+                                                {% if booking.canBeRefused() %}
+                                                    <form method="post" action="{{ path('app_booking_refuse', {'id': booking.id}) }}" style="display:inline;">
+                                                        <input type="hidden" name="_token" value="{{ csrf_token('refuse' ~ booking.id) }}">
+                                                        <button type="submit" class="btn btn-sm btn-danger" title="Refuser">
+                                                            <i class="bi bi-x-circle"></i> Refuser
+                                                        </button>
+                                                    </form>
+                                                {% endif %}
+
+                                                {% if booking.canBeCancelled() %}
+                                                    <form method="post" action="{{ path('app_booking_cancel', {'id': booking.id}) }}" style="display:inline;" onsubmit="return confirm('Êtes-vous sûr de vouloir annuler cette réservation ?');">
+                                                        <input type="hidden" name="_token" value="{{ csrf_token('cancel' ~ booking.id) }}">
+                                                        <button type="submit" class="btn btn-sm btn-secondary" title="Annuler">
+                                                            <i class="bi bi-trash"></i> Annuler
+                                                        </button>
+                                                    </form>
+                                                {% endif %}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="alert alert-info">
+                        <i class="bi bi-info-circle"></i> Aucun passager pour ce covoiturage.
+                    </div>
                 {% endif %}
             </div>
+
+            <hr>
+
+            {# Statut du covoiturage #}
+            <div class="mb-3">
+                <h5><i class="bi bi-info-circle"></i> Statut</h5>
+
+                <span class="badge 
+                    {% if carpool.status == STATUS_ACTIVE %}bg-success
+                    {% elseif carpool.status == STATUS_STARTED %}bg-info text-dark
+                    {% elseif carpool.status == STATUS_COMPLETED %}bg-primary text-white
+                    {% elseif carpool.status == STATUS_CANCELLED %}bg-danger
+                    {% elseif carpool.status == STATUS_ARCHIVED %}bg-secondary
+                    {% else %}bg-light text-dark
+                    {% endif %} fs-5">
+                    {% if carpool.status == STATUS_ACTIVE %}
+                        <i class="bi bi-play-circle"></i>
+                    {% elseif carpool.status == STATUS_STARTED %}
+                        <i class="bi bi-clock"></i>
+                    {% elseif carpool.status == STATUS_COMPLETED %}
+                        <i class="bi bi-flag-checkered"></i>
+                    {% elseif carpool.status == STATUS_CANCELLED %}
+                        <i class="bi bi-x-circle"></i>
+                    {% elseif carpool.status == STATUS_ARCHIVED %}
+                        <i class="bi bi-archive"></i>
+                    {% else %}
+                        <i class="bi bi-question-circle"></i>
+                    {% endif %}
+                    {{ carpool.statusLabel }}
+                </span>
+            </div>
+
+            {# Boutons conducteur #}
+            {% if carpool.driver == app.user %}
+                <hr>
+                <div class="d-flex gap-2 flex-wrap">
+
+                    {% if carpool.status == STATUS_ACTIVE %}
+                        <a href="{{ path('app_carpool_edit', {'id': carpool.id}) }}" class="btn btn-warning">
+                            <i class="bi bi-pencil-square"></i> Modifier
+                        </a>
+
+                        <form method="post" action="{{ path('app_carpool_start', {'id': carpool.id}) }}" style="display:inline;" onsubmit="return confirm('Démarrer ce covoiturage maintenant ?');">
+                            <input type="hidden" name="_token" value="{{ csrf_token('start' ~ carpool.id) }}">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-play-circle"></i> Démarrer le covoiturage
+                            </button>
+                        </form>
+
+                        <form method="post" action="{{ path('app_carpool_cancel', {'id': carpool.id}) }}" style="display:inline;" onsubmit="return confirm('Êtes-vous sûr de vouloir annuler ce covoiturage ?');">
+                            <input type="hidden" name="_token" value="{{ csrf_token('cancel' ~ carpool.id) }}">
+                            <button type="submit" class="btn btn-danger">
+                                <i class="bi bi-x-circle"></i> Annuler
+                            </button>
+                        </form>
+                    {% endif %}
+
+                    {% if carpool.status == STATUS_STARTED %}
+                        <form method="post" action="{{ path('app_carpool_complete', {'id': carpool.id}) }}" style="display:inline;" onsubmit="return confirm('Marquer ce covoiturage comme terminé et l\'archiver ?');">
+                            <input type="hidden" name="_token" value="{{ csrf_token('complete' ~ carpool.id) }}">
+                            <button type="submit" class="btn btn-success">
+                                <i class="bi bi-flag-checkered"></i> Terminer & Archiver
+                            </button>
+                        </form>
+                    {% endif %}
+
+                    {# Supprimer toujours disponible #}
+                    <form method="post" action="{{ path('app_carpool_delete', {'id': carpool.id}) }}" style="display:inline;" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer définitivement ce covoiturage ?');">
+                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ carpool.id) }}">
+                        <button type="submit" class="btn btn-outline-danger">
+                            <i class="bi bi-trash"></i> Supprimer
+                        </button>
+                    </form>
+
+                </div>
+            {% else %}
+                {# Bouton Réserver pour passagers #}
+                {% if carpool.status == STATUS_ACTIVE and carpool.availableSeats > 0 %}
+                    <hr>
+                    <a href="{{ path('app_booking_new', {'carpool': carpool.id}) }}" class="btn btn-success btn-lg">
+                        <i class="bi bi-calendar-check"></i> Réserver une place
+                    </a>
+                {% elseif carpool.availableSeats == 0 %}
+                    <hr>
+                    <div class="alert alert-warning">
+                        <i class="bi bi-exclamation-triangle"></i> Ce covoiturage est complet.
+                    </div>
+                {% endif %}
+            {% endif %}
+
+            {# Message si archivé #}
+            {% if carpool.status == STATUS_ARCHIVED %}
+                <div class="alert alert-secondary mt-3">
+                    <i class="bi bi-archive"></i> Ce covoiturage est terminé et archivé.
+                </div>
+            {% endif %}
         </div>
     </div>
 
-    <h2 class="mt-5">Réservations pour ce covoiturage</h2>
-
-    {% if carpool.bookings|length > 0 %}
-        <div class="table-responsive">
-            <table class="table table-bordered table-striped table-hover align-middle">
-                <thead>
-                    <tr>
-                        <th>Passager</th>
-                        <th>Date de réservation</th>
-                        <th>Nombre de places</th>
-                        <th>Statut</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for booking in carpool.bookings %}
-                        <tr>
-                            <td>
-                                {% if booking.passenger %}
-                                    <a href="{{ path('app_user_show', {'id': booking.passenger.id}) }}">
-                                        {{ booking.passenger.firstName }} {{ booking.passenger.lastName }}
-                                    </a>
-                                {% else %}
-                                    <span class="text-muted fst-italic">Inconnu</span>
-                                {% endif %}
-                            </td>
-                            <td>{{ booking.bookingDate ? booking.bookingDate|date('d/m/Y H:i') : 'N/A' }}</td>
-                            <td>{{ booking.reservedSeats }}</td>
-                            <td>
-                                {% set status = booking.status %}
-                                {% if status == constant('App\\Entity\\Booking::STATUS_CONFIRMED') %}
-                                    <span class="badge bg-success">Confirmée</span>
-                                {% elseif status == constant('App\\Entity\\Booking::STATUS_CANCELLED') %}
-                                    <span class="badge bg-danger">Annulée</span>
-                                {% elseif status == constant('App\\Entity\\Booking::STATUS_PENDING') %}
-                                    <span class="badge bg-warning text-dark">En attente</span>
-                                {% elseif status == constant('App\\Entity\\Booking::STATUS_REFUSED') %}
-                                    <span class="badge bg-danger">Refusée</span>
-                                {% else %}
-                                    <span class="badge bg-secondary">Inconnu</span>
-                                {% endif %}
-                            </td>
-                            <td>
-                                <div class="d-flex gap-2 flex-wrap">
-                                    {# ✅ Bouton "Voir" pour tout le monde #}
-                                    <a href="{{ path('app_booking_show', {'id': booking.id}) }}" class="btn btn-sm btn-primary" title="Voir">
-                                        <i class="bi bi-eye"></i> Voir
-                                    </a>
-
-                                    {# ✅ Actions pour le CONDUCTEUR uniquement #}
-                                    {% if app.user == carpool.driver %}
-                                        
-                                        {# Accepter (si en attente) #}
-                                        {% if status == constant('App\\Entity\\Booking::STATUS_PENDING') %}
-                                            <form method="post" action="{{ path('app_booking_confirm', {'id': booking.id}) }}" style="display:inline;">
-                                                <input type="hidden" name="_token" value="{{ csrf_token('confirm' ~ booking.id) }}">
-                                                <button type="submit" class="btn btn-sm btn-success" title="Accepter" onclick="return confirm('Confirmer cette réservation ?')">
-                                                    <i class="bi bi-check-circle"></i> Accepter
-                                                </button>
-                                            </form>
-
-                                            <form method="post" action="{{ path('app_booking_refuse', {'id': booking.id}) }}" style="display:inline;">
-                                                <input type="hidden" name="_token" value="{{ csrf_token('refuse' ~ booking.id) }}">
-                                                <button type="submit" class="btn btn-sm btn-danger" title="Refuser" onclick="return confirm('Refuser cette réservation ?')">
-                                                    <i class="bi bi-x-circle"></i> Refuser
-                                                </button>
-                                            </form>
-                                        {% endif %}
-
-                                        {# Annuler (si confirmée) #}
-                                        {% if status == constant('App\\Entity\\Booking::STATUS_CONFIRMED') %}
-                                            <form method="post" action="{{ path('app_booking_cancel', {'id': booking.id}) }}" style="display:inline;">
-                                                <input type="hidden" name="_token" value="{{ csrf_token('cancel' ~ booking.id) }}">
-                                                <button type="submit" class="btn btn-sm btn-warning" title="Annuler" onclick="return confirm('Annuler cette réservation ?')">
-                                                    <i class="bi bi-exclamation-triangle"></i> Annuler
-                                                </button>
-                                            </form>
-                                        {% endif %}
-
-                                    {% endif %}
-
-                                    {# ✅ Actions pour le PASSAGER uniquement #}
-                                    {% if app.user == booking.passenger %}
-                                        
-                                        {# Modifier (si en attente ou confirmée) #}
-                                        {% if status == constant('App\\Entity\\Booking::STATUS_PENDING') or status == constant('App\\Entity\\Booking::STATUS_CONFIRMED') %}
-                                            <a href="{{ path('app_booking_edit', {'id': booking.id}) }}" class="btn btn-sm btn-warning" title="Modifier">
-                                                <i class="bi bi-pencil"></i> Modifier
-                                            </a>
-                                        {% endif %}
-
-                                        {# Annuler (si en attente ou confirmée) #}
-                                        {% if status == constant('App\\Entity\\Booking::STATUS_PENDING') or status == constant('App\\Entity\\Booking::STATUS_CONFIRMED') %}
-                                            <form method="post" action="{{ path('app_booking_cancel', {'id': booking.id}) }}" style="display:inline;">
-                                                <input type="hidden" name="_token" value="{{ csrf_token('cancel' ~ booking.id) }}">
-                                                <button type="submit" class="btn btn-sm btn-danger" title="Annuler ma réservation" onclick="return confirm('Annuler votre réservation ?')">
-                                                    <i class="bi bi-x-circle"></i> Annuler
-                                                </button>
-                                            </form>
-                                        {% endif %}
-
-                                    {% endif %}
-                                </div>
-                            </td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-    {% else %}
-        <div class="alert alert-info">
-            <i class="bi bi-info-circle"></i> Aucune réservation pour ce covoiturage.
-        </div>
-    {% endif %}
-
-    {# ✅ Bouton pour réserver (si l'utilisateur n'est PAS le conducteur) #}
-    {% if app.user != carpool.driver and carpool.availableSeats > 0 %}
-        <div class="mt-4">
-            <a href="{{ path('app_booking_new', {'carpool': carpool.id}) }}" class="btn btn-success btn-lg">
-                <i class="bi bi-plus-circle"></i> Réserver ce covoiturage
-            </a>
-        </div>
-    {% endif %}
+    {# Bouton retour #}
+    <div class="mt-3">
+        <a href="{{ path('app_carpool_index') }}" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left"></i> Retour à la liste
+        </a>
+    </div>
+</div>
 {% endblock %}

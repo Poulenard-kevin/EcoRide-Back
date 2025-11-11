@@ -7,7 +7,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Repository\BookingRepository;
 use App\Repository\CarpoolRepository;
-use App\Repository\CarRepository;  
+use App\Repository\CarRepository;
+use App\Entity\Carpool;
 
 class DashboardController extends AbstractController
 {
@@ -27,7 +28,11 @@ class DashboardController extends AbstractController
             return $this->render('dashboard/index.html.twig', [
                 'myBookings' => $myBookings,
                 'myCarpools' => $myCarpools,
-                'myCars' => $myCars, 
+                'myCars' => $myCars,
+                'STATUS_ACTIVE' => Carpool::STATUS_ACTIVE,
+                'STATUS_COMPLETED' => Carpool::STATUS_COMPLETED,
+                'STATUS_CANCELLED' => Carpool::STATUS_CANCELLED,
+                'STATUS_ARCHIVED' => Carpool::STATUS_ARCHIVED,
             ]);
         }
 

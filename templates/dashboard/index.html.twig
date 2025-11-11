@@ -16,13 +16,36 @@
                     {% if myBookings is not empty %}
                         <ul class="list-group list-group-flush">
                             {% for booking in myBookings %}
-                                <li class="list-group-item">
-                                    Réservation n°{{ booking.id }} pour 
-                                    <a href="{{ path('app_carpool_show', {'id': booking.carpool.id}) }}">
-                                        {{ booking.carpool.departureLocation }} → {{ booking.carpool.arrivalLocation }}
-                                    </a>
-                                    le {{ booking.carpool.departureDate|date('d/m/Y') }}
-                                    <span class="badge bg-info text-dark float-end">{{ booking.reservedSeats }} place(s)</span>
+                                <li class="list-group-item d-flex justify-content-between align-items-start">
+                                    <div>
+                                        Réservation n°{{ booking.id }} pour 
+                                        <a href="{{ path('app_carpool_show', {'id': booking.carpool.id}) }}">
+                                            {{ booking.carpool.departureLocation }} → {{ booking.carpool.arrivalLocation }}
+                                        </a>
+                                        le {{ booking.carpool.departureDate|date('d/m/Y') }}
+                                    </div>
+                                    <div class="d-flex flex-column align-items-end">
+                                        <span class="badge bg-info text-dark mb-1">{{ booking.reservedSeats }} place(s)</span>
+                                        
+                                        {# Badge de statut #}
+                                        {% if booking.status == 'pending' %}
+                                            <span class="badge bg-warning text-dark">
+                                                <i class="bi bi-clock"></i> En attente
+                                            </span>
+                                        {% elseif booking.status == 'confirmed' %}
+                                            <span class="badge bg-success">
+                                                <i class="bi bi-check-circle"></i> Confirmée
+                                            </span>
+                                        {% elseif booking.status == 'refused' %}
+                                            <span class="badge bg-danger">
+                                                <i class="bi bi-x-circle"></i> Refusée
+                                            </span>
+                                        {% elseif booking.status == 'cancelled' %}
+                                            <span class="badge bg-secondary">
+                                                <i class="bi bi-slash-circle"></i> Annulée
+                                            </span>
+                                        {% endif %}
+                                    </div>
                                 </li>
                             {% endfor %}
                         </ul>
@@ -47,11 +70,38 @@
                     {% if myCarpools is not empty %}
                         <ul class="list-group list-group-flush">
                             {% for carpool in myCarpools %}
-                                <li class="list-group-item">
-                                    <a href="{{ path('app_carpool_show', {'id': carpool.id}) }}">
-                                        {{ carpool.departureLocation }} → {{ carpool.arrivalLocation }}
-                                    </a> le {{ carpool.departureDate|date('d/m/Y') }}
-                                    <span class="badge bg-success float-end">{{ carpool.availableSeats }} place(s) dispo</span>
+                                <li class="list-group-item d-flex justify-content-between align-items-start">
+                                    <div>
+                                        <a href="{{ path('app_carpool_show', {'id': carpool.id}) }}">
+                                            {{ carpool.departureLocation }} → {{ carpool.arrivalLocation }}
+                                        </a> le {{ carpool.departureDate|date('d/m/Y') }}
+                                    </div>
+                                    <div class="d-flex flex-column align-items-end">
+                                        <span class="badge bg-success mb-1">{{ carpool.availableSeats }} place(s) dispo</span>
+                                        
+                                        {# Badge de statut du covoiturage avec couleur dynamique #}
+                                        <span class="badge 
+                                            {% if carpool.status == STATUS_ACTIVE %}bg-success
+                                            {% elseif carpool.status == STATUS_COMPLETED %}bg-info text-dark
+                                            {% elseif carpool.status == STATUS_CANCELLED %}bg-danger
+                                            {% elseif carpool.status == STATUS_ARCHIVED %}bg-secondary
+                                            {% else %}bg-light text-dark
+                                            {% endif %}
+                                        ">
+                                            {% if carpool.status == STATUS_ACTIVE %}
+                                                <i class="bi bi-play-circle"></i>
+                                            {% elseif carpool.status == STATUS_COMPLETED %}
+                                                <i class="bi bi-flag-checkered"></i>
+                                            {% elseif carpool.status == STATUS_CANCELLED %}
+                                                <i class="bi bi-x-circle"></i>
+                                            {% elseif carpool.status == STATUS_ARCHIVED %}
+                                                <i class="bi bi-archive"></i>
+                                            {% else %}
+                                                <i class="bi bi-question-circle"></i>
+                                            {% endif %}
+                                            {{ carpool.statusLabel }}
+                                        </span>
+                                    </div>
                                 </li>
                             {% endfor %}
                         </ul>
@@ -65,7 +115,6 @@
                 </div>
             </div>
         </div>
-    </div>
 
     {# ✅ Bloc : Véhicules #}
     <div class="row">

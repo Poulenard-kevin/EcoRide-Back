@@ -3,57 +3,67 @@
 {% block title %}Détails de la réservation{% endblock %}
 
 {% block body %}
-    <h1 class="mb-4">Détails de la réservation #{{ booking.id }}</h1>
+    <h1 class="mb-4"><i class="bi bi-ticket-fill"></i> Détails de la réservation #{{ booking.id }}</h1>
 
     <div class="card shadow-sm mb-4">
         <div class="card-body">
-            <h5 class="card-title">Réservation n°{{ booking.id }}</h5>
-            <h6 class="card-subtitle mb-3 text-muted">
-                Passager : 
-                {% if booking.passenger %}
-                    <a href="{{ path('app_user_show', {'id': booking.passenger.id}) }}">
-                        {{ booking.passenger.firstName }} {{ booking.passenger.lastName }}
-                    </a>
-                {% else %}
-                    <span class="text-muted fst-italic">Aucun passager</span>
-                {% endif %}
-            </h6>
+            <div class="d-flex justify-content-between align-items-start mb-3">
+                <div>
+                    <h4 class="card-title mb-1">Réservation n°{{ booking.id }}</h4>
+                    <h6 class="card-subtitle text-muted">
+                        {% if booking.passenger %}
+                            <i class="bi bi-person-fill"></i>
+                            <a href="{{ path('app_user_show', {'id': booking.passenger.id}) }}">
+                                {{ booking.passenger.firstName }} {{ booking.passenger.lastName }}
+                            </a>
+                        {% else %}
+                            <span class="text-muted fst-italic">Aucun passager</span>
+                        {% endif %}
+                    </h6>
+                </div>
 
-            <table class="table table-bordered table-striped">
+                <div class="text-end">
+                    <small class="text-muted">Statut</small><br>
+                    <span class="badge {{ booking.statusBadgeClass|default('bg-secondary') }}">
+                        {{ booking.statusLabel|default(booking.status|default('Inconnu')) }}
+                    </span>
+                </div>
+            </div>
+
+            <table class="table table-bordered table-striped mb-4">
                 <tbody>
                     <tr>
-                        <th>Date de réservation</th>
-                        <td>{{ booking.bookingDate ? booking.bookingDate|date('d/m/Y H:i') : '' }}</td>
+                        <th style="width: 30%;">Date de réservation</th>
+                        <td>{{ booking.bookingDate ? booking.bookingDate|date('d/m/Y H:i') : '<span class=\"text-muted fst-italic\">—</span>' }}</td>
                     </tr>
+
                     <tr>
                         <th>Nombre de places réservées</th>
-                        <td>{{ booking.reservedSeats }}</td>
+                        <td>{{ booking.reservedSeats ?: '<span class=\"text-muted fst-italic\">—</span>' }}</td>
                     </tr>
-                    <tr>
-                        <th>Statut</th>
-                        <td>
-                            {% set status = booking.status %}
-                            {% if status == constant('App\\Entity\\Booking::STATUS_CONFIRMED') %}
-                                <span class="badge bg-success">Confirmée</span>
-                            {% elseif status == constant('App\\Entity\\Booking::STATUS_CANCELLED') %}
-                                <span class="badge bg-danger">Annulée</span>
-                            {% elseif status == constant('App\\Entity\\Booking::STATUS_PENDING') %}
-                                <span class="badge bg-warning text-dark">En attente</span>
-                            {% else %}
-                                <span class="badge bg-secondary">Inconnu</span>
-                            {% endif %}
-                        </td>
-                    </tr>
+
                     <tr>
                         <th>Covoiturage</th>
                         <td>
                             {% if booking.carpool %}
                                 <a href="{{ path('app_carpool_show', {'id': booking.carpool.id}) }}">
-                                    {{ booking.carpool.departureLocation }} → {{ booking.carpool.arrivalLocation }} 
-                                    ({{ booking.carpool.departureDate ? booking.carpool.departureDate|date('d/m/Y') : 'N/A' }})
+                                    <strong>{{ booking.carpool.departureLocation }} → {{ booking.carpool.arrivalLocation }}</strong><br>
+                                    <small class="text-muted">{{ booking.carpool.departureDate ? booking.carpool.departureDate|date('d/m/Y') : 'N/A' }}
+                                        {{ booking.carpool.departureTime ? 'à ' ~ booking.carpool.departureTime|date('H:i') : '' }}</small>
                                 </a>
                             {% else %}
                                 <span class="text-muted fst-italic">Aucun covoiturage associé</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <th>Notes / Informations</th>
+                        <td>
+                            {% if booking.notes is defined and booking.notes %}
+                                {{ booking.notes }}
+                            {% else %}
+                                <span class="text-muted fst-italic">Aucune</span>
                             {% endif %}
                         </td>
                     </tr>
@@ -64,9 +74,11 @@
                 <a href="{{ path('app_booking_index') }}" class="btn btn-secondary">
                     <i class="bi bi-arrow-left"></i> Retour à la liste
                 </a>
+
                 <a href="{{ path('app_booking_edit', {'id': booking.id}) }}" class="btn btn-warning">
                     <i class="bi bi-pencil"></i> Modifier
                 </a>
+
                 {{ include('booking/_delete_form.html.twig', { 'btn_class': 'btn btn-danger' }) }}
             </div>
         </div>

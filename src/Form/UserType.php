@@ -30,10 +30,6 @@ class UserType extends AbstractType
             ->add('email', EmailType::class, [
                 'label' => 'Email',
             ])
-            ->add('phone', TelType::class, [
-                'label' => 'Téléphone',
-                'required' => false,
-            ])
             ->add('about', TextareaType::class, [  
                 'label' => 'À propos de moi',
                 'required' => false,

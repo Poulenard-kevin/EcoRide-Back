@@ -18,7 +18,7 @@ class BookingType extends AbstractType
         $isEdit = $options['is_edit'] ?? false;
 
         $builder
-            ->add('carpool', EntityType::class, [
+            /*->add('carpool', EntityType::class, [
                 'class' => Carpool::class,
                 'choice_label' => fn(Carpool $carpool) => sprintf(
                     '%s → %s (%s)',
@@ -28,22 +28,22 @@ class BookingType extends AbstractType
                 ),
                 'label' => 'Covoiturage',
                 'placeholder' => 'Choisissez un covoiturage',
-            ])
+            ])*/
             ->add('reservedSeats', IntegerType::class, [
                 'label' => 'Nombre de places',
                 'attr' => [
                     'min' => 1,
-                    'placeholder' => 'Ex: 2',
+                    'placeholder' => 'Ex: 1',
                 ],
             ]);
 
-        // Afficher le statut uniquement en édition
+        /*// Afficher le statut uniquement en édition
         if ($isEdit) {
             $builder->add('status', ChoiceType::class, [
                 'choices' => array_flip(Booking::getStatusLabels()),
                 'label' => 'Statut',
             ]);
-        }
+        }*/
     }
 
     public function configureOptions(OptionsResolver $resolver): void

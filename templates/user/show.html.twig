@@ -57,12 +57,6 @@
                             <strong>Email :</strong><br>
                             <a href="mailto:{{ user.email }}">{{ user.email }}</a>
                         </p>
-                        {% if user.phone is defined and user.phone %}
-                            <p class="text-start mb-1">
-                                <strong>Téléphone :</strong><br>
-                                <a href="tel:{{ user.phone }}">{{ user.phone }}</a>
-                            </p>
-                        {% endif %}
                     {% endif %}
                 </div>
             </div>

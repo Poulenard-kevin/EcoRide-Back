@@ -3,10 +3,11 @@
 {% block title %}Créer un nouveau covoiturage{% endblock %}
 
 {% block body %}
-    <h1 class="mb-4">Créer un nouveau covoiturage</h1>
+    <h1 class="mb-4"><i class="bi bi-car-front-fill"></i> Créer un nouveau covoiturage</h1>
 
     <div class="card p-4 shadow-sm mb-3">
-        {{ include('carpool/_form.html.twig', { button_label: 'Créer' }) }}
+        {# Inclut le partial en lui passant explicitement la FormView et le label du bouton #}
+        {{ include('carpool/_form.html.twig', { 'form': form, 'button_label': 'Créer' }) }}
     </div>
 
     <a href="{{ path('app_carpool_index') }}" class="btn btn-secondary">Retour à la liste</a>

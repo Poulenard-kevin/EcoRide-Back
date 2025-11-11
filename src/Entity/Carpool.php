@@ -11,6 +11,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: CarpoolRepository::class)]
 #[ORM\Table(name: 'covoiturage')] 
+
 class Carpool
 {
     #[ORM\Id]
@@ -61,6 +62,7 @@ class Carpool
 
     // Ajoute aussi les constantes pour les statuts
     public const STATUS_ACTIVE = 'active';
+    public const STATUS_STARTED = 'started';
     public const STATUS_COMPLETED = 'completed';
     public const STATUS_CANCELLED = 'cancelled';
     public const STATUS_ARCHIVED = 'archived';
@@ -69,8 +71,8 @@ class Carpool
     #[ORM\JoinColumn(name: "chauffeur_id", nullable: true)] // TODO: rendre NOT NULL après API 
     private ?User $driver = null; 
 
-    #[ORM\OneToMany(mappedBy: 'carpool', targetEntity: Booking::class)]
-    private Collection $bookings; 
+    #[ORM\OneToMany(mappedBy: 'carpool', targetEntity: Booking::class, orphanRemoval: true, cascade: ['remove'])]
+    private Collection $bookings;
 
     #[ORM\ManyToOne(inversedBy: 'carpools')]
     #[ORM\JoinColumn(name: "voiture_id", nullable: true)] // TODO: rendre NOT NULL après API 
@@ -239,6 +241,7 @@ class Carpool
     {
         return [
             self::STATUS_ACTIVE => 'Actif',
+            self::STATUS_STARTED => 'En cours',
             self::STATUS_COMPLETED => 'Terminé',
             self::STATUS_CANCELLED => 'Annulé',
             self::STATUS_ARCHIVED => 'Archivé',
@@ -249,6 +252,23 @@ class Carpool
     {
         $labels = self::getStatusLabels();
         return $labels[$this->status] ?? 'Statut inconnu';
+    }
+
+    public static function getStatusBadgeClasses(): array
+    {
+        return [
+            self::STATUS_ACTIVE    => 'bg-success',
+            self::STATUS_STARTED   => 'bg-info text-dark',
+            self::STATUS_COMPLETED => 'bg-primary text-white',
+            self::STATUS_CANCELLED => 'bg-danger',
+            self::STATUS_ARCHIVED  => 'bg-secondary',
+        ];
+    }
+
+    public function getStatusBadgeClass(): string
+    {
+        $classes = self::getStatusBadgeClasses();
+        return $classes[$this->status] ?? 'bg-light text-dark';
     }
 
     /**

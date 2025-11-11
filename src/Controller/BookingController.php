@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Booking;
+use App\Entity\Carpool;
 use App\Form\BookingType;
 use App\Repository\BookingRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -27,35 +28,30 @@ class BookingController extends AbstractController
         ]);
     }
 
-    #[Route('/new', name: 'app_booking_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager, BookingRepository $bookingRepository): Response
+    #[Route('/new/{carpool}', name: 'app_booking_new', methods: ['GET', 'POST'])]
+    public function new(Request $request, Carpool $carpool, EntityManagerInterface $entityManager, BookingRepository $bookingRepository): Response
     {
         $user = $this->getUser();
+        if (!$user) {
+            throw $this->createAccessDeniedException('Vous devez être connecté pour réserver.');
+        }
+
         $booking = new Booking();
+        $booking->setCarpool($carpool); // on lie la réservation au covoiturage ciblé
 
         $form = $this->createForm(BookingType::class, $booking, [
             'is_edit' => false,
         ]);
-
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $carpool = $booking->getCarpool();
-
-            if (!$carpool) {
-                $this->addFlash('error', 'Veuillez sélectionner un covoiturage.');
-                return $this->renderForm('booking/new.html.twig', [
-                    'booking' => $booking,
-                    'form' => $form,
-                ]);
-            }
-
             // Vérifier que l'utilisateur n'est pas le conducteur
             if ($carpool->getDriver() === $user) {
                 $this->addFlash('error', 'Vous ne pouvez pas réserver votre propre covoiturage.');
                 return $this->renderForm('booking/new.html.twig', [
                     'booking' => $booking,
                     'form' => $form,
+                    'carpool' => $carpool,
                 ]);
             }
 
@@ -70,17 +66,19 @@ class BookingController extends AbstractController
                 return $this->redirectToRoute('app_booking_show', ['id' => $existingBooking->getId()]);
             }
 
-            // Utiliser une transaction pour éviter les deadlocks
-            try {
-                $entityManager->beginTransaction();
+            // Utiliser la connexion pour la transaction
+            $conn = $entityManager->getConnection();
+            $conn->beginTransaction();
 
+            try {
                 // Vérifier qu'il reste assez de places disponibles
                 if ($carpool->getAvailableSeats() < $booking->getReservedSeats()) {
-                    $entityManager->rollback();
+                    $conn->rollBack();
                     $this->addFlash('error', 'Il n\'y a pas assez de places disponibles pour ce covoiturage.');
                     return $this->renderForm('booking/new.html.twig', [
                         'booking' => $booking,
                         'form' => $form,
+                        'carpool' => $carpool,
                     ]);
                 }
 
@@ -94,18 +92,18 @@ class BookingController extends AbstractController
 
                 $entityManager->persist($booking);
                 $entityManager->flush();
-                $entityManager->commit();
+                $conn->commit();
 
                 $this->addFlash('success', 'Réservation créée avec succès. En attente de confirmation du conducteur.');
                 return $this->redirectToRoute('app_booking_index');
-
-            } catch (\Exception $e) {
-                $entityManager->rollback();
+            } catch (\Throwable $e) {
+                $conn->rollBack();
+                // logger($e) si tu as un logger
                 $this->addFlash('error', 'Une erreur est survenue lors de la création de la réservation. Veuillez réessayer.');
-                
                 return $this->renderForm('booking/new.html.twig', [
                     'booking' => $booking,
                     'form' => $form,
+                    'carpool' => $carpool,
                 ]);
             }
         }
@@ -113,6 +111,7 @@ class BookingController extends AbstractController
         return $this->renderForm('booking/new.html.twig', [
             'booking' => $booking,
             'form' => $form,
+            'carpool' => $carpool,
         ]);
     }
 
@@ -193,7 +192,7 @@ class BookingController extends AbstractController
 
     // CONFIRMER une réservation (conducteur uniquement)
     #[Route('/{id}/confirm', name: 'app_booking_confirm', methods: ['POST'])]
-    public function confirm(Booking $booking, EntityManagerInterface $entityManager): Response
+    public function confirm(Request $request, Booking $booking, EntityManagerInterface $entityManager): Response
     {
         // ✅ Vérifier le token CSRF
         if (!$this->isCsrfTokenValid('confirm' . $booking->getId(), $request->request->get('_token'))) {
@@ -219,50 +218,29 @@ class BookingController extends AbstractController
     }
 
     // REFUSER une réservation (conducteur uniquement)
-    #[Route('/{id}/refuse', name: 'app_booking_refuse', methods: ['POST'])]
-    public function refuse(Booking $booking, EntityManagerInterface $entityManager): Response
+    #[Route('/booking/{id}/refuse', name: 'app_booking_refuse', methods: ['POST'])]
+    public function refuse(Request $request, Booking $booking, EntityManagerInterface $em): Response
     {
-        // Vérifier le token CSRF
         if (!$this->isCsrfTokenValid('refuse' . $booking->getId(), $request->request->get('_token'))) {
             throw $this->createAccessDeniedException('Token CSRF invalide.');
         }
 
-        // Vérifier que l'utilisateur connecté est bien le conducteur
-        if ($booking->getCarpool()->getDriver() !== $this->getUser()) {
-            throw $this->createAccessDeniedException('Vous n\'êtes pas le conducteur de ce covoiturage.');
+        // Vérifier droit : conducteur du covoiturage ou ROLE_ADMIN
+        $carpool = $booking->getCarpool();
+        if ($carpool->getDriver() !== $this->getUser() && !$this->isGranted('ROLE_ADMIN')) {
+            throw $this->createAccessDeniedException('Vous ne pouvez pas refuser cette réservation.');
         }
 
-        // Vérifier que la réservation peut être refusée
-        if (!$booking->canBeRefused()) {
-            $this->addFlash('error', 'Cette réservation ne peut pas être refusée.');
-            return $this->redirectToRoute('app_carpool_show', ['id' => $booking->getCarpool()->getId()]);
-        }
+        $booking->setStatus(Booking::STATUS_REFUSED);
+        $em->flush();
 
-        try {
-            $entityManager->beginTransaction();
-
-            $booking->setStatus(Booking::STATUS_REFUSED);
-            
-            // Remettre les places disponibles
-            $carpool = $booking->getCarpool();
-            $carpool->setAvailableSeats($carpool->getAvailableSeats() + $booking->getReservedSeats());
-            
-            $entityManager->flush();
-            $entityManager->commit();
-
-            $this->addFlash('success', 'Réservation refusée. Les places ont été remises à disposition.');
-
-        } catch (\Exception $e) {
-            $entityManager->rollback();
-            $this->addFlash('error', 'Une erreur est survenue.');
-        }
-
-        return $this->redirectToRoute('app_carpool_show', ['id' => $booking->getCarpool()->getId()]);
+        $this->addFlash('success', 'Réservation refusée.');
+        return $this->redirectToRoute('app_carpool_show', ['id' => $carpool->getId()]);
     }
 
     // ANNULER une réservation (passager ou conducteur)
     #[Route('/{id}/cancel', name: 'app_booking_cancel', methods: ['POST'])]
-    public function cancel(Booking $booking, EntityManagerInterface $entityManager): Response
+    public function cancel(Request $request, Booking $booking, EntityManagerInterface $entityManager): Response
     {
         // ✅ Vérifier le token CSRF
         if (!$this->isCsrfTokenValid('cancel' . $booking->getId(), $request->request->get('_token'))) {
