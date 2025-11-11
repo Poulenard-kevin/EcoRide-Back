@@ -55,24 +55,22 @@ class AdminUserController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $hashedPassword = $hasher->hashPassword($user, $user->getPassword());
-            $user->setPassword($hashedPassword);
-            // s'assurer que isActive est à true par défaut si nécessaire
-            if (method_exists($user, 'setIsActive') && $user->isActive() === null) {
-                $user->setIsActive(true);
+            $plain = $form->get('password')->getData();
+            if ($plain) {
+                $hashedPassword = $hasher->hashPassword($user, $plain);
+                $user->setPassword($hashedPassword);
             }
-
             $em->persist($user);
             $em->flush();
 
             $this->addFlash('success', 'Utilisateur créé avec succès.');
-
             return $this->redirectToRoute('app_admin_user_index');
         }
 
+        // IMPORTANT : ->createView() ici
         return $this->render('admin/user/new.html.twig', [
+            'form' => $form->createView(),
             'user' => $user,
-            'form' => $form,
         ]);
     }
 
@@ -103,7 +101,7 @@ class AdminUserController extends AbstractController
         }
 
         return $this->render('admin/user/new_employee.html.twig', [
-            'form' => $form,
+            'form' => $form->createView()
         ]);
     }
 
@@ -169,6 +167,18 @@ class AdminUserController extends AbstractController
 
         $this->addFlash('success', $user->isActive() ? 'Utilisateur activé.' : 'Utilisateur suspendu.');
         return $this->redirectToRoute('app_admin_user_index');
+    }
+
+    /**
+     * @Route("/{id}/show", name="app_admin_user_show", methods={"GET"})
+     */
+    public function show(User $user): Response
+    {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
+        return $this->render('admin/user/show.html.twig', [
+            'user' => $user,
+        ]);
     }
 
     /**

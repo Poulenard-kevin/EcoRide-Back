@@ -1,95 +1,99 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Détails de l'utilisateur{% endblock %}
+{% block title %}Fiche utilisateur - {{ user.email }}{% endblock %}
 
 {% block body %}
-    <h1 class="mb-4">Détails de l'utilisateur</h1>
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="mb-0">
+            <i class="bi bi-person-badge"></i> Fiche utilisateur
+        </h1>
 
-    <div class="card shadow-sm mb-4">
-        <div class="card-body">
-            <table class="table table-bordered table-striped">
-                <tbody>
-                    <tr><th>Id</th><td>{{ user.id }}</td></tr>
-                    <tr><th>Nom</th><td>{{ user.lastName }}</td></tr>
-                    <tr><th>Prénom</th><td>{{ user.firstName }}</td></tr>
-                    <tr><th>Email</th><td>{{ user.email }}</td></tr>
-                    <tr><th>Mot de passe</th><td>••••••••</td></tr>
-                    <tr><th>Rôle</th><td>{{ user.role }}</td></tr>
-                    <tr><th>Note moyenne</th><td>{{ user.averageRating }}</td></tr>
-                    <tr><th>À propos</th><td>{{ user.about }}</td></tr>
-                    <tr><th>Dernière réinitialisation</th><td>{{ user.lastPasswordResetRequestAt ? user.lastPasswordResetRequestAt|date('Y-m-d H:i:s') : '' }}</td></tr>
-                </tbody>
-            </table>
+        <div class="d-flex gap-2">
+            <a href="{{ path('app_admin_user_edit', {'id': user.id}) }}" class="btn btn-warning">
+                <i class="bi bi-pencil"></i> Modifier
+            </a>
 
-            <div class="mt-3 d-flex gap-2">
-                <a href="{{ path('app_user_index') }}" class="btn btn-secondary">Retour à la liste</a>
-                <a href="{{ path('app_user_edit', {'id': user.id}) }}" class="btn btn-warning">Modifier</a>
-                {{ include('user/_delete_form.html.twig') }}
-            </div>
+            <form method="post" action="{{ path('app_admin_user_toggle', {'id': user.id}) }}" style="display:inline;"
+                  onsubmit="return confirm('{{ user.isActive() ? 'Suspendre cet utilisateur ?' : 'Activer cet utilisateur ?' }}');">
+                <input type="hidden" name="_token" value="{{ csrf_token('toggle' ~ user.id) }}">
+                <button type="submit" class="btn {{ user.isActive() ? 'btn-outline-warning' : 'btn-outline-success' }}">
+                    <i class="bi {{ user.isActive() ? 'bi-person-x' : 'bi-person-check' }}"></i>
+                    {{ user.isActive() ? 'Suspendre' : 'Activer' }}
+                </button>
+            </form>
+
+            {% if app.user and app.user.id != user.id %}
+                <form method="post" action="{{ path('app_admin_user_delete', {'id': user.id}) }}" style="display:inline;"
+                      onsubmit="return confirm('Voulez-vous vraiment supprimer cet utilisateur ?');">
+                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ user.id) }}">
+                    <button type="submit" class="btn btn-danger">
+                        <i class="bi bi-trash"></i> Supprimer
+                    </button>
+                </form>
+            {% else %}
+                <button class="btn btn-secondary" disabled title="Vous ne pouvez pas supprimer votre propre compte">
+                    <i class="bi bi-lock"></i> Supprimer
+                </button>
+            {% endif %}
         </div>
     </div>
 
-    <h2 class="mt-5">Véhicules possédés</h2>
+    <div class="card mb-3 shadow-sm">
+        <div class="card-body">
+            <h5 class="card-title">{{ user.firstName }} {{ user.lastName }} <small class="text-muted">#{{ user.id }}</small></h5>
 
-    {% if user.cars|length > 0 %}
-        <div class="table-responsive">
-            <table class="table table-bordered table-striped table-hover align-middle">
-                <thead>
-                    <tr>
-                        <th>Marque</th>
-                        <th>Modèle</th>
-                        <th>Immatriculation</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for car in user.cars %}
-                        <tr>
-                            <td>{{ car.brand }}</td>
-                            <td>{{ car.model }}</td>
-                            <td>{{ car.registration }}</td>
-                            <td>
-                                <a href="{{ path('app_car_show', {'id': car.id}) }}" class="btn btn-sm btn-primary">Voir</a>
-                                <a href="{{ path('app_car_edit', {'id': car.id}) }}" class="btn btn-sm btn-warning">Modifier</a>
-                            </td>
-                        </tr>
+            <dl class="row mb-0">
+                <dt class="col-sm-3">Email</dt>
+                <dd class="col-sm-9"><a href="mailto:{{ user.email }}">{{ user.email }}</a></dd>
+
+                <dt class="col-sm-3">Rôles</dt>
+                <dd class="col-sm-9">
+                    {% set role_labels = {
+                        'ROLE_USER': 'Utilisateur',
+                        'ROLE_EMPLOYE': 'Employé',
+                        'ROLE_ADMIN': 'Administrateur'
+                    } %}
+                    {% for role in user.roles %}
+                        {% if role == 'ROLE_ADMIN' %}
+                            {% set badge_class = 'danger' %}
+                        {% elseif role == 'ROLE_EMPLOYE' %}
+                            {% set badge_class = 'info text-dark' %}
+                        {% else %}
+                            {% set badge_class = 'success' %}
+                        {% endif %}
+                        <span class="badge bg-{{ badge_class }}">{{ role_labels[role] ?? (role|replace({'ROLE_':''})|capitalize) }}</span>
                     {% endfor %}
-                </tbody>
-            </table>
-        </div>
-    {% else %}
-        <p>Aucun véhicule associé.</p>
-    {% endif %}
+                </dd>
 
-    <h2 class="mt-5">Covoiturages proposés</h2>
+                <dt class="col-sm-3">Inscription</dt>
+                <dd class="col-sm-9">
+                    {% if user.createdAt is defined and user.createdAt %}
+                        {{ user.createdAt|date('d/m/Y à H:i') }}
+                    {% else %}
+                        <span class="text-muted">—</span>
+                    {% endif %}
+                </dd>
 
-    {% if user.carpools|length > 0 %}
-        <div class="table-responsive">
-            <table class="table table-bordered table-striped table-hover align-middle">
-                <thead>
-                    <tr>
-                        <th>Départ</th>
-                        <th>Arrivée</th>
-                        <th>Date</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for carpool in user.carpools %}
-                        <tr>
-                            <td>{{ carpool.departureLocation }}</td>
-                            <td>{{ carpool.arrivalLocation }}</td>
-                            <td>{{ carpool.departureDate ? carpool.departureDate|date('d/m/Y') : 'N/A' }}</td>
-                            <td>
-                                <a href="{{ path('app_carpool_show', {'id': carpool.id}) }}" class="btn btn-sm btn-primary">Voir</a>
-                                <a href="{{ path('app_carpool_edit', {'id': carpool.id}) }}" class="btn btn-sm btn-warning">Modifier</a>
-                            </td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+                <dt class="col-sm-3">Statut</dt>
+                <dd class="col-sm-9">
+                    {% if user.isActive() %}
+                        <span class="badge bg-success">Actif</span>
+                    {% else %}
+                        <span class="badge bg-danger">Suspendu</span>
+                    {% endif %}
+                </dd>
+
+                {% if user.getAbout is defined or user.about is defined %}
+                    <dt class="col-sm-3">À propos</dt>
+                    <dd class="col-sm-9">{{ user.about ?: (user.getAbout() is defined ? user.getAbout() : '—') }}</dd>
+                {% endif %}
+            </dl>
         </div>
-    {% else %}
-        <p>Aucun covoiturage proposé.</p>
-    {% endif %}
+    </div>
+
+    <a href="{{ path('app_admin_user_index') }}" class="btn btn-secondary">
+        <i class="bi bi-arrow-left"></i> Retour à la liste
+    </a>
+</div>
 {% endblock %}

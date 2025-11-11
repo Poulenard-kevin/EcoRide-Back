@@ -1,4 +1,29 @@
-{{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'novalidate'}}) }}
-{{ form_widget(form, {'attr': {'class': 'form-control'}}) }}
-<button type="submit" class="btn btn-success">{{ button_label|default('Enregistrer') }}</button>
+{{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+    <div class="row">
+        <div class="col-md-6 mb-3">
+            {{ form_row(form.email) }}
+        </div>
+        <div class="col-md-6 mb-3">
+            {{ form_row(form.password) }}
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6 mb-3">
+            {{ form_row(form.firstName) }}
+        </div>
+        <div class="col-md-6 mb-3">
+            {{ form_row(form.lastName) }}
+        </div>
+    </div>
+
+    <div class="mb-3">
+        {{ form_row(form.roles) }}
+    </div>
+
+    <div class="d-grid">
+        <button type="submit" class="btn btn-success">
+            <i class="bi bi-save"></i> {{ button_label|default('Créer') }}
+        </button>
+    </div>
 {{ form_end(form) }}

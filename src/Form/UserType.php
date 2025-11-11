@@ -4,6 +4,7 @@ namespace App\Form;
 
 use App\Entity\User;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
@@ -46,18 +47,24 @@ class UserType extends AbstractType
                 'mapped' => false,
             ]);
 
-        // Champ "roles" uniquement pour les admins
+        // Champs réservés à l'admin
         if ($isAdmin) {
-            $builder->add('role', ChoiceType::class, [
-                'label' => 'Rôle',
-                'choices' => [
-                    'Visiteur' => User::ROLE_VISITEUR,
-                    'Utilisateur' => User::ROLE_USER,
-                    'Employé' => User::ROLE_EMPLOYE,
-                    'Administrateur' => User::ROLE_ADMIN,
-                ],
-                'required' => true,
-            ]);
+            $builder
+                ->add('roles', ChoiceType::class, [
+                    'label' => 'Rôles',
+                    'choices' => [
+                        'Visiteur' => User::ROLE_VISITEUR,
+                        'Utilisateur' => User::ROLE_USER,
+                        'Employé' => User::ROLE_EMPLOYE,
+                        'Administrateur' => User::ROLE_ADMIN,
+                    ],
+                    'multiple' => true,
+                    'expanded' => true,
+                ])
+                ->add('isActive', CheckboxType::class, [
+                    'label' => 'Actif',
+                    'required' => false,
+                ]);
         }
     }
 
