@@ -34,7 +34,7 @@ class RegistrationController extends AbstractController
             $user->setPassword($hashedPassword);
 
             // Le rôle est déjà défini dans __construct de User, mais tu peux forcer ici
-            // $user->setRole(User::ROLE_USER);
+            // $user->setRoless(User::ROLE_USER);
 
             // Sauvegarder en base
             $em->persist($user);
@@ -67,7 +67,7 @@ class RegistrationController extends AbstractController
         $admin->setFirstName('Admin');
         $admin->setLastName('EcoRide');
         $admin->setEmail('admin@ecoride.com');
-        $admin->setRole(User::ROLE_ADMIN);
+        $admin->setRoles(User::ROLE_ADMIN);
         $admin->setPassword($passwordHasher->hashPassword($admin, 'Admin1234!'));
         $em->persist($admin);
 
@@ -76,7 +76,7 @@ class RegistrationController extends AbstractController
         $employee->setFirstName('Employé');
         $employee->setLastName('Support');
         $employee->setEmail('employe@ecoride.com');
-        $employee->setRole(User::ROLE_EMPLOYE);
+        $employee->setRoles(User::ROLE_EMPLOYE);
         $employee->setPassword($passwordHasher->hashPassword($employee, 'Employe1234!'));
         $em->persist($employee);
 
@@ -85,7 +85,7 @@ class RegistrationController extends AbstractController
         $user->setFirstName('Kevin');
         $user->setLastName('Poulenard');
         $user->setEmail('kevin@ecoride.com');
-        $user->setRole(User::ROLE_USER);
+        $user->setRoles(User::ROLE_USER);
         $user->setPassword($passwordHasher->hashPassword($user, 'User1234!'));
         $em->persist($user);
 
@@ -94,7 +94,7 @@ class RegistrationController extends AbstractController
         $user2->setFirstName('Marie');
         $user2->setLastName('Dupont');
         $user2->setEmail('marie@ecoride.com');
-        $user2->setRole(User::ROLE_USER);
+        $user2->setRoles(User::ROLE_USER);
         $user2->setPassword($passwordHasher->hashPassword($user2, 'User1234!'));
         $em->persist($user2);
 

@@ -7,13 +7,12 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use App\Entity\Carpool;
-use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
-#[ORM\Table(name: 'utilisateur')] 
+#[ORM\Table(name: 'utilisateur')]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
@@ -28,7 +27,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      *     message="Le nom doit contenir au moins 2 lettres et ne peut contenir que des lettres, espaces, apostrophes ou tirets."
      * )
      */
-    #[ORM\Column(name: 'nom', length: 100)] 
+    #[ORM\Column(name: 'nom', length: 100)]
     private ?string $lastName = null;
 
     /**
@@ -38,7 +37,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      *     message="Le prénom doit contenir au moins 2 lettres et ne peut contenir que des lettres, espaces, apostrophes ou tirets."
      * )
      */
-    #[ORM\Column(name: 'prenom', length: 100)] 
+    #[ORM\Column(name: 'prenom', length: 100)]
     private ?string $firstName = null;
 
     /**
@@ -48,7 +47,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(name: 'email', length: 180)]
     private ?string $email = null;
 
-    #[ORM\Column(length: 255)] 
+    #[ORM\Column(length: 255)]
     private ?string $password = null;
 
     /**
@@ -66,17 +65,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public const ROLE_EMPLOYE = 'ROLE_EMPLOYE';
     public const ROLE_ADMIN = 'ROLE_ADMIN';
 
-    #[ORM\Column(name: 'role', length: 50)]
-    private ?string $role = null;
-
-    #[ORM\Column(name: 'note_moyenne', nullable: true)] 
+    #[ORM\Column(name: 'note_moyenne', nullable: true)]
     private ?float $averageRating = null;
 
     #[ORM\Column(name: 'a_propos', type: Types::TEXT, nullable: true)]
     #[Assert\Length(
         max: 500,
         maxMessage: "Le texte ne peut pas dépasser 500 caractères."
-    )] 
+    )]
     private ?string $about = null;
 
     #[ORM\OneToMany(mappedBy: 'owner', targetEntity: Car::class, orphanRemoval: true)]
@@ -97,25 +93,20 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'datetime', nullable: true)]
     private ?\DateTimeInterface $lastPasswordResetRequestAt = null;
 
+    #[ORM\Column(type: 'json')]
+    private array $roles = [];
+
+    #[ORM\Column(type: 'boolean')]
+    private bool $isActive = true;
+
     public function __construct()
     {
-        $this->role = self::ROLE_USER;
+        $this->roles = [self::ROLE_USER];
         $this->cars = new ArrayCollection();
         $this->carpools = new ArrayCollection();
         $this->bookings = new ArrayCollection();
         $this->reviews = new ArrayCollection();
         $this->receivedReviews = new ArrayCollection();
-    }
-
-    public function getLastPasswordResetRequestAt(): ?\DateTimeInterface
-    {
-        return $this->lastPasswordResetRequestAt;
-    }
-
-    public function setLastPasswordResetRequestAt(?\DateTimeInterface $date): self
-    {
-        $this->lastPasswordResetRequestAt = $date;
-        return $this;
     }
 
     public function getId(): ?int
@@ -131,7 +122,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setLastName(string $lastName): static
     {
         $this->lastName = $lastName;
-
         return $this;
     }
 
@@ -143,7 +133,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setFirstName(string $firstName): static
     {
         $this->firstName = $firstName;
-
         return $this;
     }
 
@@ -155,17 +144,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setEmail(string $email): static
     {
         $this->email = $email;
-
         return $this;
     }
 
-    // Méthode requise par UserInterface et PasswordAuthenticatedUserInterface
     public function getUserIdentifier(): string
     {
         return (string) $this->email;
     }
 
-    // Pour compatibilité avec les anciennes versions de Symfony
     public function getUsername(): string
     {
         return $this->getUserIdentifier();
@@ -173,12 +159,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function getRoles(): array
     {
-        $roles = [$this->role ?? self::ROLE_USER];
-        // Garantir que ROLE_USER est toujours présent
-        if (!in_array('ROLE_USER', $roles)) {
-            $roles[] = 'ROLE_USER';
+        $roles = $this->roles;
+        if (empty($roles)) {
+            $roles[] = self::ROLE_USER;
         }
         return array_unique($roles);
+    }
+
+    public function setRoles(array $roles): self
+    {
+        $this->roles = array_values($roles);
+        return $this;
     }
 
     public function getPassword(): ?string
@@ -189,7 +180,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setPassword(string $password): static
     {
         $this->password = $password;
-
         return $this;
     }
 
@@ -206,45 +196,33 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function eraseCredentials(): void
     {
-        // Efface le mot de passe en clair après hashage
         $this->plainPassword = null;
     }
 
     public function getSalt(): ?string
     {
-        // Not needed when using modern password encoders
         return null;
     }
 
-    public function getRole(): ?string
-    {
-        return $this->role;
-    }
-
-    public function setRole(string $role): static
-    {
-        $this->role = $role;
-        return $this;
-    }
-
+    // Méthodes utilitaires basées sur les rôles
     public function isAdmin(): bool
     {
-        return $this->role === self::ROLE_ADMIN;
+        return in_array(self::ROLE_ADMIN, $this->getRoles(), true);
     }
 
     public function isEmployee(): bool
     {
-        return $this->role === self::ROLE_EMPLOYE;
+        return in_array(self::ROLE_EMPLOYE, $this->getRoles(), true);
     }
 
     public function isUser(): bool
     {
-        return $this->role === self::ROLE_USER;
+        return in_array(self::ROLE_USER, $this->getRoles(), true);
     }
 
     public function isVisitor(): bool
     {
-        return $this->role === self::ROLE_VISITEUR;
+        return in_array(self::ROLE_VISITEUR, $this->getRoles(), true);
     }
 
     public function getAverageRating(): ?float
@@ -255,7 +233,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setAverageRating(?float $averageRating): static
     {
         $this->averageRating = $averageRating;
-
         return $this;
     }
 
@@ -267,13 +244,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setAbout(?string $about): static
     {
         $this->about = $about;
-
         return $this;
     }
 
-    /**
-     * @return Collection<int, Car>
-     */
+    // Relations
     public function getCars(): Collection
     {
         return $this->cars;
@@ -285,24 +259,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             $this->cars->add($car);
             $car->setOwner($this);
         }
-
         return $this;
     }
 
     public function removeCar(Car $car): static
     {
-        if ($this->cars->removeElement($car)) {
-            if ($car->getOwner() === $this) {
-                $car->setOwner(null);
-            }
+        if ($this->cars->removeElement($car) && $car->getOwner() === $this) {
+            $car->setOwner(null);
         }
-
         return $this;
     }
 
-    /**
-     * @return Collection<int, Carpool>
-     */
     public function getCarpools(): Collection
     {
         return $this->carpools;
@@ -314,24 +281,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             $this->carpools->add($carpool);
             $carpool->setDriver($this);
         }
-
         return $this;
     }
 
     public function removeCarpool(Carpool $carpool): static
     {
-        if ($this->carpools->removeElement($carpool)) {
-            if ($carpool->getDriver() === $this) {
-                $carpool->setDriver(null);
-            }
+        if ($this->carpools->removeElement($carpool) && $carpool->getDriver() === $this) {
+            $carpool->setDriver(null);
         }
-
         return $this;
     }
 
-    /**
-     * @return Collection<int, Booking>
-     */
     public function getBookings(): Collection
     {
         return $this->bookings;
@@ -343,27 +303,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             $this->bookings->add($booking);
             $booking->setPassenger($this);
         }
-
         return $this;
     }
 
     public function removeBooking(Booking $booking): static
     {
-        if ($this->bookings->removeElement($booking)) {
-            if ($booking->getPassenger() === $this) {
-                $booking->setPassenger(null);
-            }
+        if ($this->bookings->removeElement($booking) && $booking->getPassenger() === $this) {
+            $booking->setPassenger(null);
         }
-
         return $this;
-    }
-
-    /**
-     * @return Collection<int, Review>
-     */
-    public function getReceivedReviews(): Collection
-    {
-        return $this->receivedReviews;
     }
 
     public function getReviews(): Collection
@@ -377,19 +325,20 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             $this->reviews->add($review);
             $review->setAuthor($this);
         }
-
         return $this;
     }
 
     public function removeReview(Review $review): static
     {
-        if ($this->reviews->removeElement($review)) {
-            if ($review->getAuthor() === $this) {
-                $review->setAuthor(null);
-            }
+        if ($this->reviews->removeElement($review) && $review->getAuthor() === $this) {
+            $review->setAuthor(null);
         }
-
         return $this;
+    }
+
+    public function getReceivedReviews(): Collection
+    {
+        return $this->receivedReviews;
     }
 
     public function addReceivedReview(Review $review): static
@@ -398,25 +347,27 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             $this->receivedReviews->add($review);
             $review->setTarget($this);
         }
-
         return $this;
     }
 
     public function removeReceivedReview(Review $review): static
     {
-        if ($this->receivedReviews->removeElement($review)) {
-            if ($review->getTarget() === $this) {
-                $review->setTarget(null);
-            }
+        if ($this->receivedReviews->removeElement($review) && $review->getTarget() === $this) {
+            $review->setTarget(null);
         }
-
         return $this;
     }
 
-    /**
-     * @ORM\Column(type="boolean")
-     */
-    private bool $isActive = true;
+    public function getLastPasswordResetRequestAt(): ?\DateTimeInterface
+    {
+        return $this->lastPasswordResetRequestAt;
+    }
+
+    public function setLastPasswordResetRequestAt(?\DateTimeInterface $date): self
+    {
+        $this->lastPasswordResetRequestAt = $date;
+        return $this;
+    }
 
     public function isActive(): bool
     {

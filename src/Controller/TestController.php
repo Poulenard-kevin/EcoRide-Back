@@ -23,7 +23,7 @@ class TestController extends AbstractController
         $user->setFirstName('Jean');
         $user->setEmail('jean.dupont@example.com');
         $user->setPassword('password');
-        $user->setRole('ROLE_USER');
+        $user->setRoles([User::ROLE_USER]);
 
         $em->persist($user);
 

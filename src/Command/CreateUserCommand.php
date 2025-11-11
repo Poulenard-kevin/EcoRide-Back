@@ -47,7 +47,7 @@ class CreateUserCommand extends Command
         $user->setEmail($email);
         $user->setLastName($lastName);
         $user->setFirstName($firstName);
-        $user->setRole($role);
+        $user->setRoles($role);
 
         $hashedPassword = $this->passwordHasher->hashPassword($user, $password);
         $user->setPassword($hashedPassword);

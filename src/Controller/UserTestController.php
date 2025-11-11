@@ -18,7 +18,7 @@ class UserTestController extends AbstractController
         $user->setEmail('adminn@example.com');
         $user->setFirstName('Adminn');
         $user->setLastName('Userr');
-        $user->setRole('ROLE_ADMIN'); // rôle admin
+        $user->setRoles([User::ROLE_ADMIN]);
 
         // Mot de passe en clair
         $plainPassword = 'AdminPass1234!';

@@ -31,7 +31,15 @@ class UserType extends AbstractType
             ->add('email', EmailType::class, [
                 'label' => 'Email',
             ])
-            ->add('about', TextareaType::class, [  
+            ->add('password', PasswordType::class, [
+                'label' => $isEdit ? 'Nouveau mot de passe (laisser vide pour ne pas changer)' : 'Mot de passe',
+                'required' => !$isEdit,
+                'mapped' => false,
+            ]);
+
+        // Champ "about" affiché uniquement pour le profil utilisateur (non-admin)
+        if (!$isAdmin) {
+            $builder->add('about', TextareaType::class, [
                 'label' => 'À propos de moi',
                 'required' => false,
                 'attr' => [
@@ -40,12 +48,8 @@ class UserType extends AbstractType
                     'maxlength' => 500,
                 ],
                 'help' => 'Maximum 500 caractères',
-            ])
-            ->add('password', PasswordType::class, [
-                'label' => $isEdit ? 'Nouveau mot de passe (laisser vide pour ne pas changer)' : 'Mot de passe',
-                'required' => !$isEdit,
-                'mapped' => false,
             ]);
+        }
 
         // Champs réservés à l'admin
         if ($isAdmin) {
@@ -53,7 +57,6 @@ class UserType extends AbstractType
                 ->add('roles', ChoiceType::class, [
                     'label' => 'Rôles',
                     'choices' => [
-                        'Visiteur' => User::ROLE_VISITEUR,
                         'Utilisateur' => User::ROLE_USER,
                         'Employé' => User::ROLE_EMPLOYE,
                         'Administrateur' => User::ROLE_ADMIN,

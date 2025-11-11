@@ -82,7 +82,7 @@ class AdminUserController extends AbstractController
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
         $user = new User();
-        $user->setRoles(['ROLE_EMPLOYEE']);
+        $user->setRoles([User::ROLE_EMPLOYE]);
         $user->setIsActive(true);
 
         $form = $this->createForm(UserType::class, $user, ['is_admin' => true]);

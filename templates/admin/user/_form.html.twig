@@ -1,29 +1,61 @@
+{# templates/admin/user/_form.html.twig #}
 {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
-    <div class="row">
-        <div class="col-md-6 mb-3">
-            {{ form_row(form.email) }}
-        </div>
-        <div class="col-md-6 mb-3">
-            {{ form_row(form.password) }}
+
+<div class="row g-3">
+    <div class="col-md-6">
+        <div class="mb-3">
+            {{ form_label(form.email) }}
+            {{ form_widget(form.email, { attr: {'class': 'form-control'} }) }}
+            {{ form_errors(form.email) }}
         </div>
     </div>
 
-    <div class="row">
-        <div class="col-md-6 mb-3">
-            {{ form_row(form.firstName) }}
-        </div>
-        <div class="col-md-6 mb-3">
-            {{ form_row(form.lastName) }}
+    <div class="col-md-6">
+        <div class="mb-3">
+            {{ form_label(form.password) }}
+            {{ form_widget(form.password, { attr: {'class': 'form-control'} }) }}
+            {{ form_errors(form.password) }}
         </div>
     </div>
 
+    <div class="col-md-6">
+        <div class="mb-3">
+            {{ form_label(form.firstName) }}
+            {{ form_widget(form.firstName, { attr: {'class': 'form-control'} }) }}
+            {{ form_errors(form.firstName) }}
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="mb-3">
+            {{ form_label(form.lastName) }}
+            {{ form_widget(form.lastName, { attr: {'class': 'form-control'} }) }}
+            {{ form_errors(form.lastName) }}
+        </div>
+    </div>
+</div>
+
+{% if form.roles is defined %}
     <div class="mb-3">
-        {{ form_row(form.roles) }}
-    </div>
+        <label class="form-label d-block">Rôles</label>
 
-    <div class="d-grid">
-        <button type="submit" class="btn btn-success">
-            <i class="bi bi-save"></i> {{ button_label|default('Créer') }}
-        </button>
+        <div class="d-flex flex-wrap align-items-center gap-3">
+            {% for child in form.roles %}
+                <div class="form-check form-check-inline">
+                    {{ form_widget(child, { attr: {'class': 'form-check-input'} }) }}
+                    {{ form_label(child, null, { 'label_attr': {'class': 'form-check-label ms-1'} }) }}
+                </div>
+            {% endfor %}
+        </div>
+
+        {{ form_errors(form.roles) }}
     </div>
+{% endif %}
+
+<div class="mt-4 d-flex justify-content-end">
+    <button type="submit" class="btn btn-primary">
+        {{ button_label|default('Enregistrer') }}
+    </button>
+</div>
+
 {{ form_end(form) }}

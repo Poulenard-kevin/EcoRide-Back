@@ -72,7 +72,7 @@ class UserControllerTest extends WebTestCase
         $user->setFirstName('ShowFirstName');
         $user->setEmail('showuser@example.com');
         $user->setPassword('password123');
-        $user->setRole('ROLE_USER');
+        $user->setRoles([User::ROLE_USER]);
         $user->setAverageRating(3.7);
         $user->setAbout('About show user');
         $user->setLastPasswordResetRequestAt(new \DateTime());
@@ -93,7 +93,7 @@ class UserControllerTest extends WebTestCase
         $user->setFirstName('OldFirstName');
         $user->setEmail('edituser@example.com');
         $user->setPassword('password123');
-        $user->setRole('ROLE_USER');
+        $user->setRoles([User::ROLE_USER]);
         $user->setAverageRating(2.5);
         $user->setAbout('Old about');
         $user->setLastPasswordResetRequestAt(new \DateTime());
@@ -126,7 +126,7 @@ class UserControllerTest extends WebTestCase
         self::assertSame('NewFirstName', $updatedUser->getFirstName());
         self::assertSame('newemail@example.com', $updatedUser->getEmail());
         self::assertSame('newpassword123', $updatedUser->getPassword());
-        self::assertSame('ROLE_ADMIN', $updatedUser->getRole());
+        self::assertSame('ROLE_ADMIN', $updatedUser->getRoles());
         self::assertEquals(4.8, $updatedUser->getAverageRating());
         self::assertSame('New about text', $updatedUser->getAbout());
         self::assertInstanceOf(\DateTimeInterface::class, $updatedUser->getLastPasswordResetRequestAt());
@@ -141,7 +141,7 @@ class UserControllerTest extends WebTestCase
         $user->setFirstName('DeleteFirstName');
         $user->setEmail('deleteuser@example.com');
         $user->setPassword('password123');
-        $user->setRole('ROLE_USER');
+        $user->setRoles([User::ROLE_USER]);
         $user->setAverageRating(1.0);
         $user->setAbout('About to delete');
         $user->setLastPasswordResetRequestAt(new \DateTime());
@@ -202,7 +202,7 @@ class UserControllerTest extends WebTestCase
         $user->setFirstName('User');
         $user->setEmail('valid@example.com');
         $user->setPassword('Password123!');
-        $user->setRole('ROLE_USER');
+        $user->setRoles([User::ROLE_USER]);
         $this->manager->persist($user);
         $this->manager->flush();
 
@@ -235,7 +235,7 @@ class UserControllerTest extends WebTestCase
         $user->setFirstName('User');
         $user->setEmail('listuser@example.com');
         $user->setPassword('Password123!');
-        $user->setRole('ROLE_USER');
+        $user->setRoles([User::ROLE_USER]);
         $this->manager->persist($user);
         $this->manager->flush();
 
