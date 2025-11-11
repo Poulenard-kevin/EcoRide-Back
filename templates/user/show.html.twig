@@ -29,8 +29,17 @@
                     {# Badges de rôles #}
                     <div class="mb-3">
                         {% for role in user.roles %}
-                            <span class="badge bg-{{ 'ADMIN' in role ? 'danger' : ('EMPLOYE' in role ? 'warning text-dark' : 'secondary') }}">
-                                {{ role|replace({'ROLE_':''})|capitalize }}
+                            {% if role == 'ROLE_ADMIN' %}
+                                {% set badge_class = 'danger' %}
+                            {% elseif role == 'ROLE_EMPLOYE' %}
+                                {% set badge_class = 'info text-dark' %}
+                            {% else %}
+                                {# ROLE_USER ou autres -> vert #}
+                                {% set badge_class = 'success' %}
+                            {% endif %}
+
+                            <span class="badge bg-{{ badge_class }}">
+                                {{ role_labels[role] ?? (role|replace({'ROLE_':''})|capitalize) }}
                             </span>
                         {% endfor %}
                     </div>

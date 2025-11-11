@@ -30,6 +30,20 @@ class AdminUserController extends AbstractController
     }
 
     /**
+     * @Route("/employees", name="app_admin_user_employees", methods={"GET"})
+     */
+    public function employees(UserRepository $userRepository): Response
+    {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
+        $employees = $userRepository->findByRole('ROLE_EMPLOYEE');
+
+        return $this->render('admin/user/employees.html.twig', [
+            'employees' => $employees,
+        ]);
+    }
+
+    /**
      * @Route("/new", name="app_admin_user_new", methods={"GET", "POST"})
      */
     public function new(Request $request, EntityManagerInterface $em, UserPasswordHasherInterface $hasher): Response
@@ -43,6 +57,10 @@ class AdminUserController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $hashedPassword = $hasher->hashPassword($user, $user->getPassword());
             $user->setPassword($hashedPassword);
+            // s'assurer que isActive est à true par défaut si nécessaire
+            if (method_exists($user, 'setIsActive') && $user->isActive() === null) {
+                $user->setIsActive(true);
+            }
 
             $em->persist($user);
             $em->flush();
@@ -54,6 +72,37 @@ class AdminUserController extends AbstractController
 
         return $this->render('admin/user/new.html.twig', [
             'user' => $user,
+            'form' => $form,
+        ]);
+    }
+
+    /**
+     * @Route("/new-employee", name="app_admin_employee_new", methods={"GET", "POST"})
+     */
+    public function newEmployee(Request $request, EntityManagerInterface $em, UserPasswordHasherInterface $hasher): Response
+    {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
+        $user = new User();
+        $user->setRoles(['ROLE_EMPLOYEE']);
+        $user->setIsActive(true);
+
+        $form = $this->createForm(UserType::class, $user, ['is_admin' => true]);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $plain = $user->getPassword();
+            $hashedPassword = $hasher->hashPassword($user, $plain);
+            $user->setPassword($hashedPassword);
+
+            $em->persist($user);
+            $em->flush();
+
+            $this->addFlash('success', 'Employé créé.');
+            return $this->redirectToRoute('app_admin_user_employees');
+        }
+
+        return $this->render('admin/user/new_employee.html.twig', [
             'form' => $form,
         ]);
     }
@@ -83,18 +132,69 @@ class AdminUserController extends AbstractController
 
         return $this->render('admin/user/edit.html.twig', [
             'user' => $user,
-            'form' => $form->createView(), 
+            'form' => $form->createView(),
         ]);
+    }
+
+    /**
+     * @Route("/{id}/toggle", name="app_admin_user_toggle", methods={"POST"})
+     */
+    public function toggle(Request $request, User $user, EntityManagerInterface $em, UserRepository $userRepository): Response
+    {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
+        if (!$this->isCsrfTokenValid('toggle' . $user->getId(), $request->request->get('_token'))) {
+            $this->addFlash('error', 'Token invalide.');
+            return $this->redirectToRoute('app_admin_user_index');
+        }
+
+        // Empêcher un administrateur de se désactiver lui-même
+        if ($user === $this->getUser()) {
+            $this->addFlash('error', 'Vous ne pouvez pas suspendre/activer votre propre compte.');
+            return $this->redirectToRoute('app_admin_user_index');
+        }
+
+        // Si on tente de suspendre un admin, vérifier qu'il restera au moins un admin actif
+        if (in_array('ROLE_ADMIN', $user->getRoles())) {
+            $adminCount = $userRepository->countAdmins();
+            // Si on suspend, on doit s'assurer qu'il restera au moins 1 admin actif
+            if ($adminCount <= 1 && $user->isActive()) {
+                $this->addFlash('error', 'Impossible de suspendre le dernier administrateur actif.');
+                return $this->redirectToRoute('app_admin_user_index');
+            }
+        }
+
+        $user->setIsActive(!$user->isActive());
+        $em->flush();
+
+        $this->addFlash('success', $user->isActive() ? 'Utilisateur activé.' : 'Utilisateur suspendu.');
+        return $this->redirectToRoute('app_admin_user_index');
     }
 
     /**
      * @Route("/{id}", name="app_admin_user_delete", methods={"POST"})
      */
-    public function delete(Request $request, User $user, EntityManagerInterface $em): Response
+    public function delete(Request $request, User $user, EntityManagerInterface $em, UserRepository $userRepository): Response
     {
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
         if ($this->isCsrfTokenValid('delete' . $user->getId(), $request->request->get('_token'))) {
+
+            // Empêcher suppression de soi-même
+            if ($user === $this->getUser()) {
+                $this->addFlash('error', 'Vous ne pouvez pas supprimer votre propre compte.');
+                return $this->redirectToRoute('app_admin_user_index');
+            }
+
+            // Empêcher suppression du dernier admin
+            if (in_array('ROLE_ADMIN', $user->getRoles())) {
+                $adminCount = $userRepository->countAdmins();
+                if ($adminCount <= 1) {
+                    $this->addFlash('error', 'Impossible de supprimer le dernier administrateur.');
+                    return $this->redirectToRoute('app_admin_user_index');
+                }
+            }
+
             $em->remove($user);
             $em->flush();
             $this->addFlash('success', 'Utilisateur supprimé.');

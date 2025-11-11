@@ -46,4 +46,33 @@ class UserRepository extends ServiceEntityRepository
 //            ->getOneOrNullResult()
 //        ;
 //    }
+
+    public function findByRole(string $role): array
+    {
+        $qb = $this->createQueryBuilder('u');
+
+        // Si ton DB supporte JSON_CONTAINS (MySQL) et roles est un JSON
+        // $qb->where("JSON_CONTAINS(u.roles, :role) = 1")->setParameter('role', json_encode($role));
+
+        // Variante plus portable : LIKE (fonctionne si roles contient le rôle sous forme de string)
+        $qb->where('u.roles LIKE :role')
+        ->setParameter('role', '%"'.$role.'"%')
+        ->orderBy('u.email', 'ASC');
+
+        return $qb->getQuery()->getResult();
+    }
+
+    public function countAdmins(bool $onlyActive = true): int
+    {
+        $qb = $this->createQueryBuilder('u')
+            ->select('COUNT(u.id)')
+            ->where('u.roles LIKE :role')
+            ->setParameter('role', '%"ROLE_ADMIN"%');
+
+        if ($onlyActive) {
+            $qb->andWhere('u.isActive = true');
+        }
+
+        return (int) $qb->getQuery()->getSingleScalarResult();
+    }
 }

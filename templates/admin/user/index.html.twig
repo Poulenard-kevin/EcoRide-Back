@@ -12,7 +12,13 @@
             <a href="{{ path('app_admin_user_new') }}" class="btn btn-success">
                 <i class="bi bi-plus-circle"></i> Créer un utilisateur
             </a>
-            <a href="{{ path('app_dashboard') }}" class="btn btn-secondary">
+            <a href="{{ path('app_admin_employee_new') }}" class="btn btn-secondary">
+                <i class="bi bi-person-badge"></i> Créer un employé
+            </a>
+            <a href="{{ path('app_admin_user_employees') }}" class="btn btn-outline-info">
+                <i class="bi bi-list"></i> Liste Employés
+            </a>
+            <a href="{{ path('app_dashboard') }}" class="btn btn-outline-dark">
                 <i class="bi bi-house"></i> Tableau de bord
             </a>
         </div>
@@ -26,9 +32,9 @@
                         <th class="text-center">ID</th>
                         <th>Nom complet</th>
                         <th>Email</th>
-                        <th>Téléphone</th>
                         <th class="text-center">Rôles</th>
-                        <th class="text-center">Date d'inscription</th>
+                        <th class="text-center">Inscription</th>
+                        <th class="text-center">Statut</th>
                         <th class="text-center">Actions</th>
                     </tr>
                 </thead>
@@ -36,23 +42,21 @@
                     {% for user in users %}
                         <tr>
                             <td class="text-center">{{ user.id }}</td>
-                            <td>
-                                <strong>{{ user.firstName }} {{ user.lastName }}</strong>
-                            </td>
-                            <td>
-                                <a href="mailto:{{ user.email }}">{{ user.email }}</a>
-                            </td>
-                            <td>
-                                {% if user.phone %}
-                                    <a href="tel:{{ user.phone }}">{{ user.phone }}</a>
-                                {% else %}
-                                    <span class="text-muted">—</span>
-                                {% endif %}
-                            </td>
-                            <td class="text-center">
+                            <td><strong>{{ user.firstName }} {{ user.lastName }}</strong></td>
+                            <td><a href="mailto:{{ user.email }}">{{ user.email }}</a></td>
+                           <td class="text-center">
                                 {% for role in user.roles %}
-                                    <span class="badge bg-{{ 'ADMIN' in role ? 'danger' : ('DRIVER' in role ? 'info text-dark' : 'secondary') }}">
-                                        {{ role|replace({'ROLE_':''})|capitalize }}
+                                    {% if role == 'ROLE_ADMIN' %}
+                                        {% set badge_class = 'danger' %}
+                                    {% elseif role == 'ROLE_EMPLOYE' %}
+                                        {% set badge_class = 'info text-dark' %}
+                                    {% else %}
+                                        {# ROLE_USER ou autres -> vert #}
+                                        {% set badge_class = 'success' %}
+                                    {% endif %}
+
+                                    <span class="badge bg-{{ badge_class }}">
+                                        {{ role_labels[role] ?? (role|replace({'ROLE_':''})|capitalize) }}
                                     </span>
                                 {% endfor %}
                             </td>
@@ -63,6 +67,15 @@
                                     <span class="text-muted">—</span>
                                 {% endif %}
                             </td>
+
+                            <td class="text-center">
+                                {% if user.isActive() %}
+                                    <span class="badge bg-success">Actif</span>
+                                {% else %}
+                                    <span class="badge bg-danger">Suspendu</span>
+                                {% endif %}
+                            </td>
+
                             <td>
                                 <div class="d-flex gap-2 justify-content-center flex-wrap">
                                     <a href="{{ path('app_admin_user_edit', {'id': user.id}) }}" 
@@ -70,15 +83,35 @@
                                        title="Modifier">
                                         <i class="bi bi-pencil"></i> Modifier
                                     </a>
+
+                                    {# Toggle Actif / Suspendu #}
                                     <form method="post" 
-                                          action="{{ path('app_admin_user_delete', {'id': user.id}) }}" 
-                                          onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cet utilisateur ?');" 
-                                          style="display:inline;">
-                                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ user.id) }}">
-                                        <button type="submit" class="btn btn-sm btn-danger" title="Supprimer">
-                                            <i class="bi bi-trash"></i> Supprimer
+                                          action="{{ path('app_admin_user_toggle', {'id': user.id}) }}" 
+                                          style="display:inline;"
+                                          onsubmit="return confirm('{{ user.isActive() ? 'Suspendre cet utilisateur ?' : 'Activer cet utilisateur ?' }}');">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('toggle' ~ user.id) }}">
+                                        <button type="submit" class="btn btn-sm {{ user.isActive() ? 'btn-outline-warning' : 'btn-outline-success' }}">
+                                            <i class="bi {{ user.isActive() ? 'bi-person-x' : 'bi-person-check' }}"></i>
+                                            {{ user.isActive() ? 'Suspendre' : 'Activer' }}
                                         </button>
                                     </form>
+
+                                    {# Empêcher suppression de soi-même côté UI #}
+                                    {% if app.user and app.user.id == user.id %}
+                                        <button class="btn btn-sm btn-secondary" disabled title="Vous ne pouvez pas supprimer votre propre compte">
+                                            <i class="bi bi-lock"></i> Supprimer
+                                        </button>
+                                    {% else %}
+                                        <form method="post" 
+                                              action="{{ path('app_admin_user_delete', {'id': user.id}) }}" 
+                                              onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cet utilisateur ?');" 
+                                              style="display:inline;">
+                                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ user.id) }}">
+                                            <button type="submit" class="btn btn-sm btn-danger" title="Supprimer">
+                                                <i class="bi bi-trash"></i> Supprimer
+                                            </button>
+                                        </form>
+                                    {% endif %}
                                 </div>
                             </td>
                         </tr>

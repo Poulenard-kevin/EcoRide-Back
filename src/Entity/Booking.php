@@ -186,7 +186,7 @@ class Booking
         return $this;
     }
 
-    #[Assert\Callback]
+    /*#[Assert\Callback]
     public function validateReservedSeats(ExecutionContextInterface $context): void
     {
         $carpool = $this->getCarpool();
@@ -202,5 +202,5 @@ class Booking
                 ->atPath('reservedSeats')
                 ->addViolation();
         }
-    }
+    }*/
 }

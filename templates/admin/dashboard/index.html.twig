@@ -1,0 +1,65 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mon tableau de bord{% endblock %}
+
+{% block body %}
+    <h1 class="mb-4">Bienvenue, {{ app.user.firstName }} !</h1>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Mes prochaines réservations</h5>
+                </div>
+                <div class="card-body">
+                    {% if myBookings is not empty %}
+                        <ul class="list-group list-group-flush">
+                            {% for booking in myBookings %}
+                                <li class="list-group-item">
+                                    Réservation n°{{ booking.id }} pour 
+                                    <a href="{{ path('app_carpool_show', {'id': booking.carpool.id}) }}">
+                                        {{ booking.carpool.departureLocation }} → {{ booking.carpool.arrivalLocation }}
+                                    </a> le {{ booking.carpool.departureDate|date('d/m/Y') }}
+                                    <span class="badge bg-info text-dark float-end">{{ booking.reservedSeats }} place(s)</span>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                        <div class="text-end mt-3">
+                            <a href="{{ path('app_booking_index') }}" class="btn btn-sm btn-outline-primary">Voir toutes mes réservations</a>
+                        </div>
+                    {% else %}
+                        <p class="card-text">Vous n'avez pas de réservations à venir.</p>
+                        <a href="{{ path('app_carpool_index') }}" class="btn btn-primary">Rechercher un covoiturage</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Mes covoiturages proposés</h5>
+                </div>
+                <div class="card-body">
+                    {% if myCarpools is not empty %}
+                        <ul class="list-group list-group-flush">
+                            {% for carpool in myCarpools %}
+                                <li class="list-group-item">
+                                    <a href="{{ path('app_carpool_show', {'id': carpool.id}) }}">
+                                        {{ carpool.departureLocation }} → {{ carpool.arrivalLocation }}
+                                    </a> le {{ carpool.departureDate|date('d/m/Y') }}
+                                    <span class="badge bg-success float-end">{{ carpool.availableSeats }} place(s) dispo</span>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                        <div class="text-end mt-3">
+                            <a href="{{ path('app_carpool_index') }}" class="btn btn-sm btn-outline-primary">Voir tous mes covoiturages</a>
+                        </div>
+                    {% else %}
+                        <p class="card-text">Vous n'avez pas encore proposé de covoiturage.</p>
+                        <a href="{{ path('app_carpool_new') }}" class="btn btn-primary">Proposer un covoiturage</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
