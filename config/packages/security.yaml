@@ -23,6 +23,7 @@ security:
             pattern: ^/
             anonymous: lazy
             provider: app_user_provider
+            user_checker: App\Security\UserChecker
 
             form_login:
                 login_path: app_login

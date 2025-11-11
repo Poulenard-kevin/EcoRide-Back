@@ -89,7 +89,16 @@ class AdminUserController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $plain = $user->getPassword();
+            // Récupère le mot de passe en clair depuis le formulaire (mapped => false)
+            $plain = $form->get('password')->getData();
+
+            if (!$plain || !is_string($plain)) {
+                $this->addFlash('danger', 'Veuillez renseigner un mot de passe valide.');
+                return $this->render('admin/user/new_employee.html.twig', [
+                    'form' => $form->createView(),
+                ]);
+            }
+
             $hashedPassword = $hasher->hashPassword($user, $plain);
             $user->setPassword($hashedPassword);
 
@@ -97,7 +106,7 @@ class AdminUserController extends AbstractController
             $em->flush();
 
             $this->addFlash('success', 'Employé créé.');
-            return $this->redirectToRoute('app_admin_user_employees');
+            return $this->redirectToRoute('app_admin_user_index');;
         }
 
         return $this->render('admin/user/new_employee.html.twig', [
