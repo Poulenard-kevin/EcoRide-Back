@@ -1,0 +1,16 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Laisser un avis{% endblock %}
+
+{% block body %}
+<div class="container py-4">
+    <h1 class="h4 mb-3">Laisser un avis pour le covoiturage #{{ carpool.id }}</h1>
+
+    {{ form_start(form) }}
+        {{ form_row(form.rating) }}
+        {{ form_row(form.comment) }}
+        <button class="btn btn-primary">Envoyer</button>
+        <a href="{{ path('carpool_show', {id: carpool.id}) }}" class="btn btn-secondary">Annuler</a>
+    {{ form_end(form) }}
+</div>
+{% endblock %}

@@ -5,9 +5,10 @@ namespace App\Entity;
 use App\Repository\ReviewRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: ReviewRepository::class)]
-#[ORM\Table(name: 'avis')] 
+#[ORM\Table(name: 'avis')]
 class Review
 {
     #[ORM\Id]
@@ -15,26 +16,43 @@ class Review
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(name: 'note', type: 'integer')] 
-    private ?int $rating = null; 
+    #[ORM\Column(name: 'note', type: 'integer')]
+    #[Assert\NotNull(message: "La note est requise.")]
+    #[Assert\Range(min: 1, max: 5, notInRangeMessage: 'La note doit être entre {{ min }} et {{ max }}.')]
+    private ?int $rating = null;
 
-    #[ORM\Column(name: 'commentaire', length: 500, nullable: true)] 
-    private ?string $comment = null; 
+    #[ORM\Column(name: 'commentaire', length: 500, nullable: true)]
+    #[Assert\Length(max: 500, maxMessage: "Le commentaire ne peut dépasser {{ limit }} caractères.")]
+    private ?string $comment = null;
 
-    #[ORM\Column(name: 'date', type: Types::DATETIME_MUTABLE)] 
+    #[ORM\Column(name: 'date', type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $date = null;
 
     #[ORM\ManyToOne(inversedBy: 'reviews')]
-    #[ORM\JoinColumn(name: "auteur_id", nullable: true)] // TODO: rendre NOT NULL après API 
-    private ?User $author = null; 
+    #[ORM\JoinColumn(name: "auteur_id", nullable: false, onDelete: "CASCADE")]
+    #[Assert\NotNull(message: "L'auteur est requis.")]
+    private ?User $author = null;
 
     #[ORM\ManyToOne(inversedBy: 'reviews')]
-    #[ORM\JoinColumn(name: "covoiturage_id", nullable: true)] // TODO: rendre NOT NULL après API 
-    private ?Carpool $carpool = null; 
+    #[ORM\JoinColumn(name: "covoiturage_id", nullable: false, onDelete: "CASCADE")]
+    #[Assert\NotNull(message: "Le covoiturage est requis.")]
+    private ?Carpool $carpool = null;
 
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'receivedReviews')]
-    #[ORM\JoinColumn(name: "cible_id", nullable: true)] // TODO: rendre NOT NULL après API
-    private ?User $target = null; 
+    #[ORM\JoinColumn(name: "cible_id", nullable: false, onDelete: "CASCADE")]
+    #[Assert\NotNull(message: "La cible est requise.")]
+    private ?User $target = null;
+
+    #[ORM\Column(name: 'valide', type: 'boolean')]
+    private bool $validated = false;
+
+    public function __construct()
+    {
+        $this->date = new \DateTime();
+        $this->validated = false;
+    }
+
+    // --- getters / setters ---
 
     public function getId(): ?int
     {
@@ -49,7 +67,6 @@ class Review
     public function setRating(int $rating): static
     {
         $this->rating = $rating;
-
         return $this;
     }
 
@@ -61,7 +78,6 @@ class Review
     public function setComment(?string $comment): static
     {
         $this->comment = $comment;
-
         return $this;
     }
 
@@ -73,7 +89,6 @@ class Review
     public function setDate(\DateTimeInterface $date): static
     {
         $this->date = $date;
-
         return $this;
     }
 
@@ -85,7 +100,6 @@ class Review
     public function setAuthor(?User $author): static
     {
         $this->author = $author;
-
         return $this;
     }
 
@@ -97,7 +111,6 @@ class Review
     public function setCarpool(?Carpool $carpool): static
     {
         $this->carpool = $carpool;
-
         return $this;
     }
 
@@ -109,12 +122,17 @@ class Review
     public function setTarget(?User $target): static
     {
         $this->target = $target;
-
         return $this;
     }
 
-    public function __construct()
+    public function isValidated(): bool
     {
-        $this->date = new \DateTime();
+        return $this->validated;
+    }
+
+    public function setValidated(bool $validated): static
+    {
+        $this->validated = $validated;
+        return $this;
     }
 }

@@ -1,0 +1,67 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Gestion des avis{% endblock %}
+
+{% block body %}
+<div class="container py-4">
+    <h1 class="h4 mb-3">Gestion des avis</h1>
+
+    <div class="mb-3">
+        <a href="{{ path('review_index', {pending: 1}) }}" class="btn btn-outline-primary btn-sm {% if onlyNotValidated %}active{% endif %}">En attente</a>
+        <a href="{{ path('review_index', {pending: 0}) }}" class="btn btn-outline-secondary btn-sm {% if not onlyNotValidated %}active{% endif %}">Tous</a>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Note</th>
+                    <th>Auteur</th>
+                    <th>Cible</th>
+                    <th>Covoiturage</th>
+                    <th>Commentaire</th>
+                    <th>Date</th>
+                    <th>Statut</th>
+                    <th class="text-end">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for r in reviews %}
+                    <tr>
+                        <td>{{ r.id }}</td>
+                        <td>{{ r.rating }}/5</td>
+                        <td>{{ r.author ? (r.author.firstName ~ ' ' ~ r.author.lastName)|trim : '—' }}</td>
+                        <td>{{ r.target ? (r.target.firstName ~ ' ' ~ r.target.lastName)|trim : '—' }}</td>
+                        <td>{{ r.carpool ? r.carpool.id : '—' }}</td>
+                        <td>{{ r.comment|e }}</td>
+                        <td>{{ r.date ? r.date|date('d/m/Y H:i') : '' }}</td>
+                        <td>
+                            {% if r.validated %}
+                                <span class="badge bg-success">Validé</span>
+                            {% else %}
+                                <span class="badge bg-warning text-dark">En attente</span>
+                            {% endif %}
+                        </td>
+                        <td class="text-end">
+                            <form method="post" action="{{ path('review_validate', {id: r.id}) }}" class="d-inline-block">
+                                <input type="hidden" name="_token" value="{{ csrf_token('validate' ~ r.id) }}">
+                                <button class="btn btn-sm btn-outline-success">
+                                    {% if r.validated %}Annuler validation{% else %}Valider{% endif %}
+                                </button>
+                            </form>
+
+                            <form method="post" action="{{ path('review_delete_front', {id: r.id}) }}" class="d-inline-block" onsubmit="return confirm('Supprimer cet avis ?');">
+                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ r.id) }}">
+                                <button class="btn btn-sm btn-outline-danger">Supprimer</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr><td colspan="9">Aucun avis.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

@@ -14,10 +14,10 @@
             flex-direction: column;
         }
         main {
-            flex: 1 0 auto; /* prend tout l'espace disponible */
+            flex: 1 0 auto;
         }
         footer {
-            flex-shrink: 0; /* ne rétrécit pas */
+            flex-shrink: 0;
         }
     </style>
 </head>
@@ -27,93 +27,133 @@
             <a class="navbar-brand" href="{{ path('homepage') }}">
                 <i class="bi bi-leaf"></i> EcoRide
             </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" 
-                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+
+            {# Burger button #}
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar"
+                aria-controls="mainNavbar" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
 
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            {# Liens dans le burger #}
+            <div class="collapse navbar-collapse" id="mainNavbar">
                 {% if app.user %}
-                    {# Menu pour utilisateurs connectés #}
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                         <li class="nav-item">
                             <a class="nav-link" href="{{ path('app_dashboard') }}">
                                 <i class="bi bi-speedometer2"></i> Tableau de bord
                             </a>
                         </li>
+
                         <li class="nav-item">
-                            {# Pour un utilisateur normal qui veut voir son profil #}
                             <a class="nav-link" href="{{ path('app_user_me') }}">
                                 <i class="bi bi-person-circle"></i> Mon profil
                             </a>
                         </li>
+
                         <li class="nav-item">
                             <a class="nav-link" href="{{ path('app_car_index') }}">
                                 <i class="bi bi-car-front"></i> Voitures
                             </a>
                         </li>
+
                         <li class="nav-item">
                             <a class="nav-link" href="{{ path('app_carpool_index') }}">
                                 <i class="bi bi-people-fill"></i> Covoiturages
                             </a>
                         </li>
+
                         <li class="nav-item">
                             <a class="nav-link" href="{{ path('app_booking_index') }}">
                                 <i class="bi bi-calendar-check"></i> Réservations
                             </a>
                         </li>
 
-                        {# Menu spécial ADMIN #}
-                        {% if 'ROLE_ADMIN' in app.user.roles %}
-                            <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle text-danger fw-bold" href="#" id="adminDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                    <i class="bi bi-shield-lock"></i> Administration
-                                </a>
-                                <ul class="dropdown-menu" aria-labelledby="adminDropdown">
-                                    <li>
-                                        <a class="dropdown-item" href="{{ path('app_admin_user_index') }}">
-                                            <i class="bi bi-people"></i> Gestion des utilisateurs
-                                        </a>
-                                    </li>
-                                    {# Tu pourras ajouter d'autres liens admin ici plus tard #}
-                                </ul>
-                            </li>
-                        {% endif %}
+                        {# Dropdown "Avis" pour utilisateur standard (mes reçus / mes émis) #}
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="reviewsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="bi bi-chat-quote"></i> Avis
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="reviewsDropdown">
+                                <li>
+                                    <a class="dropdown-item" href="{{ path('review_my_received') }}">
+                                        <i class="bi bi-inbox-fill"></i> Avis reçus
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="{{ path('review_my_authored') }}">
+                                        <i class="bi bi-send-fill"></i> Mes avis
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
                     </ul>
                 {% endif %}
+            </div>
 
-                {# Menu de droite (connexion / déconnexion) #}
-                <ul class="navbar-nav ms-auto">
-                    {% if app.user %}
-                        <li class="nav-item">
-                            <span class="nav-link text-muted">
-                                <i class="bi bi-person-circle"></i> {{ app.user.firstName }}
-                            </span>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ path('app_logout') }}">
-                                <i class="bi bi-box-arrow-right"></i> Se déconnecter
-                            </a>
-                        </li>
-                    {% else %}
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ path('app_login') }}">
-                                <i class="bi bi-box-arrow-in-right"></i> Se connecter
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ path('app_register') }}">
-                                <i class="bi bi-person-plus"></i> S'inscrire
-                            </a>
-                        </li>
-                    {% endif %}
-                </ul>
+            {# Menus à droite (hors burger) #}
+            <div class="d-flex align-items-center gap-2">
+                {# Lien "Tous les avis" visible pour admins et employés (hors burger) #}
+                {% if is_granted('ROLE_ADMIN') or is_granted('ROLE_EMPLOYE') %}
+                    <a class="btn btn-outline-primary btn-sm d-none d-lg-inline-flex align-items-center" href="{{ path('review_index') }}">
+                        <i class="bi bi-chat-quote me-1"></i> Tous les avis
+                    </a>
+                {% endif %}
+
+                {# Menu Employé (hors burger) #}
+                {% if is_granted('ROLE_EMPLOYE') %}
+                    <div class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle text-warning fw-bold d-inline-flex align-items-center" href="#" id="employeeDropdownTop" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-briefcase-fill"></i>&nbsp;<span class="d-none d-lg-inline">Employé</span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="employeeDropdownTop">
+                            <li>
+                                <a class="dropdown-item" href="{{ path('review_index') }}">
+                                    <i class="bi bi-check2-square"></i> Gestion des avis
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                {% endif %}
+
+                {# Menu Administration (hors burger) #}
+                {% if is_granted('ROLE_ADMIN') %}
+                    <div class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle text-danger fw-bold d-inline-flex align-items-center" href="#" id="adminDropdownTop" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-shield-lock"></i>&nbsp;<span class="d-none d-lg-inline">Administration</span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="adminDropdownTop">
+                            <li>
+                                <a class="dropdown-item" href="{{ path('app_admin_user_index') }}">
+                                    <i class="bi bi-people"></i> Gestion des utilisateurs
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                {% endif %}
+
+                {# Menu utilisateur (profil + déconnexion) #}
+                {% if app.user %}
+                    <div class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle d-inline-flex align-items-center" href="#" id="userMenuTop" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-person-circle"></i>&nbsp;<span class="d-none d-lg-inline">{{ app.user.firstName|default(app.user.email) }}</span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userMenuTop">
+                            <li><a class="dropdown-item" href="{{ path('app_user_me') }}"><i class="bi bi-person"></i> Mon profil</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="{{ path('app_logout') }}"><i class="bi bi-box-arrow-right"></i> Se déconnecter</a></li>
+                        </ul>
+                    </div>
+                {% else %}
+                    <a class="btn btn-outline-primary btn-sm" href="{{ path('app_login') }}">
+                        <i class="bi bi-box-arrow-in-right"></i> Se connecter
+                    </a>
+                {% endif %}
             </div>
         </div>
     </nav>
 
     <main class="container mt-5 mb-5">
-        {# Affichage des messages flash (succès, erreurs, etc.) #}
+        {# Affichage des messages flash #}
         {% for label, messages in app.flashes %}
             {% for message in messages %}
                 <div class="alert alert-{{ label == 'error' ? 'danger' : label }} alert-dismissible fade show" role="alert">

@@ -5,20 +5,20 @@
 {% block body %}
     <h1 class="mb-4">Bienvenue, {{ app.user.firstName }} 👋</h1>
 
-    <div class="row">
+    <div class="row g-3">
         {# 🔹 Bloc : Réservations #}
         <div class="col-md-6">
-            <div class="card shadow-sm mb-4">
+            <div class="card shadow-sm h-100">
                 <div class="card-header bg-primary text-white">
                     <h5 class="card-title mb-0"><i class="bi bi-calendar-check"></i> Mes prochaines réservations</h5>
                 </div>
-                <div class="card-body">
+                <div class="card-body d-flex flex-column">
                     {% if myBookings is not empty %}
                         <ul class="list-group list-group-flush">
                             {% for booking in myBookings %}
                                 <li class="list-group-item d-flex justify-content-between align-items-start">
                                     <div>
-                                        Réservation n°{{ booking.id }} pour 
+                                        Réservation n°{{ booking.id }} pour
                                         <a href="{{ path('app_carpool_show', {'id': booking.carpool.id}) }}">
                                             {{ booking.carpool.departureLocation }} → {{ booking.carpool.arrivalLocation }}
                                         </a>
@@ -26,7 +26,7 @@
                                     </div>
                                     <div class="d-flex flex-column align-items-end">
                                         <span class="badge bg-info text-dark mb-1">{{ booking.reservedSeats }} place(s)</span>
-                                        
+
                                         {# Badge de statut #}
                                         {% if booking.status == 'pending' %}
                                             <span class="badge bg-warning text-dark">
@@ -49,24 +49,25 @@
                                 </li>
                             {% endfor %}
                         </ul>
-                        <div class="text-end mt-3">
-                            <a href="{{ path('app_booking_index') }}" class="btn btn-sm btn-outline-primary">Voir toutes mes réservations</a>
-                        </div>
                     {% else %}
                         <p>Vous n'avez pas de réservations à venir.</p>
-                        <a href="{{ path('app_carpool_index') }}" class="btn btn-primary">Rechercher un covoiturage</a>
                     {% endif %}
+
+                    {# Bouton "Voir toutes mes réservations" en bas à gauche #}
+                    <div class="mt-auto">
+                        <a href="{{ path('app_booking_index') }}" class="btn btn-sm btn-outline-primary">Voir toutes mes réservations</a>
+                    </div>
                 </div>
             </div>
         </div>
 
         {# 🔹 Bloc : Covoiturages #}
         <div class="col-md-6">
-            <div class="card shadow-sm mb-4">
+            <div class="card shadow-sm h-100">
                 <div class="card-header bg-success text-white">
                     <h5 class="card-title mb-0"><i class="bi bi-car-front-fill"></i> Mes covoiturages proposés</h5>
                 </div>
-                <div class="card-body">
+                <div class="card-body d-flex flex-column">
                     {% if myCarpools is not empty %}
                         <ul class="list-group list-group-flush">
                             {% for carpool in myCarpools %}
@@ -78,7 +79,7 @@
                                     </div>
                                     <div class="d-flex flex-column align-items-end">
                                         <span class="badge bg-success mb-1">{{ carpool.availableSeats }} place(s) dispo</span>
-                                        
+
                                         {# Badge de statut du covoiturage avec couleur dynamique #}
                                         <span class="badge 
                                             {% if carpool.status == STATUS_ACTIVE %}bg-success
@@ -105,25 +106,27 @@
                                 </li>
                             {% endfor %}
                         </ul>
-                        <div class="text-end mt-3">
-                            <a href="{{ path('app_carpool_index') }}" class="btn btn-sm btn-outline-primary">Voir tous mes covoiturages</a>
-                        </div>
                     {% else %}
                         <p>Vous n'avez pas encore proposé de covoiturage.</p>
-                        <a href="{{ path('app_carpool_new') }}" class="btn btn-primary">Proposer un covoiturage</a>
                     {% endif %}
+
+                    {# Bouton "Voir tous mes covoiturages" en bas à gauche #}
+                    <div class="mt-auto">
+                        <a href="{{ path('app_carpool_index') }}" class="btn btn-sm btn-outline-primary">Voir tous mes covoiturages</a>
+                    </div>
                 </div>
             </div>
         </div>
+    </div> {# <-- fermeture de la première row g-3 #}
 
     {# ✅ Bloc : Véhicules #}
-    <div class="row">
+    <div class="row g-3 mt-3">
         <div class="col-md-12">
-            <div class="card shadow-sm mb-4">
+            <div class="card shadow-sm">
                 <div class="card-header bg-dark text-white">
                     <h5 class="card-title mb-0"><i class="bi bi-car-front"></i> Mes véhicules</h5>
                 </div>
-                <div class="card-body">
+                <div class="card-body d-flex flex-column">
                     {% if myCars is not empty %}
                         <ul class="list-group list-group-flush">
                             {% for car in myCars %}
@@ -136,25 +139,125 @@
                                 </li>
                             {% endfor %}
                         </ul>
-                        <div class="text-end mt-3">
-                            <a href="{{ path('app_car_index') }}" class="btn btn-sm btn-outline-primary">Voir tous mes véhicules</a>
-                        </div>
                     {% else %}
                         <p>Vous n'avez pas encore enregistré de véhicule.</p>
-                        <a href="{{ path('app_car_new') }}" class="btn btn-primary">Ajouter un véhicule</a>
                     {% endif %}
+
+                    {# Bouton "Voir tous mes véhicules" en bas à gauche #}
+                    <div class="mt-3">
+                        <a href="{{ path('app_car_index') }}" class="btn btn-sm btn-outline-primary">Voir tous mes véhicules</a>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
-    {# 🔜 Bloc "Mes avis" (future section à venir) #}
-    <div class="row mt-4">
-        <div class="col-md-12">
-            <div class="card shadow-sm text-center p-4">
-                <h5 class="text-muted">
-                    <i class="bi bi-chat-quote"></i> Bientôt disponible : vos avis laissés et reçus 🌟
-                </h5>
+    {# 🔜 Bloc "Mes avis" (aperçu 3 derniers reçus / 3 derniers émis) #}
+    <div class="row g-3 mt-4">
+        <div class="col-md-6">
+            <div class="card shadow-sm h-100">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0"><i class="bi bi-inbox-fill"></i> Avis reçus</h5>
+                </div>
+
+                <div class="card-body d-flex flex-column">
+                    {% if receivedReviews is defined and receivedReviews|length > 0 %}
+                        {% for r in receivedReviews %}
+                            <div class="mb-3">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div>
+                                        <strong>{{ r.author ? (r.author.firstName ~ ' ' ~ r.author.lastName)|trim : 'Anonyme' }}</strong>
+                                        <div class="small text-muted">{{ r.date ? r.date|date('d/m/Y') : '' }}</div>
+                                    </div>
+                                    <div class="text-end">
+                                        <span class="text-warning" aria-hidden="true">
+                                            {% for i in 1..5 %}
+                                                {% if i <= (r.rating|default(0)) %}
+                                                    <i class="bi bi-star-fill"></i>
+                                                {% else %}
+                                                    <i class="bi bi-star"></i>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </span>
+                                    </div>
+                                </div>
+                                {% if r.comment %}
+                                    <p class="mb-0 mt-2">{{ r.comment|length > 140 ? (r.comment|slice(0,140) ~ '…') : r.comment|e }}</p>
+                                {% endif %}
+                                <hr class="my-2">
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="alert alert-info mb-0">
+                            <i class="bi bi-info-circle"></i> Aucun avis reçu pour le moment.
+                        </div>
+                    {% endif %}
+
+                    {# Bouton "Voir tout" en bas à gauche (comme les autres) #}
+                    <div class="mt-auto" style="padding-top:15px;">
+                        <a href="{{ path('review_my_received') }}" class="btn btn-sm btn-outline-primary">Voir tout</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card shadow-sm h-100">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0"><i class="bi bi-send-fill"></i> Mes avis</h5>
+                </div>
+
+                <div class="card-body d-flex flex-column">
+                    {% if authoredReviews is defined and authoredReviews|length > 0 %}
+                        {% for r in authoredReviews %}
+                            <div class="mb-3">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div>
+                                        <strong>Pour : {{ r.target ? (r.target.firstName ~ ' ' ~ r.target.lastName)|trim : '—' }}</strong>
+                                        <div class="small text-muted">{{ r.date ? r.date|date('d/m/Y') : '' }}</div>
+                                    </div>
+                                    <div class="text-end">
+                                        <span class="text-warning" aria-hidden="true">
+                                            {% for i in 1..5 %}
+                                                {% if i <= (r.rating|default(0)) %}
+                                                    <i class="bi bi-star-fill"></i>
+                                                {% else %}
+                                                    <i class="bi bi-star"></i>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </span>
+                                    </div>
+                                </div>
+
+                                {% if r.comment %}
+                                    <p class="mb-0 mt-2">{{ r.comment|length > 140 ? (r.comment|slice(0,140) ~ '…') : r.comment|e }}</p>
+                                {% endif %}
+
+                                {# statut visible pour l'auteur (ex: en attente) #}
+                                <div class="mt-2">
+                                    {% if r.validated is defined %}
+                                        {% if r.validated %}
+                                            <span class="badge bg-success">Validé</span>
+                                        {% else %}
+                                            <span class="badge bg-warning text-dark">En attente</span>
+                                        {% endif %}
+                                    {% endif %}
+                                </div>
+
+                                <hr class="my-2">
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="alert alert-info mb-0">
+                            <i class="bi bi-info-circle"></i> Vous n'avez encore laissé aucun avis.
+                        </div>
+                    {% endif %}
+
+                    {# Bouton "Voir tout" en bas à gauche (comme les autres) #}
+                    <div class="mt-auto" style="padding-top:15px;">
+                        <a href="{{ path('review_my_received') }}" class="btn btn-sm btn-outline-primary">Voir tout</a>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
