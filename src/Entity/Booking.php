@@ -24,7 +24,7 @@ class Booking
     #[Assert\NotNull(message: "Le nombre de places réservées est obligatoire.")]
     #[Assert\Positive(message: "Le nombre de places réservées doit être un entier positif.")]
     #[ORM\Column(name: 'nb_places_reservees')] 
-    private ?int $reservedSeats = null;
+    private ?int $reservedSeats = 1;
 
     #[ORM\Column(name: "statut", length: 50, nullable: true)] // TODO: rendre NOT NULL après API
     private ?string $status = 'pending'; // Valeur par défaut
@@ -69,12 +69,12 @@ class Booking
 
     public function getReservedSeats(): ?int
     {
-        return $this->reservedSeats;
+        return (int) $this->reservedSeats;
     }
 
-    public function setReservedSeats(int $reservedSeats): static
+    public function setReservedSeats(int $reservedSeats): self
     {
-        $this->reservedSeats = $reservedSeats;
+        $this->reservedSeats = $reservedSeats ?? 1;
 
         return $this;
     }

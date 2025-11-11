@@ -111,7 +111,7 @@
                                         </p>
 
                                         {# Actions pour le conducteur #}
-                                        {% if app.user == carpool.driver %}
+                                        {% if app.user == carpool.driver or is_granted('ROLE_ADMIN') %}
                                             <div class="d-flex gap-1 flex-wrap mt-3">
                                                 {% if booking.canBeConfirmed() %}
                                                     <form method="post" action="{{ path('app_booking_confirm', {'id': booking.id}) }}" style="display:inline;">
@@ -131,8 +131,9 @@
                                                     </form>
                                                 {% endif %}
 
-                                                {% if booking.canBeCancelled() %}
-                                                    <form method="post" action="{{ path('app_booking_cancel', {'id': booking.id}) }}" style="display:inline;" onsubmit="return confirm('Êtes-vous sûr de vouloir annuler cette réservation ?');">
+                                                {# BOUTON ANNULER : seulement si la réservation est confirmée #}
+                                                {% if booking.isConfirmed() %}
+                                                    <form method="post" action="{{ path('app_booking_cancel', {'id': booking.id}) }}" style="display:inline;" onsubmit="return confirm('Êtes-vous sûr de vouloir annuler cette réservation confirmée ?');">
                                                         <input type="hidden" name="_token" value="{{ csrf_token('cancel' ~ booking.id) }}">
                                                         <button type="submit" class="btn btn-sm btn-secondary" title="Annuler">
                                                             <i class="bi bi-trash"></i> Annuler

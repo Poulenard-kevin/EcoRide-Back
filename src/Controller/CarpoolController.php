@@ -18,10 +18,8 @@ class CarpoolController extends AbstractController
     #[Route('/', name: 'app_carpool_index', methods: ['GET'])]
     public function index(CarpoolRepository $carpoolRepository): Response
     {
-        $user = $this->getUser();
-
-        // Récupère les covoiturages du conducteur (tri facultatif)
-        $carpools = $carpoolRepository->findBy(['driver' => $user], ['departureDate' => 'DESC']);
+        // Récupère tous les covoiturages publiés (tu peux affiner si tu veux exclure les drafts)
+        $carpools = $carpoolRepository->findBy([], ['departureDate' => 'DESC']);
 
         $active = [];
         $archived = [];

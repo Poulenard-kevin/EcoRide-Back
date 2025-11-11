@@ -37,7 +37,7 @@ class BookingController extends AbstractController
         }
 
         $booking = new Booking();
-        $booking->setCarpool($carpool); // on lie la réservation au covoiturage ciblé
+        $booking->setCarpool($carpool);
 
         $form = $this->createForm(BookingType::class, $booking, [
             'is_edit' => false,
@@ -45,7 +45,7 @@ class BookingController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            // Vérifier que l'utilisateur n'est pas le conducteur
+            // Ne pas permettre au conducteur de réserver son propre trajet
             if ($carpool->getDriver() === $user) {
                 $this->addFlash('error', 'Vous ne pouvez pas réserver votre propre covoiturage.');
                 return $this->renderForm('booking/new.html.twig', [
@@ -55,51 +55,69 @@ class BookingController extends AbstractController
                 ]);
             }
 
-            // Vérifie si l'utilisateur a déjà une réservation pour ce covoiturage
+            // Normaliser reservedSeats (sécurité)
+            $reservedSeats = (int) $booking->getReservedSeats();
+            if ($reservedSeats <= 0) {
+                $reservedSeats = 1;
+                $booking->setReservedSeats($reservedSeats);
+            }
+
+            // Vérifier si l'utilisateur a déjà une réservation
             $existingBooking = $bookingRepository->findOneBy([
                 'passenger' => $user,
                 'carpool' => $carpool,
             ]);
-
             if ($existingBooking) {
                 $this->addFlash('warning', 'Vous avez déjà une réservation pour ce covoiturage.');
                 return $this->redirectToRoute('app_booking_show', ['id' => $existingBooking->getId()]);
             }
 
-            // Utiliser la connexion pour la transaction
+            // Vérifier qu'il reste assez de places disponibles (FAIRE AVANT la transaction)
+            if ($carpool->getAvailableSeats() < $reservedSeats) {
+                $this->addFlash('error', 'Il n\'y a pas assez de places disponibles pour ce covoiturage.');
+                return $this->renderForm('booking/new.html.twig', [
+                    'booking' => $booking,
+                    'form' => $form,
+                    'carpool' => $carpool,
+                ]);
+            }
+
+            // Démarrer la transaction et persister
             $conn = $entityManager->getConnection();
             $conn->beginTransaction();
 
             try {
-                // Vérifier qu'il reste assez de places disponibles
-                if ($carpool->getAvailableSeats() < $booking->getReservedSeats()) {
-                    $conn->rollBack();
-                    $this->addFlash('error', 'Il n\'y a pas assez de places disponibles pour ce covoiturage.');
-                    return $this->renderForm('booking/new.html.twig', [
-                        'booking' => $booking,
-                        'form' => $form,
-                        'carpool' => $carpool,
-                    ]);
-                }
-
-                // Définir automatiquement les valeurs
                 $booking->setPassenger($user);
                 $booking->setStatus(Booking::STATUS_PENDING);
                 $booking->setBookingDate(new \DateTime());
 
-                // Décrémenter les places disponibles
-                $carpool->setAvailableSeats($carpool->getAvailableSeats() - $booking->getReservedSeats());
-
+                // Persister la réservation
                 $entityManager->persist($booking);
                 $entityManager->flush();
+
+                // --- RECALCULER les places occupées et availableSeats ---
+                $statusesToCount = [Booking::STATUS_PENDING, Booking::STATUS_CONFIRMED];
+                $occupied = $bookingRepository->sumReservedSeatsByCarpoolAndStatuses($carpool, $statusesToCount);
+
+                $totalSeats = $carpool->getTotalSeats();
+                if ($totalSeats !== null) {
+                    $newAvailable = max(0, $totalSeats - $occupied);
+                    $carpool->setAvailableSeats($newAvailable);
+                    $entityManager->flush();
+                }
+
                 $conn->commit();
 
                 $this->addFlash('success', 'Réservation créée avec succès. En attente de confirmation du conducteur.');
+
                 return $this->redirectToRoute('app_booking_index');
             } catch (\Throwable $e) {
-                $conn->rollBack();
-                // logger($e) si tu as un logger
+                if ($conn->isTransactionActive()) {
+                    $conn->rollBack();
+                }
+                // optionnel : logger l'exception
                 $this->addFlash('error', 'Une erreur est survenue lors de la création de la réservation. Veuillez réessayer.');
+
                 return $this->renderForm('booking/new.html.twig', [
                     'booking' => $booking,
                     'form' => $form,
@@ -108,6 +126,7 @@ class BookingController extends AbstractController
             }
         }
 
+        // Affichage du formulaire (GET ou form non validé)
         return $this->renderForm('booking/new.html.twig', [
             'booking' => $booking,
             'form' => $form,
@@ -231,62 +250,107 @@ class BookingController extends AbstractController
             throw $this->createAccessDeniedException('Vous ne pouvez pas refuser cette réservation.');
         }
 
-        $booking->setStatus(Booking::STATUS_REFUSED);
-        $em->flush();
+        try {
+            $em->beginTransaction();
 
-        $this->addFlash('success', 'Réservation refusée.');
+            // Remettre les places si la réservation a diminué availableSeats (pending ou confirmed)
+            if ($booking->isPending() || $booking->isConfirmed()) {
+                $newAvailable = $carpool->getAvailableSeats() + $booking->getReservedSeats();
+
+                // S'assurer de ne pas dépasser totalSeats
+                $totalSeats = $carpool->getTotalSeats() ?: null;
+                if ($totalSeats !== null) {
+                    $newAvailable = min($newAvailable, $totalSeats);
+                }
+
+                $carpool->setAvailableSeats($newAvailable);
+            }
+
+            $booking->setStatus(Booking::STATUS_REFUSED);
+            $em->flush();
+            $em->commit();
+
+            $this->addFlash('success', 'Réservation refusée.');
+        } catch (\Throwable $e) {
+            $em->rollback();
+            // optionnel : logger l'exception ici
+            $this->addFlash('error', 'Une erreur est survenue lors du refus de la réservation.');
+        }
+
         return $this->redirectToRoute('app_carpool_show', ['id' => $carpool->getId()]);
     }
 
     // ANNULER une réservation (passager ou conducteur)
     #[Route('/{id}/cancel', name: 'app_booking_cancel', methods: ['POST'])]
-    public function cancel(Request $request, Booking $booking, EntityManagerInterface $entityManager): Response
+    public function cancel(Request $request, Booking $booking, EntityManagerInterface $entityManager, BookingRepository $bookingRepository): Response
     {
-        // ✅ Vérifier le token CSRF
         if (!$this->isCsrfTokenValid('cancel' . $booking->getId(), $request->request->get('_token'))) {
             throw $this->createAccessDeniedException('Token CSRF invalide.');
         }
 
         $user = $this->getUser();
-        
-        // Vérifier que l'utilisateur est soit le passager, soit le conducteur
-        if ($booking->getPassenger() !== $user && $booking->getCarpool()->getDriver() !== $user) {
-            throw $this->createAccessDeniedException('Vous ne pouvez pas annuler cette réservation.');
+        $carpool = $booking->getCarpool();
+
+        // Autorisations (comme précédemment)
+        if ($booking->isConfirmed()) {
+            if ($carpool->getDriver() !== $user && !$this->isGranted('ROLE_ADMIN')) {
+                throw $this->createAccessDeniedException('Seul le conducteur (ou un admin) peut annuler une réservation confirmée.');
+            }
+        } else {
+            if ($booking->getPassenger() !== $user && $carpool->getDriver() !== $user && !$this->isGranted('ROLE_ADMIN')) {
+                throw $this->createAccessDeniedException('Vous ne pouvez pas annuler cette réservation.');
+            }
         }
 
-        // Vérifier que la réservation peut être annulée
         if (!$booking->canBeCancelled()) {
             $this->addFlash('error', 'Cette réservation ne peut pas être annulée.');
             return $this->redirectToRoute('app_booking_show', ['id' => $booking->getId()]);
         }
 
-        try {
-            $entityManager->beginTransaction();
+        $conn = $entityManager->getConnection();
+        $conn->beginTransaction();
 
+        try {
+            // mémoriser état si besoin (pas nécessaire si on recalcule après)
             $booking->setStatus(Booking::STATUS_CANCELLED);
-            
-            // Remettre les places disponibles si la réservation était confirmée
-            if ($booking->isConfirmed()) {
-                $carpool = $booking->getCarpool();
-                $carpool->setAvailableSeats($carpool->getAvailableSeats() + $booking->getReservedSeats());
-            }
-            
+
             $entityManager->flush();
-            $entityManager->commit();
+
+            // --- RECALCULER les places occupées puis availableSeats ---
+            // Choisis les statuts que tu veux considérer comme "occupant" une place.
+            // Si tu réserves et décrémente dès pending, inclut 'pending' et 'confirmed'
+            $statusesToCount = [Booking::STATUS_PENDING, Booking::STATUS_CONFIRMED];
+
+            $occupied = $bookingRepository->sumReservedSeatsByCarpoolAndStatuses($carpool, $statusesToCount);
+
+            $totalSeats = $carpool->getTotalSeats();
+            if ($totalSeats !== null) {
+                $newAvailable = max(0, $totalSeats - $occupied);
+            } else {
+                // fallback : si pas de totalSeats, on remet selon valeur courante + reservedSeats retirée
+                // mais idéalement totalSeats doit être défini
+                $newAvailable = max(0, $carpool->getAvailableSeats());
+            }
+
+            $carpool->setAvailableSeats($newAvailable);
+            $entityManager->flush();
+
+            $conn->commit();
 
             $this->addFlash('success', 'Réservation annulée avec succès.');
-
-        } catch (\Exception $e) {
-            $entityManager->rollback();
-            $this->addFlash('error', 'Une erreur est survenue.');
+        } catch (\Throwable $e) {
+            if ($conn->isTransactionActive()) {
+                $conn->rollBack();
+            }
+            // logger si possible
+            $this->addFlash('error', 'Une erreur est survenue lors de l\'annulation.');
         }
 
-        // Rediriger selon qui a annulé
         if ($booking->getPassenger() === $user) {
             return $this->redirectToRoute('app_booking_index');
-        } else {
-            return $this->redirectToRoute('app_carpool_show', ['id' => $booking->getCarpool()->getId()]);
         }
+
+        return $this->redirectToRoute('app_carpool_show', ['id' => $carpool->getId()]);
     }
 
     #[Route('/{id}/delete', name: 'app_booking_delete', methods: ['POST'])]

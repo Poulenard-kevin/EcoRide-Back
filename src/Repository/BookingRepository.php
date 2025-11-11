@@ -45,4 +45,26 @@ class BookingRepository extends ServiceEntityRepository
 //            ->getOneOrNullResult()
 //        ;
 //    }
+
+    /**
+     * Calcule la somme des places réservées pour un covoiturage selon des statuts donnés.
+     *
+     * @param \App\Entity\Carpool $carpool Le covoiturage concerné
+     * @param string[] $statuses Liste des statuts à inclure dans le calcul
+     * @return int Nombre total de places réservées
+     */
+    public function sumReservedSeatsByCarpoolAndStatuses(\App\Entity\Carpool $carpool, array $statuses = []): int
+    {
+        $qb = $this->createQueryBuilder('b')
+            ->select('COALESCE(SUM(b.reservedSeats), 0)')
+            ->where('b.carpool = :carpool')
+            ->setParameter('carpool', $carpool);
+
+        if (!empty($statuses)) {
+            $qb->andWhere('b.status IN (:statuses)')
+            ->setParameter('statuses', $statuses);
+        }
+
+        return (int) $qb->getQuery()->getSingleScalarResult();
+    }
 }

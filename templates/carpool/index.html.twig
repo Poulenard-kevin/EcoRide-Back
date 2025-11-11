@@ -106,7 +106,7 @@
                                         <i class="bi bi-eye"></i> Voir
                                     </a>
 
-                                    {% if app.user == carpool.driver %}
+                                    {% if app.user == carpool.driver or is_granted('ROLE_ADMIN') %}
                                         <a href="{{ path('app_carpool_edit', {'id': carpool.id}) }}" class="btn btn-sm btn-warning" title="Modifier">
                                             <i class="bi bi-pencil"></i> Modifier
                                         </a>
