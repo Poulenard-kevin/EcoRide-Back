@@ -4,9 +4,11 @@ namespace App\Controller;
 
 use App\Entity\Booking;
 use App\Entity\Carpool;
+use App\Entity\Review;
 use App\Form\BookingType;
 use App\Repository\BookingRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -134,6 +136,7 @@ class BookingController extends AbstractController
 
         return $this->render('booking/show.html.twig', [
             'booking' => $booking,
+            'STATUS_AWAITING' => Booking::STATUS_AWAITING_VALIDATION,
         ]);
     }
 
@@ -346,6 +349,72 @@ class BookingController extends AbstractController
         }
 
         return $this->redirectToRoute('app_booking_index');
+    }
+
+    #[Route('/booking/{id}/validate', name: 'app_booking_validate', methods: ['POST'])]
+    public function validateTrip(Booking $booking, Request $request, EntityManagerInterface $em): RedirectResponse
+    {
+        if (!$this->isCsrfTokenValid('validateTrip'.$booking->getId(), $request->request->get('_token'))) {
+            $this->addFlash('danger', 'Token invalide.');
+            return $this->redirectToRoute('app_booking_show', ['id' => $booking->getId()]);
+        }
+
+        $user = $this->getUser();
+        if (!$user || !$booking->getPassenger() || $booking->getPassenger()->getId() !== $user->getId()) {
+            throw $this->createAccessDeniedException('Vous n\'êtes pas autorisé à valider cette réservation.');
+        }
+
+        $booking->setStatus(Booking::STATUS_COMPLETED);
+        if (method_exists($booking, 'setCompletedAt')) {
+            $booking->setCompletedAt(new \DateTime());
+        }
+
+        $em->flush();
+
+        $this->addFlash('success', 'Trajet validé. Merci — vous pouvez maintenant laisser un avis.');
+
+        $driver = $booking->getCarpool() ? $booking->getCarpool()->getDriver() : null;
+        if ($driver) {
+            return $this->redirectToRoute('app_review_new', [
+                'driver'  => $driver->getId(),
+                'booking' => $booking->getId(),
+            ]);
+        }
+
+        return $this->redirectToRoute('app_booking_show', ['id' => $booking->getId()]);
+    }
+
+    #[Route('/booking/{id}/complete', name: 'app_booking_complete', methods: ['POST'])]
+    public function complete(Booking $booking, Request $request, EntityManagerInterface $em): RedirectResponse
+    {
+        // CSRF
+        $token = $request->request->get('_token');
+        if (!$this->isCsrfTokenValid('complete' . $booking->getId(), $token)) {
+            $this->addFlash('danger', 'Token invalide.');
+            return $this->redirectToRoute('app_booking_show', ['id' => $booking->getId()]);
+        }
+
+        // Autorisation : seul le conducteur du covoiturage ou un admin peut marquer la réservation comme complétée
+        $carpool = $booking->getCarpool();
+        $driver = $carpool ? $carpool->getDriver() : null;
+
+        if (!$this->isGranted('ROLE_ADMIN') && (!$driver || $this->getUser()->getId() !== $driver->getId())) {
+            throw $this->createAccessDeniedException('Vous n\'êtes pas autorisé à effectuer cette action.');
+        }
+
+        // Met à jour le statut
+        $booking->setStatus(Booking::STATUS_COMPLETED);
+
+        // Si tu as ajouté la propriété completedAt dans Booking
+        if (method_exists($booking, 'setCompletedAt')) {
+            $booking->setCompletedAt(new \DateTime());
+        }
+
+        $em->flush();
+
+        $this->addFlash('success', 'Réservation marquée comme complétée.');
+
+        return $this->redirectToRoute('app_booking_show', ['id' => $booking->getId()]);
     }
 
     // Méthode privée de recalcul centralisée

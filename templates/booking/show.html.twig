@@ -34,12 +34,12 @@
                 <tbody>
                     <tr>
                         <th style="width: 30%;">Date de réservation</th>
-                        <td>{{ booking.bookingDate ? booking.bookingDate|date('d/m/Y H:i') : '<span class=\"text-muted fst-italic\">—</span>' }}</td>
+                        <td>{{ booking.bookingDate ? booking.bookingDate|date('d/m/Y H:i') : '<span class="text-muted fst-italic">—</span>' }}</td>
                     </tr>
 
                     <tr>
                         <th>Nombre de places réservées</th>
-                        <td>{{ booking.reservedSeats ?: '<span class=\"text-muted fst-italic\">—</span>' }}</td>
+                        <td>{{ booking.reservedSeats ?: '<span class="text-muted fst-italic">—</span>' }}</td>
                     </tr>
 
                     <tr>
@@ -70,7 +70,8 @@
                 </tbody>
             </table>
 
-            <div class="d-flex gap-2">
+            {# Actions - boutons alignés et même taille (hauteur) #}
+            <div class="d-flex gap-2 flex-wrap align-items-center">
                 <a href="{{ path('app_booking_index') }}" class="btn btn-secondary">
                     <i class="bi bi-arrow-left"></i> Retour à la liste
                 </a>
@@ -79,7 +80,23 @@
                     <i class="bi bi-pencil"></i> Modifier
                 </a>
 
+                <form method="post" action="{{ path('app_booking_complete', {'id': booking.id}) }}" style="display:inline;"
+                    onsubmit="return confirm('Marquer cette réservation comme complétée ?');">
+                    <input type="hidden" name="_token" value="{{ csrf_token('complete' ~ booking.id) }}">
+                    <button class="btn btn-success btn-equal">
+                        <i class="bi bi-check-lg"></i> Marquer comme terminé
+                    </button>
+                </form>
+
                 {{ include('booking/_delete_form.html.twig', { 'btn_class': 'btn btn-danger' }) }}
+
+                <form method="post" action="{{ path('app_booking_validate', {'id': booking.id}) }}" style="display:inline;"
+                    onsubmit="return confirm('Valider ce trajet et laisser un avis ?');">
+                    <input type="hidden" name="_token" value="{{ csrf_token('validateTrip' ~ booking.id) }}">
+                    <button class="btn btn-success">
+                        <i class="bi bi-check-lg"></i> Valider le trajet
+                    </button>
+                </form>
             </div>
         </div>
     </div>

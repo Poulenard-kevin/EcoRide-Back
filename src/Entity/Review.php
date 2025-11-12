@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\ReviewRepository;
 use Doctrine\DBAL\Types\Types;
+use App\Entity\Booking;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -46,6 +47,10 @@ class Review
     #[ORM\Column(name: 'valide', type: 'boolean')]
     private bool $validated = false;
 
+    #[ORM\ManyToOne(targetEntity: Booking::class, inversedBy: 'reviews')]
+    #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
+    private ?Booking $booking = null;
+
     public function __construct()
     {
         $this->date = new \DateTime();
@@ -53,6 +58,16 @@ class Review
     }
 
     // --- getters / setters ---
+    public function getBooking(): ?Booking
+    {
+        return $this->booking;
+    }
+
+    public function setBooking(?Booking $booking): self
+    {
+        $this->booking = $booking;
+        return $this;
+    }
 
     public function getId(): ?int
     {
@@ -122,6 +137,17 @@ class Review
     public function setTarget(?User $target): static
     {
         $this->target = $target;
+        return $this;
+    }
+
+    public function getDriver(): ?User
+    {
+        return $this->target;
+    }
+
+    public function setDriver(?User $driver): static
+    {
+        $this->target = $driver;
         return $this;
     }
 

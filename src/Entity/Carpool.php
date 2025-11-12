@@ -61,10 +61,12 @@ class Carpool
     private ?string $status = null;
 
     // Ajoute aussi les constantes pour les statuts
+    public const STATUS_DRAFT = 'draft';
     public const STATUS_ACTIVE = 'active';
     public const STATUS_STARTED = 'started';
     public const STATUS_COMPLETED = 'completed';
     public const STATUS_CANCELLED = 'cancelled';
+    public const STATUS_ONGOING = 'ongoing';
     public const STATUS_ARCHIVED = 'archived';
 
     #[ORM\ManyToOne(inversedBy: 'carpools', targetEntity: User::class)]
@@ -80,6 +82,21 @@ class Carpool
 
     #[ORM\OneToMany(mappedBy: 'carpool', targetEntity: Review::class)]
     private Collection $reviews; 
+
+    #[ORM\Column(type: 'datetime', nullable: true)]
+    private ?\DateTimeInterface $archivedAt = null;
+
+    public function getArchivedAt(): ?\DateTimeInterface
+    {
+        return $this->archivedAt;
+    }
+
+    public function setArchivedAt(?\DateTimeInterface $archivedAt): self
+    {
+        $this->archivedAt = $archivedAt;
+
+        return $this;
+    }
 
     public function __construct()
     {

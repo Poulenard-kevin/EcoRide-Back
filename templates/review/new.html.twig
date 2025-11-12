@@ -1,0 +1,14 @@
+{# templates/review/new.html.twig #}
+{% extends 'base.html.twig' %}
+{% block title %}Laisser un avis{% endblock %}
+
+{% block body %}
+    <h1>Laisser un avis pour {{ driver.firstName }} {{ driver.lastName }}</h1>
+
+    {{ form_start(form) }}
+        {{ form_row(form.rating) }}
+        {{ form_row(form.comment) }}
+        <button class="btn btn-primary">Publier l'avis</button>
+        <a href="{{ path('app_booking_index') }}" class="btn btn-secondary">Annuler</a>
+    {{ form_end(form) }}
+{% endblock %}

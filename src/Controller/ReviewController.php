@@ -3,7 +3,11 @@
 namespace App\Controller;
 
 use App\Entity\Review;
+use App\Entity\Booking;
+use App\Entity\User;
+use App\Form\ReviewType;
 use App\Repository\ReviewRepository;
+use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -121,5 +125,72 @@ class ReviewController extends AbstractController
             return $this->redirectToRoute('review_index');
         }
         return $this->redirectToRoute('review_my_authored');
+    }
+
+    #[Route('/review/new/{driver}', name: 'app_review_new', methods: ['GET','POST'])]
+    public function new(Request $request, EntityManagerInterface $em, UserRepository $userRepo, ReviewRepository $reviewRepo): Response
+    {
+        $driverId = $request->attributes->get('driver');
+        $bookingId = $request->query->get('booking') ?? $request->request->get('booking');
+    
+        $driver = $userRepo->find($driverId);
+        if (!$driver) {
+            throw $this->createNotFoundException('Conducteur introuvable.');
+        }
+    
+        $user = $this->getUser();
+        if (!$user) {
+            throw $this->createAccessDeniedException('Vous devez être connecté pour laisser un avis.');
+        }
+    
+        // Si booking fourni, vérifier l'appartenance (optionnel mais recommandé)
+        if ($bookingId) {
+            $booking = $em->getRepository(Booking::class)->find($bookingId);
+            if (!$booking || $booking->getPassenger()->getId() !== $user->getId()) {
+                throw $this->createAccessDeniedException('Réservation invalide pour laisser un avis.');
+            }
+    
+            // Optionnel : empêcher double avis pour la même réservation
+            $existing = $reviewRepo->findOneBy(['author' => $user, 'booking' => $booking]);
+            if ($existing) {
+                $this->addFlash('info', 'Vous avez déjà laissé un avis pour cette réservation.');
+                return $this->redirectToRoute('app_booking_show', ['id' => $booking->getId()]);
+            }
+        } else {
+            $booking = null;
+        }
+    
+        $review = new Review();
+        $review->setAuthor($user);
+        $review->setDriver($driver);
+    
+        // --- Ajout : renseigner carpool depuis booking ---
+        if ($booking) {
+            $review->setBooking($booking);
+            if ($booking->getCarpool()) {
+                $review->setCarpool($booking->getCarpool());
+            }
+        }
+        // --- Fin ajout ---
+    
+        $form = $this->createForm(ReviewType::class, $review);
+        $form->handleRequest($request);
+    
+        if ($form->isSubmitted() && $form->isValid()) {
+            // Si tu utilises `date` au lieu de `createdAt`, renseigne-le ici
+            $review->setDate(new \DateTime());
+    
+            $em->persist($review);
+            $em->flush();
+    
+            $this->addFlash('success', 'Merci pour votre avis !');
+            return $this->redirectToRoute('app_booking_show', ['id' => $booking ? $booking->getId() : 0]);
+        }
+    
+        return $this->render('review/new.html.twig', [
+            'form' => $form->createView(),
+            'driver' => $driver,
+            'booking' => $booking,
+        ]);
     }
 }

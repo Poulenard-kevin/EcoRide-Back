@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Carpool;
+use App\Entity\Booking;
 use App\Form\CarpoolType;
 use App\Repository\CarpoolRepository;
 use App\Repository\CarRepository;
@@ -88,8 +89,14 @@ class CarpoolController extends AbstractController
     #[Route('/{id}', name: 'app_carpool_show', methods: ['GET'])]
     public function show(Carpool $carpool): Response
     {
+        // si $carpool->getBookings() renvoie une Collection déjà disponible
+        $bookings = $carpool->getBookings(); // retourne Collection => tu peux la passer telle quelle
+
         return $this->render('carpool/show.html.twig', [
             'carpool' => $carpool,
+            'bookings' => $bookings,
+            'STATUS_AWAITING' => Booking::STATUS_AWAITING_VALIDATION,
+            'STATUS_ONGOING' => Carpool::STATUS_ONGOING,
             'STATUS_ACTIVE' => Carpool::STATUS_ACTIVE,
             'STATUS_STARTED' => Carpool::STATUS_STARTED,
             'STATUS_COMPLETED' => Carpool::STATUS_COMPLETED,
@@ -241,6 +248,40 @@ class CarpoolController extends AbstractController
         $this->addFlash('success', 'Covoiturage annulé avec succès.');
         return $this->redirectToRoute('app_carpool_show', ['id' => $carpool->getId()], Response::HTTP_SEE_OTHER);
     }
+
+    /**
+     * @Route("/carpool/{id}/finish", name="carpool_finish", methods={"POST"})
+     */
+    public function finish(Carpool $carpool, Request $request, EntityManagerInterface $em): Response
+    {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+        // Sécurité : seul le conducteur peut terminer
+        if ($carpool->getDriver()->getId() !== $this->getUser()->getId()) {
+            throw $this->createAccessDeniedException();
+        }
+
+        if (!$this->isCsrfTokenValid('finish'.$carpool->getId(), $request->request->get('_token'))) {
+            $this->addFlash('danger', 'Jeton CSRF invalide.');
+            return $this->redirectToRoute('app_carpool_show', ['id' => $carpool->getId()]);
+        }
+
+        // Archiver le covoiturage
+        $carpool->setStatus(Carpool::STATUS_ARCHIVED);
+        $carpool->setArchivedAt(new \DateTime());
+
+        // Mettre les réservations confirmées en attente de validation par passagers
+        foreach ($carpool->getBookings() as $booking) {
+            if ($booking->getStatus() === Booking::STATUS_CONFIRMED) {
+                $booking->setStatus(Booking::STATUS_AWAITING_VALIDATION);
+            }
+        }
+
+        $em->flush();
+
+        $this->addFlash('success', 'Covoiturage terminé et archivé. Les passagers peuvent désormais valider leurs trajets.');
+        return $this->redirectToRoute('app_carpool_show', ['id' => $carpool->getId()]);
+    }
+
 
     // ARCHIVER un covoiturage (conducteur uniquement)
     #[Route('/{id}/archive', name: 'app_carpool_archive', methods: ['POST'])]

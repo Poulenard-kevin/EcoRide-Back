@@ -4,10 +4,13 @@ namespace App\Entity;
 
 use DateTimeInterface;
 use Doctrine\DBAL\Types\Types;
+use App\Entity\Review;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\BookingRepository;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 
 #[ORM\Entity(repositoryClass: BookingRepository::class)]
 #[ORM\Table(name: 'reservation')] 
@@ -34,6 +37,8 @@ class Booking
     public const STATUS_CANCELLED = 'cancelled';
     public const STATUS_PENDING   = 'pending';
     public const STATUS_REFUSED   = 'refused';
+    public const STATUS_AWAITING_VALIDATION = 'awaiting_validation';
+    public const STATUS_COMPLETED = 'completed';
 
     #[ORM\ManyToOne(inversedBy: 'bookings', targetEntity: User::class)]
     #[ORM\JoinColumn(name: "passager_id", nullable: true)] // TODO: rendre NOT NULL après API 
@@ -43,11 +48,34 @@ class Booking
     #[ORM\JoinColumn(name: "covoiturage_id", nullable: true)] // TODO: rendre NOT NULL après API
     private ?Carpool $carpool = null;
 
+    #[ORM\Column(type: 'datetime', nullable: true)]
+    private ?\DateTimeInterface $completedAt = null;
+
+    #[ORM\OneToMany(targetEntity: Review::class, mappedBy: 'booking', cascade: ['remove'])]
+    private Collection $reviews;
+
     // Constructeur pour initialiser la date et le statut
     public function __construct()
     {
         $this->bookingDate = new \DateTime();
+        $this->reviews = new ArrayCollection();
         $this->status = self::STATUS_PENDING;
+    }
+
+    public function getReviews(): Collection
+    {
+        return $this->reviews;
+    }
+
+    public function getCompletedAt(): ?\DateTimeInterface
+    {
+        return $this->completedAt;
+    }
+
+    public function setCompletedAt(?\DateTimeInterface $completedAt): self
+    {
+        $this->completedAt = $completedAt;
+        return $this;
     }
 
     public function getId(): ?int
@@ -167,11 +195,27 @@ class Booking
         return $this->passenger;
     }
 
-    public function setPassenger(?User $passenger): static
+    public function setPassenger(?User $passenger): self
     {
         $this->passenger = $passenger;
 
         return $this;
+    }
+
+    /**
+     * Alias pour compatibilité : getUser() attendu ailleurs dans le code/Twig
+     */
+    public function getUser(): ?User
+    {
+        return $this->getPassenger();
+    }
+
+    /**
+     * Alias setter si tu veux être cohérent
+     */
+    public function setUser(?User $user): self
+    {
+        return $this->setPassenger($user);
     }
 
     public function getCarpool(): ?Carpool
