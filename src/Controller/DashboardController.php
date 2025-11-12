@@ -8,6 +8,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use App\Repository\BookingRepository;
 use App\Repository\CarpoolRepository;
 use App\Repository\CarRepository;
+use App\Repository\ReviewRepository;
 use App\Entity\Carpool;
 
 class DashboardController extends AbstractController
@@ -16,19 +17,36 @@ class DashboardController extends AbstractController
     public function dashboard(
         BookingRepository $bookingRepository,
         CarpoolRepository $carpoolRepository,
-        CarRepository $carRepository 
+        CarRepository $carRepository,
+        ReviewRepository $reviewRepository
     ): Response {
         if ($this->getUser()) {
             $user = $this->getUser();
 
             $myBookings = $bookingRepository->findBy(['passenger' => $user], ['bookingDate' => 'DESC'], 5);
             $myCarpools = $carpoolRepository->findBy(['driver' => $user], ['departureDate' => 'DESC'], 5);
-            $myCars = $carRepository->findBy(['owner' => $user]); 
+            $myCars = $carRepository->findBy(['owner' => $user]);
+
+            // 3 derniers avis reçus (pour lequel l'utilisateur est la cible) — uniquement validés
+            $receivedReviews = $reviewRepository->findBy(
+                ['target' => $user, 'validated' => true],
+                ['date' => 'DESC'],
+                3
+            );
+
+            // 3 derniers avis écrits par l'utilisateur (auteur) — tous statuts
+            $authoredReviews = $reviewRepository->findBy(
+                ['author' => $user],
+                ['date' => 'DESC'],
+                3
+            );
 
             return $this->render('dashboard/index.html.twig', [
                 'myBookings' => $myBookings,
                 'myCarpools' => $myCarpools,
                 'myCars' => $myCars,
+                'receivedReviews' => $receivedReviews,
+                'authoredReviews' => $authoredReviews,
                 'STATUS_ACTIVE' => Carpool::STATUS_ACTIVE,
                 'STATUS_COMPLETED' => Carpool::STATUS_COMPLETED,
                 'STATUS_CANCELLED' => Carpool::STATUS_CANCELLED,

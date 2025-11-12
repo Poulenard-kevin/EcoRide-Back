@@ -1,4 +1,154 @@
-{{ form_start(form) }}
-    {{ form_widget(form) }}
-    <button class="btn">{{ button_label|default('Save') }}</button>
-{{ form_end(form) }}
+{# templates/review/_form.html.twig #}
+<div class="container py-4">
+  <div class="card shadow-sm">
+    <div class="card-header bg-primary text-white">
+      <h4 class="mb-0">
+        {% if review is defined and review is not null and review.id %}
+          Modifier mon avis
+        {% else %}
+          Laisser un avis
+        {% endif %}
+      </h4>
+    </div>
+
+    <div class="card-body">
+      {% if driver is defined and driver is not null %}
+        <div class="mb-3">
+          <strong>Pour :</strong>
+          <a href="{{ path('app_user_show', {'id': driver.id}) }}">
+            {{ driver.firstName }} {{ driver.lastName }}
+          </a>
+        </div>
+      {% elseif review is defined and review is not null and review.target is not null %}
+        <div class="mb-3">
+          <strong>Pour :</strong>
+          <a href="{{ path('app_user_show', {'id': review.target.id}) }}">
+            {{ review.target.firstName }} {{ review.target.lastName }}
+          </a>
+        </div>
+      {% endif %}
+
+      {{ form_start(form) }}
+        {{ form_errors(form) }}
+
+        {# --- Rating: étoiles cliquables --- #}
+        <div class="mb-3">
+          {{ form_label(form.rating) }}
+
+          <div id="star-rating" class="d-flex align-items-center" role="radiogroup" aria-label="Note">
+            {% for i in 1..5 %}
+              <button type="button"
+                      class="btn btn-link p-0 me-1 star-btn"
+                      data-value="{{ i }}"
+                      aria-checked="false"
+                      role="radio"
+                      title="{{ i }} étoile{{ i > 1 ? 's' : '' }}">
+                <i class="bi bi-star" style="font-size:1.35rem;color:#f0ad4e;"></i>
+              </button>
+            {% endfor %}
+            <span class="ms-2 small text-muted" id="star-rating-label">—</span>
+          </div>
+
+          {# Champ caché fiable : utilise le name complet du formulaire pour être bien soumis #}
+          <input type="hidden"
+                 id="rating-input"
+                 name="{{ form.rating.vars.full_name }}"
+                 value="{{ form.rating.vars.value is not null ? form.rating.vars.value : '' }}">
+
+          {{ form_help(form.rating) }}
+          {{ form_errors(form.rating) }}
+        </div>
+
+        {# Commentaire #}
+        <div class="mb-3">
+          {{ form_row(form.comment, {'attr': {'class': 'form-control', 'rows': 5}}) }}
+        </div>
+
+        <div class="d-flex gap-2">
+          <button class="btn btn-primary">
+            <i class="bi bi-save"></i>
+            {% if review is defined and review is not null and review.id %}Enregistrer{% else %}Envoyer{% endif %}
+          </button>
+
+          {# Annuler (booking -> driver -> dashboard) #}
+          {% if booking is defined and booking is not null and booking.carpool is defined and booking.carpool is not null %}
+            <a href="{{ path('app_carpool_show', {'id': booking.carpool.id}) }}" class="btn btn-outline-secondary">Annuler</a>
+          {% elseif driver is defined and driver is not null %}
+            <a href="{{ path('app_user_show', {'id': driver.id}) }}" class="btn btn-outline-secondary">Annuler</a>
+          {% else %}
+            <a href="{{ path('app_dashboard') }}" class="btn btn-outline-secondary">Annuler</a>
+          {% endif %}
+        </div>
+
+      {{ form_widget(form._token) }}
+      {{ form_end(form, {'render_rest': false}) }}
+      {# IMPORTANT : render_rest:false empêche le rendu automatique des champs non affichés (ex: select rating) #}
+    </div>
+  </div>
+</div>
+
+{# JS local (autonome) pour gérer les étoiles #}
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const starContainer = document.getElementById('star-rating');
+    if (!starContainer) return;
+
+    const stars = Array.from(starContainer.querySelectorAll('.star-btn'));
+    const hiddenInput = document.getElementById('rating-input');
+    const label = document.getElementById('star-rating-label');
+
+    function renderStars(value) {
+      stars.forEach((btn, idx) => {
+        const icon = btn.querySelector('i');
+        if (idx < value) {
+          icon.classList.remove('bi-star');
+          icon.classList.add('bi-star-fill');
+          btn.setAttribute('aria-checked', 'true');
+        } else {
+          icon.classList.remove('bi-star-fill');
+          icon.classList.add('bi-star');
+          btn.setAttribute('aria-checked', 'false');
+        }
+      });
+      label.textContent = value > 0 ? value + ' / 5' : '—';
+    }
+
+    const initial = parseInt(hiddenInput.value) || 0;
+    renderStars(initial);
+
+    stars.forEach((btn, idx) => {
+      const val = idx + 1;
+
+      btn.addEventListener('mouseover', () => renderStars(val));
+      btn.addEventListener('focus', () => renderStars(val));
+
+      btn.addEventListener('mouseout', () => {
+        const current = parseInt(hiddenInput.value) || 0;
+        renderStars(current);
+      });
+      btn.addEventListener('blur', () => {
+        const current = parseInt(hiddenInput.value) || 0;
+        renderStars(current);
+      });
+
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        hiddenInput.value = val;
+        renderStars(val);
+      });
+
+      btn.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          hiddenInput.value = val;
+          renderStars(val);
+        }
+        if (e.key === 'ArrowRight' && idx < stars.length - 1) {
+          stars[idx + 1].focus();
+        } else if (e.key === 'ArrowLeft' && idx > 0) {
+          stars[idx - 1].focus();
+        }
+      });
+    });
+  });
+</script>

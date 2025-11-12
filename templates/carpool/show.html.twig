@@ -153,8 +153,8 @@
                                         {# Bouton "Valider le trajet" pour le passager propriétaire (visible si statut awaiting) #}
                                         {% if app.user and booking.passenger and booking.passenger.id == app.user.id and booking.status == STATUS_AWAITING %}
                                             <div class="mt-3">
-                                                <form method="post" action="{{ path('booking_validate_trip', {id: booking.id}) }}">
-                                                    <input type="hidden" name="_token" value="{{ csrf_token('validateTrip' ~ booking.id) }}">
+                                                <form method="post" action="{{ path('app_booking_validate', {'id': booking.id}) }}">
+                                                    <input type="hidden" name="_token" value="{{ csrf_token('validate' ~ booking.id) }}">
                                                     <button class="btn btn-success btn-sm">Valider le trajet</button>
                                                 </form>
                                             </div>

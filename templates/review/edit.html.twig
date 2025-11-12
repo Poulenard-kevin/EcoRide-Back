@@ -3,14 +3,13 @@
 {% block title %}Modifier mon avis{% endblock %}
 
 {% block body %}
-<div class="container py-4">
-    <h1 class="h4 mb-3">Modifier mon avis</h1>
+  {# attend : form, review (l'entité existante), éventuellement booking/driver #}
+  {% include 'review/_form.html.twig' with { 'form': form, 'review': review, 'driver': driver|default(null), 'booking': booking|default(null) } %}
 
-    {{ form_start(form) }}
-        {{ form_row(form.rating) }}
-        {{ form_row(form.comment) }}
-        <button class="btn btn-primary">Mettre à jour</button>
-        <a href="{{ path('carpool_show', {id: review.carpool.id}) }}" class="btn btn-secondary">Annuler</a>
-    {{ form_end(form) }}
-</div>
+  {# bouton supprimer (si tu as le partial _delete_form) #}
+  <div class="container py-2">
+    <div class="text-end">
+      {{ include('review/_delete_form.html.twig') }}
+    </div>
+  </div>
 {% endblock %}

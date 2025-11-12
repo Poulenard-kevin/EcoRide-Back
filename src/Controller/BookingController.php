@@ -352,19 +352,33 @@ class BookingController extends AbstractController
     }
 
     #[Route('/booking/{id}/validate', name: 'app_booking_validate', methods: ['POST'])]
-    public function validateTrip(Booking $booking, Request $request, EntityManagerInterface $em): RedirectResponse
+    public function validate(int $id, Request $request, BookingRepository $bookingRepo, EntityManagerInterface $em): RedirectResponse
     {
-        if (!$this->isCsrfTokenValid('validateTrip'.$booking->getId(), $request->request->get('_token'))) {
-            $this->addFlash('danger', 'Token invalide.');
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+
+        // Récupérer explicitement la réservation (évite les problèmes du ParamConverter)
+        $booking = $bookingRepo->find($id);
+        if (!$booking) {
+            throw $this->createNotFoundException('Réservation introuvable.');
+        }
+
+        // Vérification CSRF : accepter tant la clé "validate{id}" que "validateTrip{id}" (tolérance)
+        $token = $request->request->get('_token');
+        $ok = $this->isCsrfTokenValid('validate' . $booking->getId(), $token)
+            || $this->isCsrfTokenValid('validateTrip' . $booking->getId(), $token);
+
+        if (!$ok) {
+            $this->addFlash('danger', 'Jeton CSRF invalide.');
             return $this->redirectToRoute('app_booking_show', ['id' => $booking->getId()]);
         }
 
-        $user = $this->getUser();
-        if (!$user || !$booking->getPassenger() || $booking->getPassenger()->getId() !== $user->getId()) {
-            throw $this->createAccessDeniedException('Vous n\'êtes pas autorisé à valider cette réservation.');
+        // Vérification autorisation : seul le passager peut valider sa réservation
+        if (!$booking->getPassenger() || $booking->getPassenger()->getId() !== $this->getUser()->getId()) {
+            throw $this->createAccessDeniedException();
         }
 
-        $booking->setStatus(Booking::STATUS_COMPLETED);
+        // Mettre la réservation comme terminée
+        $booking->setStatus('completed'); // ou Booking::STATUS_COMPLETED si tu utilises une constante
         if (method_exists($booking, 'setCompletedAt')) {
             $booking->setCompletedAt(new \DateTime());
         }
@@ -373,15 +387,12 @@ class BookingController extends AbstractController
 
         $this->addFlash('success', 'Trajet validé. Merci — vous pouvez maintenant laisser un avis.');
 
-        $driver = $booking->getCarpool() ? $booking->getCarpool()->getDriver() : null;
-        if ($driver) {
-            return $this->redirectToRoute('app_review_new', [
-                'driver'  => $driver->getId(),
-                'booking' => $booking->getId(),
-            ]);
-        }
-
-        return $this->redirectToRoute('app_booking_show', ['id' => $booking->getId()]);
+        // Rediriger vers création d'avis pour ce conducteur / réservation
+        $driver = $booking->getCarpool()->getDriver();
+        return $this->redirectToRoute('app_review_new', [
+            'driver' => $driver->getId(),
+            'booking' => $booking->getId(),
+        ]);
     }
 
     #[Route('/booking/{id}/complete', name: 'app_booking_complete', methods: ['POST'])]
