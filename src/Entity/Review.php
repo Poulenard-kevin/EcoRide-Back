@@ -51,6 +51,14 @@ class Review
     #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
     private ?Booking $booking = null;
 
+    public const STATUS_PENDING = 'PENDING';
+    public const STATUS_APPROVED = 'APPROVED';
+    public const STATUS_REJECTED = 'REJECTED';
+
+    #[ORM\Column(type: 'string', length: 16)]
+    private string $status = self::STATUS_PENDING;
+
+
     public function __construct()
     {
         $this->date = new \DateTime();
@@ -58,6 +66,28 @@ class Review
     }
 
     // --- getters / setters ---
+
+    public function getStatus(): ?string
+    {
+        return $this->status;
+    }
+
+    public function setStatus(string $status): self
+    {
+        $this->status = $status;
+        return $this;
+    }
+
+    public function isApproved(): bool
+    {
+        return $this->status === self::STATUS_APPROVED;
+    }
+
+    public function isPending(): bool
+    {
+        return $this->status === self::STATUS_PENDING;
+    }
+
     public function getBooking(): ?Booking
     {
         return $this->booking;

@@ -28,7 +28,7 @@ class ReviewController extends AbstractController
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
 
-        // Autoriser admin ou employé (ATTENTION: ROLE_EMPLOYE en FR)
+        // Autoriser admin ou employé
         if (!($this->isGranted('ROLE_ADMIN') || $this->isGranted('ROLE_EMPLOYE'))) {
             throw $this->createAccessDeniedException();
         }
@@ -48,10 +48,10 @@ class ReviewController extends AbstractController
     }
 
     /**
-     * Valider / dévalider un avis (POST)
-     * @Route("/review/{id}/validate", name="review_validate", methods={"POST"})
+     * Valider un avis (POST) — action dédiée pour approbation (modérateurs)
+     * @Route("/review/{id}/approve", name="review_approve", methods={"POST"})
      */
-    public function validate(Review $review, Request $request, EntityManagerInterface $em): RedirectResponse
+    public function approve(Review $review, Request $request, EntityManagerInterface $em): RedirectResponse
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
 
@@ -59,22 +59,45 @@ class ReviewController extends AbstractController
             throw $this->createAccessDeniedException();
         }
 
-        if (!$this->isCsrfTokenValid('validate'.$review->getId(), $request->request->get('_token'))) {
+        if (!$this->isCsrfTokenValid('approve'.$review->getId(), $request->request->get('_token'))) {
             $this->addFlash('danger', "Jeton CSRF invalide.");
-            return $this->redirectToRoute('review_index');
+            return $this->redirectToRoute('review_index', ['pending' => 1]);
         }
 
-        // toggle validation
-        $review->setValidated(!$review->isValidated());
+        $review->setValidated(true);
         $em->flush();
 
-        $this->addFlash('success', $review->isValidated() ? 'Avis validé.' : 'Validation annulée.');
-        // rester sur la liste des en attente
+        $this->addFlash('success', 'Avis validé.');
+        return $this->redirectToRoute('review_index', ['pending' => 1]);
+    }
+
+    /**
+     * Rejeter / supprimer un avis (POST) — action dédiée au rejet (modérateurs)
+     * @Route("/review/{id}/reject", name="review_reject", methods={"POST"})
+     */
+    public function reject(Review $review, Request $request, EntityManagerInterface $em): RedirectResponse
+    {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+
+        if (!($this->isGranted('ROLE_ADMIN') || $this->isGranted('ROLE_EMPLOYE'))) {
+            throw $this->createAccessDeniedException();
+        }
+
+        if (!$this->isCsrfTokenValid('reject'.$review->getId(), $request->request->get('_token'))) {
+            $this->addFlash('danger', "Jeton CSRF invalide.");
+            return $this->redirectToRoute('review_index', ['pending' => 1]);
+        }
+
+        $em->remove($review);
+        $em->flush();
+
+        $this->addFlash('success', 'Avis rejeté et supprimé.');
         return $this->redirectToRoute('review_index', ['pending' => 1]);
     }
 
     /**
      * Mes avis reçus (je suis chauffeur) — front
+     * Affiche uniquement les avis validés pour l'utilisateur courant
      * @Route("/me/reviews/received", name="review_my_received", methods={"GET"})
      */
     public function myReceived(ReviewRepository $repo): Response
@@ -91,6 +114,8 @@ class ReviewController extends AbstractController
 
     /**
      * Mes avis émis (ce que j'ai laissé) — front
+     * Pour les utilisateurs, on n'affiche QUE les avis validés.
+     * Les avis en attente sont accessibles uniquement via l'interface de modération.
      * @Route("/me/reviews", name="review_my_authored", methods={"GET"})
      */
     public function myAuthored(ReviewRepository $repo): Response
@@ -98,7 +123,7 @@ class ReviewController extends AbstractController
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
 
         $user = $this->getUser();
-        $reviews = $repo->findBy(['author' => $user], ['date' => 'DESC']);
+        $reviews = $repo->findBy(['author' => $user, 'validated' => true], ['date' => 'DESC']);
 
         return $this->render('review/my_authored.html.twig', [
             'reviews' => $reviews,
@@ -113,7 +138,8 @@ class ReviewController extends AbstractController
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
 
-        $isAuthor = $review->getAuthor() && $review->getAuthor()->getId() === $this->getUser()->getId();
+        $user = $this->getUser();
+        $isAuthor = $review->getAuthor() && $user && $review->getAuthor()->getId() === $user->getId();
         $isModerator = $this->isGranted('ROLE_ADMIN') || $this->isGranted('ROLE_EMPLOYE');
 
         if (!$isAuthor && !$isModerator) {
@@ -170,7 +196,10 @@ class ReviewController extends AbstractController
 
         $review = new Review();
         $review->setAuthor($user);
+        // Remarque : selon ton entité tu utilises setDriver ou setTarget — je laisse setDriver pour coller à ton code
         $review->setDriver($driver);
+        // marque l'avis comme non validé (en attente)
+        $review->setValidated(false);
 
         if ($booking) {
             $review->setBooking($booking);
@@ -187,8 +216,12 @@ class ReviewController extends AbstractController
             $em->persist($review);
             $em->flush();
 
-            $this->addFlash('success', 'Merci pour votre avis !');
-            return $this->redirectToRoute('app_booking_show', ['id' => $booking ? $booking->getId() : 0]);
+            $this->addFlash('success', 'Merci pour votre avis ! Il est en attente de validation.');
+            // redirige vers la réservation si possible, sinon dashboard
+            if ($booking) {
+                return $this->redirectToRoute('app_booking_show', ['id' => $booking->getId()]);
+            }
+            return $this->redirectToRoute('app_dashboard');
         }
 
         return $this->render('review/new.html.twig', [
@@ -199,13 +232,15 @@ class ReviewController extends AbstractController
     }
 
     /**
+     * Editer un avis (auteur ou modérateur)
      * @Route("/review/{id}/edit", name="review_edit", methods={"GET","POST"})
      */
     public function edit(Review $review, Request $request, EntityManagerInterface $em): Response
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
 
-        $isAuthor = $review->getAuthor() && $this->getUser() && $review->getAuthor()->getId() === $this->getUser()->getId();
+        $user = $this->getUser();
+        $isAuthor = $review->getAuthor() && $user && $review->getAuthor()->getId() === $user->getId();
         $isModerator = $this->isGranted('ROLE_ADMIN') || $this->isGranted('ROLE_EMPLOYE');
 
         if (!$isAuthor && !$isModerator) {
@@ -218,6 +253,7 @@ class ReviewController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             // Mettre à jour la date si nécessaire (optionnel)
             $review->setDate(new \DateTime());
+            // Si un auteur édite après rejet/validation, on laisse le champ validated tel quel.
             $em->flush();
 
             $this->addFlash('success', 'Avis mis à jour.');

@@ -53,10 +53,22 @@
                     {% endif %}
 
                     {# Note moyenne (à venir avec les avis) #}
-                    <div class="alert alert-light">
-                        <i class="bi bi-star-fill text-warning"></i>
-                        <strong>Note moyenne :</strong>
-                        <span class="text-muted">Bientôt disponible</span>
+                    <div>
+                    {% set nbReviews = user.receivedReviews|length %}
+                        {% if nbReviews > 0 %}
+                            {% set total = 0 %}
+                            {% for r in user.receivedReviews %}
+                                {% set total = total + (r.rating|default(0)) %}
+                            {% endfor %}
+                            {% set avg = (total / nbReviews) %}
+                            <p class="mb-3">
+                                <strong>Moyenne :</strong>
+                                <span class="text-warning">
+                                    {{ avg|number_format(1, ',', '.') }} / 5
+                                </span>
+                                <small class="text-muted">({{ nbReviews }} avis)</small>
+                            </p>
+                        {% endif %}
                     </div>
 
                     {# Informations sensibles uniquement pour l'admin #}

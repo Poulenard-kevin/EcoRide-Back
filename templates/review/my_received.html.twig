@@ -1,28 +1,60 @@
+{# templates/review/my_received.html.twig #}
 {% extends 'base.html.twig' %}
+
 {% block title %}Mes avis reçus{% endblock %}
+
 {% block body %}
 <div class="container py-4">
-    <h1 class="h4 mb-3">Avis reçus</h1>
+  <div class="card shadow-sm">
+    <div class="card-header bg-primary text-white d-flex align-items-center justify-content-between">
+      <h3 class="h6 mb-0">Avis reçus</h3>
+      <div class="small text-white-50">{{ reviews|length }} avis</div>
+    </div>
 
-    {% if reviews is empty %}
-        <div class="alert alert-info">Aucun avis reçu pour le moment.</div>
-    {% else %}
-        {% for r in reviews %}
-            <div class="card mb-3">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between">
-                        <strong>{{ r.author ? (r.author.firstName ~ ' ' ~ r.author.lastName)|trim : 'Anonyme' }}</strong>
-                        <span class="text-warning">
-                            {% for i in 1..5 %}
-                                {% if i <= r.rating %}<i class="bi bi-star-fill"></i>{% else %}<i class="bi bi-star"></i>{% endif %}
-                            {% endfor %}
-                        </span>
-                    </div>
-                    <p class="small text-muted mb-2">{{ r.date ? r.date|date('d/m/Y H:i') : '' }}</p>
-                    <p class="mb-0">{{ r.comment|e }}</p>
+    <div class="card-body">
+      {% if reviews is empty %}
+        <div class="alert alert-info mb-0">Aucun avis reçu pour le moment.</div>
+      {% else %}
+        <div class="list-group list-group-flush">
+          {% for r in reviews %}
+            <div class="list-group-item">
+              <div class="d-flex justify-content-between align-items-start">
+                <div>
+                  {% if r.author %}
+                    <a href="{{ path('app_user_show', {id: r.author.id}) }}" class="fw-semibold">
+                      {{ (r.author.firstName ~ ' ' ~ r.author.lastName)|trim }}
+                    </a>
+                  {% else %}
+                    <span class="fw-semibold">Anonyme</span>
+                  {% endif %}
+                  <div class="small text-muted">{{ r.date ? r.date|date('d/m/Y H:i') : '' }}</div>
                 </div>
+
+                <div class="text-end">
+                  <div class="text-warning mb-1" title="{{ r.rating }} / 5">
+                    {% for i in 1..5 %}
+                      <i class="bi {% if i <= r.rating %}bi-star-fill{% else %}bi-star{% endif %}"></i>
+                    {% endfor %}
+                  </div>
+                  <div class="small text-muted">{{ r.rating }}/5</div>
+                </div>
+              </div>
+
+              <div class="mt-2">
+                {% if r.comment %}
+                  <div
+                    {% if r.comment|length > 120 %}data-bs-toggle="tooltip" title="{{ r.comment|e }}" {% endif %}>
+                    {{ r.comment|striptags|length > 120 ? (r.comment|striptags|slice(0,120) ~ '…') : r.comment|striptags }}
+                  </div>
+                {% else %}
+                  <div class="text-muted">—</div>
+                {% endif %}
+              </div>
             </div>
-        {% endfor %}
-    {% endif %}
+          {% endfor %}
+        </div>
+      {% endif %}
+    </div>
+  </div>
 </div>
 {% endblock %}

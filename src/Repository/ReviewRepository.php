@@ -46,4 +46,53 @@ class ReviewRepository extends ServiceEntityRepository
 //            ->getOneOrNullResult()
 //        ;
 //    }
+
+    public function findApprovedByTarget(User $target, int $limit = null): array
+    {
+        $qb = $this->createQueryBuilder('r')
+            ->andWhere('r.target = :target')
+            ->andWhere('r.status = :approved')
+            ->setParameter('target', $target)
+            ->setParameter('approved', Review::STATUS_APPROVED)
+            ->orderBy('r.date', 'DESC');
+
+        if ($limit) $qb->setMaxResults($limit);
+
+        return $qb->getQuery()->getResult();
+    }
+
+    public function findApprovedByAuthor(User $author, int $limit = null): array
+    {
+        return $this->createQueryBuilder('r')
+            ->andWhere('r.author = :author')
+            ->andWhere('r.status = :approved')
+            ->setParameter('author', $author)
+            ->setParameter('approved', Review::STATUS_APPROVED)
+            ->orderBy('r.date', 'DESC')
+            ->setMaxResults($limit ?? 999)
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function findPendingForAuthor(User $author): array
+    {
+        return $this->createQueryBuilder('r')
+            ->andWhere('r.author = :author')
+            ->andWhere('r.status = :pending')
+            ->setParameter('author', $author)
+            ->setParameter('pending', Review::STATUS_PENDING)
+            ->orderBy('r.date', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function findPendingAll(): array // utile pour admin
+    {
+        return $this->createQueryBuilder('r')
+            ->andWhere('r.status = :pending')
+            ->setParameter('pending', Review::STATUS_PENDING)
+            ->orderBy('r.date', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
 }
