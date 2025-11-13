@@ -3,36 +3,64 @@
 namespace App\Entity;
 
 use DateTimeInterface;
-use Doctrine\DBAL\Types\Types;
-use App\Entity\Review;
-use Doctrine\ORM\Mapping as ORM;
 use App\Repository\BookingRepository;
+use App\Entity\Review;
+use Doctrine\DBAL\Types\Types;
+use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use ApiPlatform\Core\Annotation\ApiResource;
+use Symfony\Component\Serializer\Annotation\Groups;
 
-#[ORM\Entity(repositoryClass: BookingRepository::class)]
-#[ORM\Table(name: 'reservation')] 
+/**
+ * @ORM\Entity(repositoryClass=BookingRepository::class)
+ * @ORM\Table(name="reservation")
+ * @ApiResource(
+ *     normalizationContext={"groups"={"booking:read"}},
+ *     denormalizationContext={"groups"={"booking:write"}},
+ *     collectionOperations={
+ *         "get"={"security"="is_granted('ROLE_USER')"},
+ *         "post"={"security"="is_granted('ROLE_USER')"}
+ *     },
+ *     itemOperations={
+ *         "get"={"security"="is_granted('ROLE_USER')"},
+ *         "put"={"security"="object.getPassenger() == user or is_granted('ROLE_ADMIN')"},
+ *         "delete"={"security"="is_granted('ROLE_ADMIN')"}
+ *     }
+ * )
+ */
 class Booking
 {
-    #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column]
+    /**
+     * @ORM\Id
+     * @ORM\GeneratedValue
+     * @ORM\Column(type="integer")
+     * @Groups({"booking:read"})
+     */
     private ?int $id = null;
 
-    #[ORM\Column(name: 'date_reservation', type: Types::DATETIME_MUTABLE)] 
+    /**
+     * @ORM\Column(name="date_reservation", type="datetime")
+     * @Groups({"booking:read"})
+     */
     private ?DateTimeInterface $bookingDate = null;
 
-    #[Assert\NotNull(message: "Le nombre de places réservées est obligatoire.")]
-    #[Assert\Positive(message: "Le nombre de places réservées doit être un entier positif.")]
-    #[ORM\Column(name: 'nb_places_reservees')] 
+    /**
+     * @Assert\NotNull(message="Le nombre de places réservées est obligatoire.")
+     * @Assert\Positive(message="Le nombre de places réservées doit être un entier positif.")
+     * @ORM\Column(name="nb_places_reservees", type="integer")
+     * @Groups({"booking:read", "booking:write"})
+     */
     private ?int $reservedSeats = 1;
 
-    #[ORM\Column(name: "statut", length: 50, nullable: true)] // TODO: rendre NOT NULL après API
-    private ?string $status = 'pending'; // Valeur par défaut
+    /**
+     * @ORM\Column(name="statut", type="string", length=50, nullable=true)
+     * @Groups({"booking:read"})
+     */
+    private ?string $status = self::STATUS_PENDING;
 
-    // Constantes de statut
     public const STATUS_CONFIRMED = 'confirmed';
     public const STATUS_CANCELLED = 'cancelled';
     public const STATUS_PENDING   = 'pending';
@@ -40,43 +68,41 @@ class Booking
     public const STATUS_AWAITING_VALIDATION = 'awaiting_validation';
     public const STATUS_COMPLETED = 'completed';
 
-    #[ORM\ManyToOne(inversedBy: 'bookings', targetEntity: User::class)]
-    #[ORM\JoinColumn(name: "passager_id", nullable: true)] // TODO: rendre NOT NULL après API 
-    private ?User $passenger = null; 
+    /**
+     * @ORM\ManyToOne(targetEntity=User::class, inversedBy="bookings")
+     * @ORM\JoinColumn(name="passager_id", referencedColumnName="id", nullable=true)
+     * @Groups({"booking:read", "booking:write", "user:read"})
+     */
+    private ?User $passenger = null;
 
-    #[ORM\ManyToOne(inversedBy: 'bookings', targetEntity: Carpool::class)]
-    #[ORM\JoinColumn(name: "covoiturage_id", nullable: true)] // TODO: rendre NOT NULL après API
+    /**
+     * @ORM\ManyToOne(targetEntity=Carpool::class, inversedBy="bookings")
+     * @ORM\JoinColumn(name="covoiturage_id", referencedColumnName="id", nullable=true)
+     * @Groups({"booking:read", "booking:write", "carpool:read"})
+     */
     private ?Carpool $carpool = null;
 
-    #[ORM\Column(type: 'datetime', nullable: true)]
+    /**
+     * @ORM\Column(type="datetime", nullable=true)
+     * @Groups({"booking:read"})
+     */
     private ?\DateTimeInterface $completedAt = null;
 
-    #[ORM\OneToMany(targetEntity: Review::class, mappedBy: 'booking', cascade: ['remove'])]
+    /**
+     * @ORM\OneToMany(targetEntity=Review::class, mappedBy="booking", cascade={"remove"})
+     * @Groups({"booking:read"})
+     */
     private Collection $reviews;
 
-    // Constructeur pour initialiser la date et le statut
     public function __construct()
     {
         $this->bookingDate = new \DateTime();
         $this->reviews = new ArrayCollection();
         $this->status = self::STATUS_PENDING;
+        $this->reservedSeats = 1;
     }
 
-    public function getReviews(): Collection
-    {
-        return $this->reviews;
-    }
-
-    public function getCompletedAt(): ?\DateTimeInterface
-    {
-        return $this->completedAt;
-    }
-
-    public function setCompletedAt(?\DateTimeInterface $completedAt): self
-    {
-        $this->completedAt = $completedAt;
-        return $this;
-    }
+    // --- Getters / Setters ---
 
     public function getId(): ?int
     {
@@ -91,7 +117,6 @@ class Booking
     public function setBookingDate(DateTimeInterface $bookingDate): static
     {
         $this->bookingDate = $bookingDate;
-
         return $this;
     }
 
@@ -103,7 +128,6 @@ class Booking
     public function setReservedSeats(int $reservedSeats): self
     {
         $this->reservedSeats = $reservedSeats ?? 1;
-
         return $this;
     }
 
@@ -115,7 +139,6 @@ class Booking
     public function setStatus(string $status): static
     {
         $this->status = $status;
-
         return $this;
     }
 
@@ -126,6 +149,7 @@ class Booking
             self::STATUS_CANCELLED => 'Annulée',
             self::STATUS_PENDING   => 'En attente',
             self::STATUS_REFUSED   => 'Refusée',
+            self::STATUS_COMPLETED => 'Terminée',
         ];
     }
 
@@ -141,7 +165,8 @@ class Booking
             self::STATUS_CONFIRMED => 'bg-success',
             self::STATUS_CANCELLED => 'bg-danger',
             self::STATUS_PENDING   => 'bg-warning text-dark',
-            self::STATUS_REFUSED   => 'bg-danger', // ou bg-secondary si tu veux moins agressif
+            self::STATUS_REFUSED   => 'bg-danger',
+            self::STATUS_COMPLETED => 'bg-primary text-white',
         ];
     }
 
@@ -151,7 +176,6 @@ class Booking
         return $classes[$this->status] ?? 'bg-secondary';
     }
 
-    // Méthodes utiles pour vérifier le statut
     public function isPending(): bool
     {
         return $this->status === self::STATUS_PENDING;
@@ -172,19 +196,16 @@ class Booking
         return $this->status === self::STATUS_CANCELLED;
     }
 
-    // Vérifier si la réservation peut être annulée
     public function canBeCancelled(): bool
     {
-        return in_array($this->status, [self::STATUS_PENDING, self::STATUS_CONFIRMED]);
+        return in_array($this->status, [self::STATUS_PENDING, self::STATUS_CONFIRMED], true);
     }
 
-    // Vérifier si la réservation peut être confirmée
     public function canBeConfirmed(): bool
     {
         return $this->status === self::STATUS_PENDING;
     }
 
-    // Vérifier si la réservation peut être refusée
     public function canBeRefused(): bool
     {
         return $this->status === self::STATUS_PENDING;
@@ -198,12 +219,11 @@ class Booking
     public function setPassenger(?User $passenger): self
     {
         $this->passenger = $passenger;
-
         return $this;
     }
 
     /**
-     * Alias pour compatibilité : getUser() attendu ailleurs dans le code/Twig
+     * Alias getUser pour compatibilité avec ton code/Twig existant
      */
     public function getUser(): ?User
     {
@@ -211,7 +231,7 @@ class Booking
     }
 
     /**
-     * Alias setter si tu veux être cohérent
+     * Alias setUser pour compatibilité
      */
     public function setUser(?User $user): self
     {
@@ -226,19 +246,65 @@ class Booking
     public function setCarpool(?Carpool $carpool): static
     {
         $this->carpool = $carpool;
-
         return $this;
     }
 
-    /*#[Assert\Callback]
+    public function getCompletedAt(): ?\DateTimeInterface
+    {
+        return $this->completedAt;
+    }
+
+    public function setCompletedAt(?\DateTimeInterface $completedAt): self
+    {
+        $this->completedAt = $completedAt;
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Review>
+     */
+    public function getReviews(): Collection
+    {
+        return $this->reviews;
+    }
+
+    public function addReview(Review $review): static
+    {
+        if (!$this->reviews->contains($review)) {
+            $this->reviews->add($review);
+            $review->setBooking($this);
+        }
+        return $this;
+    }
+
+    public function removeReview(Review $review): static
+    {
+        if ($this->reviews->removeElement($review)) {
+            if ($review->getBooking() === $this) {
+                $review->setBooking(null);
+            }
+        }
+        return $this;
+    }
+
+    /**
+     * Validation personnalisée : s'assure que reservedSeats <= places restantes du covoiturage.
+     *
+     * @Assert\Callback
+     */
     public function validateReservedSeats(ExecutionContextInterface $context): void
     {
         $carpool = $this->getCarpool();
         if (!$carpool) {
+            // Pas de carpool renseigné : une autre validation peut s'en charger
             return;
         }
 
         // Calculer les places restantes en excluant la réservation en cours
+        if (!method_exists($carpool, 'getRemainingSeats')) {
+            return;
+        }
+
         $remainingSeats = $carpool->getRemainingSeats($this);
 
         if ($this->reservedSeats > $remainingSeats) {
@@ -246,5 +312,5 @@ class Booking
                 ->atPath('reservedSeats')
                 ->addViolation();
         }
-    }*/
+    }
 }
