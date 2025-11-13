@@ -5,105 +5,154 @@ namespace App\Entity;
 use App\Repository\CarpoolRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
+use ApiPlatform\Core\Annotation\ApiResource;
+use Symfony\Component\Serializer\Annotation\Groups;
 
-#[ORM\Entity(repositoryClass: CarpoolRepository::class)]
-#[ORM\Table(name: 'covoiturage')] 
-
+/**
+ * @ORM\Entity(repositoryClass=CarpoolRepository::class)
+ * @ORM\Table(name="covoiturage")
+ * @ApiResource(
+ *     normalizationContext={"groups"={"carpool:read"}},
+ *     denormalizationContext={"groups"={"carpool:write"}},
+ *     collectionOperations={
+ *         "get"={"security"="is_granted('ROLE_USER')"},
+ *         "post"={"security"="is_granted('ROLE_USER') or is_granted('ROLE_ADMIN')"}
+ *     },
+ *     itemOperations={
+ *         "get"={"security"="is_granted('ROLE_USER')"},
+ *         "put"={"security"="object.getDriver() == user or is_granted('ROLE_ADMIN')"},
+ *         "delete"={"security"="is_granted('ROLE_ADMIN')"}
+ *     }
+ * )
+ */
 class Carpool
 {
-    #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column]
+    /**
+     * @ORM\Id
+     * @ORM\GeneratedValue
+     * @ORM\Column(type="integer")
+     * @Groups({"carpool:read"})
+     */
     private ?int $id = null;
 
-    #[ORM\Column(name: 'date_depart', type: Types::DATE_MUTABLE)]
-    #[Assert\NotBlank(message: "La date de départ est obligatoire.")]
-   
+    /**
+     * @ORM\Column(name="date_depart", type="date")
+     * @Assert\NotBlank(message="La date de départ est obligatoire.")
+     * @Groups({"carpool:read", "carpool:write"})
+     */
     private ?\DateTimeInterface $departureDate = null;
 
-    #[ORM\Column(name: 'heure_depart', type: Types::TIME_MUTABLE)]
-    #[Assert\NotBlank(message: "L'heure de départ est obligatoire.")]
-   
+    /**
+     * @ORM\Column(name="heure_depart", type="time")
+     * @Assert\NotBlank(message="L'heure de départ est obligatoire.")
+     * @Groups({"carpool:read", "carpool:write"})
+     */
     private ?\DateTimeInterface $departureTime = null;
 
-    #[ORM\Column(name: 'lieu_depart', length: 255)]
-    #[Assert\NotBlank(message: "Le lieu de départ est obligatoire.")]
-    #[Assert\Length(max: 255, maxMessage: "Le lieu de départ ne peut pas dépasser {{ limit }} caractères.")]
+    /**
+     * @ORM\Column(name="lieu_depart", type="string", length=255)
+     * @Assert\NotBlank(message="Le lieu de départ est obligatoire.")
+     * @Assert\Length(max=255, maxMessage="Le lieu de départ ne peut pas dépasser {{ limit }} caractères.")
+     * @Groups({"carpool:read", "carpool:write"})
+     */
     private ?string $departureLocation = null;
 
-    #[ORM\Column(name: 'date_arrivee', type: Types::DATE_MUTABLE)]
-    #[Assert\NotBlank(message: "La date d'arrivée est obligatoire.")]
+    /**
+     * @ORM\Column(name="date_arrivee", type="date")
+     * @Assert\NotBlank(message="La date d'arrivée est obligatoire.")
+     * @Groups({"carpool:read", "carpool:write"})
+     */
     private ?\DateTimeInterface $arrivalDate = null;
 
-    #[ORM\Column(name: 'heure_arrivee', type: Types::TIME_MUTABLE)]
-    #[Assert\NotBlank(message: "L'heure d'arrivée est obligatoire.")]
+    /**
+     * @ORM\Column(name="heure_arrivee", type="time")
+     * @Assert\NotBlank(message="L'heure d'arrivée est obligatoire.")
+     * @Groups({"carpool:read", "carpool:write"})
+     */
     private ?\DateTimeInterface $arrivalTime = null;
 
-    #[ORM\Column(name: 'lieu_arrivee', length: 255)] 
-    #[Assert\NotBlank(message: "Le lieu d'arrivée est obligatoire.")]
-    #[Assert\Length(max: 255, maxMessage: "Le lieu d'arrivée ne peut pas dépasser {{ limit }} caractères.")]
-    private ?string $arrivalLocation = null; 
+    /**
+     * @ORM\Column(name="lieu_arrivee", type="string", length=255)
+     * @Assert\NotBlank(message="Le lieu d'arrivée est obligatoire.")
+     * @Assert\Length(max=255, maxMessage="Le lieu d'arrivée ne peut pas dépasser {{ limit }} caractères.")
+     * @Groups({"carpool:read", "carpool:write"})
+     */
+    private ?string $arrivalLocation = null;
 
-    #[ORM\Column(name: 'prix_par_place')] 
-    private ?int $pricePerSeat = null; 
+    /**
+     * @ORM\Column(name="prix_par_place", type="float", nullable=true)
+     * @Groups({"carpool:read", "carpool:write"})
+     */
+    private ?float $pricePerSeat = null;
 
-    #[ORM\Column(name: 'nb_places_total')] 
-    private ?int $totalSeats = null; 
+    /**
+     * @ORM\Column(name="nb_places_total", type="integer")
+     * @Groups({"carpool:read", "carpool:write"})
+     * @Assert\NotBlank(message="Le nombre total de places est obligatoire.")
+     * @Assert\Positive(message="Le nombre total de places doit être positif.")
+     */
+    private ?int $totalSeats = null;
 
-    #[ORM\Column(name: 'nb_places_dispo')]
-    #[Assert\GreaterThanOrEqual(value: 0, message: "Le nombre de places disponibles doit être supérieur ou égal à zéro.")]
+    /**
+     * @ORM\Column(name="nb_places_dispo", type="integer")
+     * @Assert\GreaterThanOrEqual(value=0, message="Le nombre de places disponibles doit être supérieur ou égal à zéro.")
+     * @Groups({"carpool:read", "carpool:write"})
+     */
     private ?int $availableSeats = null;
 
-    #[ORM\Column(name: "statut", length: 50, nullable: true)] // TODO: rendre NOT NULL après API
+    /**
+     * @ORM\Column(name="statut", type="string", length=50, nullable=true)
+     * @Groups({"carpool:read", "carpool:write"})
+     */
     private ?string $status = null;
 
-    // Ajoute aussi les constantes pour les statuts
     public const STATUS_DRAFT = 'draft';
     public const STATUS_ACTIVE = 'active';
     public const STATUS_STARTED = 'started';
+    public const STATUS_ONGOING = 'ongoing';
     public const STATUS_COMPLETED = 'completed';
     public const STATUS_CANCELLED = 'cancelled';
-    public const STATUS_ONGOING = 'ongoing';
     public const STATUS_ARCHIVED = 'archived';
 
-    #[Groups(['carpool:read', 'user:read'])]
-    #[ORM\ManyToOne(inversedBy: 'carpools', targetEntity: User::class)]
-    #[ORM\JoinColumn(name: "chauffeur_id", nullable: true)] // TODO: rendre NOT NULL après API 
-    private ?User $driver = null; 
+    /**
+     * @ORM\ManyToOne(targetEntity=User::class, inversedBy="carpools")
+     * @ORM\JoinColumn(name="chauffeur_id", referencedColumnName="id", nullable=true)
+     * @Groups({"carpool:read", "carpool:write", "user:read"})
+     */
+    private ?User $driver = null;
 
-    #[ORM\OneToMany(mappedBy: 'carpool', targetEntity: Booking::class, orphanRemoval: true, cascade: ['remove'])]
+    /**
+     * @ORM\OneToMany(targetEntity=Booking::class, mappedBy="carpool", orphanRemoval=true, cascade={"remove"})
+     */
     private Collection $bookings;
 
-    #[ORM\ManyToOne(inversedBy: 'carpools')]
-    #[ORM\JoinColumn(name: "voiture_id", nullable: true)] // TODO: rendre NOT NULL après API 
-    private ?Car $car = null; 
+    /**
+     * @ORM\ManyToOne(targetEntity=Car::class)
+     * @ORM\JoinColumn(name="voiture_id", referencedColumnName="id", nullable=true)
+     * @Groups({"carpool:read", "carpool:write", "car:read"})
+     */
+    private ?Car $car = null;
 
-    #[ORM\OneToMany(mappedBy: 'carpool', targetEntity: Review::class)]
-    private Collection $reviews; 
+    /**
+     * @ORM\OneToMany(targetEntity=Review::class, mappedBy="carpool")
+     */
+    private Collection $reviews;
 
-    #[ORM\Column(type: 'datetime', nullable: true)]
+    /**
+     * @ORM\Column(type="datetime", nullable=true)
+     * @Groups({"carpool:read"})
+     */
     private ?\DateTimeInterface $archivedAt = null;
-
-    public function getArchivedAt(): ?\DateTimeInterface
-    {
-        return $this->archivedAt;
-    }
-
-    public function setArchivedAt(?\DateTimeInterface $archivedAt): self
-    {
-        $this->archivedAt = $archivedAt;
-
-        return $this;
-    }
 
     public function __construct()
     {
         $this->bookings = new ArrayCollection();
         $this->reviews = new ArrayCollection();
     }
+
+    // --- Getters / Setters ---
 
     public function getId(): ?int
     {
@@ -118,7 +167,6 @@ class Carpool
     public function setDepartureDate(\DateTimeInterface $departureDate): static
     {
         $this->departureDate = $departureDate;
-
         return $this;
     }
 
@@ -130,7 +178,6 @@ class Carpool
     public function setDepartureTime(\DateTimeInterface $departureTime): static
     {
         $this->departureTime = $departureTime;
-
         return $this;
     }
 
@@ -142,7 +189,6 @@ class Carpool
     public function setDepartureLocation(string $departureLocation): static
     {
         $this->departureLocation = $departureLocation;
-
         return $this;
     }
 
@@ -154,7 +200,6 @@ class Carpool
     public function setArrivalDate(\DateTimeInterface $arrivalDate): static
     {
         $this->arrivalDate = $arrivalDate;
-
         return $this;
     }
 
@@ -166,7 +211,6 @@ class Carpool
     public function setArrivalTime(\DateTimeInterface $arrivalTime): static
     {
         $this->arrivalTime = $arrivalTime;
-
         return $this;
     }
 
@@ -178,7 +222,6 @@ class Carpool
     public function setArrivalLocation(string $arrivalLocation): static
     {
         $this->arrivalLocation = $arrivalLocation;
-
         return $this;
     }
 
@@ -187,10 +230,9 @@ class Carpool
         return $this->pricePerSeat;
     }
 
-    public function setPricePerSeat(float $pricePerSeat): static
+    public function setPricePerSeat(?float $pricePerSeat): static
     {
         $this->pricePerSeat = $pricePerSeat;
-
         return $this;
     }
 
@@ -202,7 +244,6 @@ class Carpool
     public function setTotalSeats(int $totalSeats): static
     {
         $this->totalSeats = $totalSeats;
-
         return $this;
     }
 
@@ -214,21 +255,25 @@ class Carpool
     public function setAvailableSeats(int $availableSeats): static
     {
         $this->availableSeats = $availableSeats;
-
         return $this;
     }
 
+    /**
+     * Calcule le nombre de places restantes en tenant compte des réservations.
+     * Si $excludeBooking est fourni, on l'exclut du calcul (utile lors de la modification).
+     */
     public function getRemainingSeats(?Booking $excludeBooking = null): int
     {
         $totalReserved = 0;
         foreach ($this->bookings as $booking) {
             if ($excludeBooking && $booking->getId() === $excludeBooking->getId()) {
-                continue; // Exclure la réservation en cours
+                continue;
             }
-            $totalReserved += $booking->getReservedSeats();
+            $totalReserved += (int) $booking->getReservedSeats();
         }
 
-        return max(0, $this->totalSeats - $totalReserved);
+        $total = (int) ($this->totalSeats ?? 0);
+        return max(0, $total - $totalReserved);
     }
 
     public function getDriver(): ?User
@@ -239,14 +284,12 @@ class Carpool
     public function setDriver(?User $driver): static
     {
         $this->driver = $driver;
-
         return $this;
     }
 
-    public function setStatus(string $status): self
+    public function setStatus(?string $status): self
     {
         $this->status = $status;
-
         return $this;
     }
 
@@ -258,8 +301,10 @@ class Carpool
     public static function getStatusLabels(): array
     {
         return [
+            self::STATUS_DRAFT => 'Brouillon',
             self::STATUS_ACTIVE => 'Actif',
-            self::STATUS_STARTED => 'En cours',
+            self::STATUS_STARTED => 'Démarré',
+            self::STATUS_ONGOING => 'En cours',
             self::STATUS_COMPLETED => 'Terminé',
             self::STATUS_CANCELLED => 'Annulé',
             self::STATUS_ARCHIVED => 'Archivé',
@@ -275,11 +320,13 @@ class Carpool
     public static function getStatusBadgeClasses(): array
     {
         return [
-            self::STATUS_ACTIVE    => 'bg-success',
-            self::STATUS_STARTED   => 'bg-info text-dark',
-            self::STATUS_COMPLETED => 'bg-primary text-white',
-            self::STATUS_CANCELLED => 'bg-danger',
-            self::STATUS_ARCHIVED  => 'bg-secondary',
+            self::STATUS_DRAFT    => 'bg-light text-dark',
+            self::STATUS_ACTIVE   => 'bg-success',
+            self::STATUS_STARTED  => 'bg-info text-dark',
+            self::STATUS_ONGOING  => 'bg-info text-dark',
+            self::STATUS_COMPLETED=> 'bg-primary text-white',
+            self::STATUS_CANCELLED=> 'bg-danger',
+            self::STATUS_ARCHIVED => 'bg-secondary',
         ];
     }
 
@@ -303,19 +350,16 @@ class Carpool
             $this->bookings->add($booking);
             $booking->setCarpool($this);
         }
-
         return $this;
     }
 
     public function removeBooking(Booking $booking): static
     {
         if ($this->bookings->removeElement($booking)) {
-            // set the owning side to null (unless already changed)
             if ($booking->getCarpool() === $this) {
                 $booking->setCarpool(null);
             }
         }
-
         return $this;
     }
 
@@ -327,7 +371,6 @@ class Carpool
     public function setCar(?Car $car): static
     {
         $this->car = $car;
-
         return $this;
     }
 
@@ -345,19 +388,27 @@ class Carpool
             $this->reviews->add($review);
             $review->setCarpool($this);
         }
-
         return $this;
     }
 
     public function removeReview(Review $review): static
     {
         if ($this->reviews->removeElement($review)) {
-            // set the owning side to null (unless already changed)
             if ($review->getCarpool() === $this) {
                 $review->setCarpool(null);
             }
         }
+        return $this;
+    }
 
+    public function getArchivedAt(): ?\DateTimeInterface
+    {
+        return $this->archivedAt;
+    }
+
+    public function setArchivedAt(?\DateTimeInterface $archivedAt): self
+    {
+        $this->archivedAt = $archivedAt;
         return $this;
     }
 }
