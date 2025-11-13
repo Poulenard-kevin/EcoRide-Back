@@ -20,13 +20,90 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *   normalizationContext={"groups"={"user:read"}},
  *   denormalizationContext={"groups"={"user:write"}},
  *   collectionOperations={
- *     "get"={"path"="/users", "security"="is_granted('ROLE_ADMIN')"},
- *     "post"={"path"="/users", "security"="is_granted('IS_AUTHENTICATED_ANONYMOUSLY')", "validation_groups"={"Default","Registration"}}
+ *     "get"={
+ *       "path"="/users",
+ *       "security"="is_granted('ROLE_ADMIN')",
+ *       "openapi_context"={
+ *         "summary"="Récupère la liste des utilisateurs",
+ *         "description"="Retourne la liste paginée des utilisateurs. Accessible uniquement aux administrateurs.",
+ *         "responses"={
+ *           "200"={"description"="Liste des utilisateurs (paginated)"}
+ *         }
+ *       }
+ *     },
+ *     "post"={
+ *       "path"="/users",
+ *       "security"="is_granted('IS_AUTHENTICATED_ANONYMOUSLY')",
+ *       "validation_groups"={"Default","Registration"},
+ *       "openapi_context"={
+ *         "summary"="Crée un nouvel utilisateur",
+ *         "description"="Inscription d'un nouvel utilisateur. Le mot de passe en clair (plainPassword) sera traité et haché côté serveur.",
+ *         "requestBody"={
+ *           "content"={
+ *             "application/json"={
+ *               "example"={
+ *                 "email"="utilisateur@example.com",
+ *                 "plainPassword"="P@ssw0rd!",
+ *                 "firstName"="Jean",
+ *                 "lastName"="Dupont"
+ *               }
+ *             }
+ *           }
+ *         },
+ *         "responses"={
+ *           "201"={"description"="Utilisateur créé"},
+ *           "400"={"description"="Erreurs de validation (ex: email déjà utilisé)"}
+ *         }
+ *       }
+ *     }
  *   },
  *   itemOperations={
- *     "get"={"path"="/users/{id}", "security"="is_granted('ROLE_USER')"},
- *     "put"={"path"="/users/{id}", "security"="object == user or is_granted('ROLE_ADMIN')"},
- *     "delete"={"path"="/users/{id}", "security"="is_granted('ROLE_ADMIN')"}
+ *     "get"={
+ *       "path"="/users/{id}",
+ *       "security"="is_granted('ROLE_USER')",
+ *       "openapi_context"={
+ *         "summary"="Récupère un utilisateur",
+ *         "description"="Retourne les informations publiques d'un utilisateur. Les champs sensibles (mot de passe, etc.) ne sont pas exposés ici.",
+ *         "responses"={
+ *           "200"={"description"="Détails d'un utilisateur"},
+ *           "403"={"description"="Accès refusé si non autorisé"}
+ *         }
+ *       }
+ *     },
+ *     "put"={
+ *       "path"="/users/{id}",
+ *       "security"="object == user or is_granted('ROLE_ADMIN')",
+ *       "openapi_context"={
+ *         "summary"="Met à jour un utilisateur",
+ *         "description"="Permet à l'utilisateur propriétaire ou à un admin de modifier le profil. Ne permet pas de modifier les rôles côté client.",
+ *         "requestBody"={
+ *           "content"={
+ *             "application/json"={
+ *               "example"={
+ *                 "firstName"="NouveauPrénom",
+ *                 "lastName"="NouveauNom",
+ *                 "plainPassword"="NouveauMotDePasseSiChangement"
+ *               }
+ *             }
+ *           }
+ *         },
+ *         "responses"={
+ *           "200"={"description"="Utilisateur mis à jour"},
+ *           "403"={"description"="Accès refusé"}
+ *         }
+ *       }
+ *     },
+ *     "delete"={
+ *       "path"="/users/{id}",
+ *       "security"="is_granted('ROLE_ADMIN')",
+ *       "openapi_context"={
+ *         "summary"="Supprime un utilisateur",
+ *         "description"="Suppression réservée aux administrateurs.",
+ *         "responses"={
+ *           "204"={"description"="Utilisateur supprimé"}
+ *         }
+ *       }
+ *     }
  *   }
  * )
  */

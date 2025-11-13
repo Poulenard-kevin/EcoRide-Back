@@ -129,7 +129,7 @@ class Carpool
     private Collection $bookings;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Car::class)
+     * @ORM\ManyToOne(targetEntity=Car::class, inversedBy="carpools")
      * @ORM\JoinColumn(name="voiture_id", referencedColumnName="id", nullable=true)
      * @Groups({"carpool:read", "carpool:write", "car:read"})
      */
