@@ -21,55 +21,92 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *         "post"={"security"="is_granted('ROLE_USER') or is_granted('ROLE_ADMIN')"}
  *     },
  *     itemOperations={
- *         "get"={},
- *         "put"={},
- *         "delete"={}
+ *         "get"={"security"="is_granted('ROLE_USER')"},
+ *         "put"={"security"="object.getOwner() == user or is_granted('ROLE_ADMIN')"},
+ *         "delete"={"security"="is_granted('ROLE_ADMIN')"}
  *     }
  * )
  */
-
 class Car
 {
-    #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column]
+    /**
+     * @ORM\Id
+     * @ORM\GeneratedValue
+     * @ORM\Column(type="integer")
+     * @Groups({"car:read"})
+     */
     private ?int $id = null;
 
-    #[ORM\Column(name: 'marque', length: 50)] 
-    private ?string $brand = null; 
+    /**
+     * @ORM\Column(name="marque", type="string", length=50)
+     * @Assert\NotBlank(message="La marque est obligatoire.")
+     * @Groups({"car:read", "car:write"})
+     */
+    private ?string $brand = null;
 
-    #[ORM\Column(name: 'modele', length: 50)] 
-    private ?string $model = null; 
+    /**
+     * @ORM\Column(name="modele", type="string", length=50)
+     * @Assert\NotBlank(message="Le modèle est obligatoire.")
+     * @Groups({"car:read", "car:write"})
+     */
+    private ?string $model = null;
 
-    #[ORM\Column(name: 'couleur', length: 30)] 
-    private ?string $color = null; 
+    /**
+     * @ORM\Column(name="couleur", type="string", length=30)
+     * @Assert\NotBlank(message="La couleur est obligatoire.")
+     * @Groups({"car:read", "car:write"})
+     */
+    private ?string $color = null;
 
-    #[ORM\Column(name: 'type_energie', length: 30)] 
-    private ?string $fuelType = null; 
+    /**
+     * @ORM\Column(name="type_energie", type="string", length=30)
+     * @Assert\NotBlank(message="Le type d'énergie est obligatoire.")
+     * @Groups({"car:read", "car:write"})
+     */
+    private ?string $fuelType = null;
 
-    #[ORM\Column(name: 'immatriculation', length: 20)] 
-    private ?string $registration = null; 
+    /**
+     * @ORM\Column(name="immatriculation", type="string", length=20)
+     * @Assert\NotBlank(message="L'immatriculation est obligatoire.")
+     * @Groups({"car:read", "car:write"})
+     */
+    private ?string $registration = null;
 
-    #[ORM\Column(name: 'nb_places')] 
-    private ?int $seats = null; 
+    /**
+     * @ORM\Column(name="nb_places", type="integer")
+     * @Assert\NotBlank(message="Le nombre de places est obligatoire.")
+     * @Assert\Positive(message="Le nombre de places doit être positif.")
+     * @Groups({"car:read", "car:write"})
+     */
+    private ?int $seats = null;
 
-    #[ORM\Column(name: 'preferences_chauffeur', nullable: true)] 
-    private ?array $driverPreferences = null; 
+    /**
+     * @ORM\Column(name="preferences_chauffeur", type="json", nullable=true)
+     * @Groups({"car:read", "car:write"})
+     */
+    private ?array $driverPreferences = null;
 
-    #[ORM\Column(name: 'autres_preferences', length: 255, nullable: true)]
-    #[Assert\Length(
-        max: 255,
-        maxMessage: "Le texte ne peut pas dépasser {{ limit }} caractères."
-    )]
+    /**
+     * @ORM\Column(name="autres_preferences", type="string", length=255, nullable=true)
+     * @Assert\Length(
+     *     max=255,
+     *     maxMessage="Le texte ne peut pas dépasser {{ limit }} caractères."
+     * )
+     * @Groups({"car:read", "car:write"})
+     */
     private ?string $otherPreferences = null;
 
-    #[Groups(['car:read', 'car:write'])]
-    #[ORM\ManyToOne(inversedBy: 'cars')]
-    #[ORM\JoinColumn(name: "proprietaire_id", nullable: true)] // TODO: rendre NOT NULL après API 
-    private ?User $owner = null; 
+    /**
+     * @ORM\ManyToOne(targetEntity=User::class, inversedBy="cars")
+     * @ORM\JoinColumn(name="proprietaire_id", referencedColumnName="id", nullable=true)
+     * @Groups({"car:read", "car:write"})
+     */
+    private ?User $owner = null;
 
-    #[ORM\OneToMany(mappedBy: 'car', targetEntity: Carpool::class, orphanRemoval: true)]
-    private Collection $carpools; 
+    /**
+     * @ORM\OneToMany(targetEntity=Carpool::class, mappedBy="car", orphanRemoval=true)
+     */
+    private Collection $carpools;
 
     public function __construct()
     {
@@ -89,7 +126,6 @@ class Car
     public function setBrand(string $brand): static
     {
         $this->brand = $brand;
-
         return $this;
     }
 
@@ -101,7 +137,6 @@ class Car
     public function setModel(string $model): static
     {
         $this->model = $model;
-
         return $this;
     }
 
@@ -113,7 +148,6 @@ class Car
     public function setColor(string $color): static
     {
         $this->color = $color;
-
         return $this;
     }
 
@@ -125,7 +159,6 @@ class Car
     public function setFuelType(string $fuelType): static
     {
         $this->fuelType = $fuelType;
-
         return $this;
     }
 
@@ -137,7 +170,6 @@ class Car
     public function setRegistration(string $registration): static
     {
         $this->registration = $registration;
-
         return $this;
     }
 
@@ -149,7 +181,6 @@ class Car
     public function setSeats(int $seats): static
     {
         $this->seats = $seats;
-
         return $this;
     }
 
@@ -161,7 +192,6 @@ class Car
     public function setDriverPreferences(?array $driverPreferences): static
     {
         $this->driverPreferences = $driverPreferences;
-
         return $this;
     }
 
@@ -173,7 +203,6 @@ class Car
     public function setOtherPreferences(?string $otherPreferences): static
     {
         $this->otherPreferences = $otherPreferences;
-
         return $this;
     }
 
@@ -185,7 +214,6 @@ class Car
     public function setOwner(?User $owner): static
     {
         $this->owner = $owner;
-
         return $this;
     }
 
@@ -203,20 +231,16 @@ class Car
             $this->carpools->add($carpool);
             $carpool->setCar($this);
         }
-
         return $this;
     }
 
     public function removeCarpool(Carpool $carpool): static
     {
         if ($this->carpools->removeElement($carpool)) {
-            // set the owning side to null (unless already changed)
             if ($carpool->getCar() === $this) {
                 $carpool->setCar(null);
             }
         }
-
         return $this;
     }
-
 }
