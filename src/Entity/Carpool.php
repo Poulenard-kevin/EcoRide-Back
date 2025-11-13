@@ -69,6 +69,7 @@ class Carpool
     public const STATUS_ONGOING = 'ongoing';
     public const STATUS_ARCHIVED = 'archived';
 
+    #[Groups(['carpool:read', 'user:read'])]
     #[ORM\ManyToOne(inversedBy: 'carpools', targetEntity: User::class)]
     #[ORM\JoinColumn(name: "chauffeur_id", nullable: true)] // TODO: rendre NOT NULL après API 
     private ?User $driver = null; 

@@ -5,12 +5,29 @@ namespace App\Entity;
 use App\Repository\CarRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-use App\Entity\Carpool;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
+use ApiPlatform\Core\Annotation\ApiResource;
+use Symfony\Component\Serializer\Annotation\Groups;
 
-#[ORM\Entity(repositoryClass: CarRepository::class)]
-#[ORM\Table(name: 'voiture')] 
+/**
+ * @ORM\Entity(repositoryClass=CarRepository::class)
+ * @ORM\Table(name="voiture")
+ * @ApiResource(
+ *     normalizationContext={"groups"={"car:read"}},
+ *     denormalizationContext={"groups"={"car:write"}},
+ *     collectionOperations={
+ *         "get"={"security"="is_granted('ROLE_ADMIN')"},
+ *         "post"={"security"="is_granted('ROLE_USER') or is_granted('ROLE_ADMIN')"}
+ *     },
+ *     itemOperations={
+ *         "get"={},
+ *         "put"={},
+ *         "delete"={}
+ *     }
+ * )
+ */
+
 class Car
 {
     #[ORM\Id]
@@ -46,6 +63,7 @@ class Car
     )]
     private ?string $otherPreferences = null;
 
+    #[Groups(['car:read', 'car:write'])]
     #[ORM\ManyToOne(inversedBy: 'cars')]
     #[ORM\JoinColumn(name: "proprietaire_id", nullable: true)] // TODO: rendre NOT NULL après API 
     private ?User $owner = null; 

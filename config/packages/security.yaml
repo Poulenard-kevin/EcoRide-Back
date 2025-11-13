@@ -1,5 +1,4 @@
 security:
-
     role_hierarchy:
         ROLE_EMPLOYE: ROLE_USER
         ROLE_ADMIN: [ROLE_EMPLOYE, ROLE_USER]
@@ -15,16 +14,18 @@ security:
                 property: email
 
     firewalls:
+        # Pas de sécurité sur les assets ou le profiler Symfony
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
 
+        # Firewall principal : gère la navigation, les formulaires, etc.
         main:
-            pattern: ^/
-            anonymous: lazy
+            lazy: true
             provider: app_user_provider
             user_checker: App\Security\UserChecker
 
+            # Authentification via formulaire classique
             form_login:
                 login_path: app_login
                 check_path: app_login
@@ -38,25 +39,30 @@ security:
                 path: app_logout
                 target: app_login
 
+            # Active la session (indispensable pour CSRF)
+            remember_me:
+                secret: '%kernel.secret%'
+                lifetime: 604800 # 1 semaine
+                path: /
+                always_remember_me: false
+
     access_control:
-        # Routes publiques (accessibles sans authentification)
-        - { path: ^/$, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        # Autorise l'accès public à certaines routes
+        - { path: ^/api/docs, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/api/docs.jsonld, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/login$, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/register$, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/reset-password, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/create-users$, roles: IS_AUTHENTICATED_ANONYMOUSLY }
 
-        # Routes admin (protégées)
+        # Exemples de restrictions par rôles
         - { path: ^/admin, roles: ROLE_ADMIN }
-
-        # Routes employé
         - { path: ^/employe, roles: ROLE_EMPLOYE }
-
-        # Routes utilisateur
         - { path: ^/user, roles: ROLE_USER }
         - { path: ^/carpool, roles: ROLE_USER }
         - { path: ^/booking, roles: ROLE_USER }
         - { path: ^/car, roles: ROLE_USER }
+        - { path: ^/review, roles: ROLE_USER }
 
-        # Règle par défaut (à placer en dernier)
-        - { path: ^/, roles: ROLE_USER }
+        # Par défaut, la page d'accueil est publique
+        - { path: ^/$, roles: IS_AUTHENTICATED_ANONYMOUSLY }

@@ -10,14 +10,39 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
+use ApiPlatform\Core\Annotation\ApiResource;
+use Symfony\Component\Serializer\Annotation\Groups;
 
-#[ORM\Entity(repositoryClass: UserRepository::class)]
-#[ORM\Table(name: 'utilisateur')]
+/**
+ * @ORM\Entity(repositoryClass=UserRepository::class)
+ * @ORM\Table(name="utilisateur")
+ * @ApiResource(
+ *   normalizationContext={"groups"={"user:read"}},
+ *   denormalizationContext={"groups"={"user:write"}},
+ *   collectionOperations={
+ *     "get"={"path"="/users", "security"="is_granted('ROLE_ADMIN')"},
+ *     "post"={"path"="/users", "security"="is_granted('IS_AUTHENTICATED_ANONYMOUSLY')", "validation_groups"={"Default","Registration"}}
+ *   },
+ *   itemOperations={
+ *     "get"={"path"="/users/{id}", "security"="is_granted('ROLE_USER')"},
+ *     "put"={"path"="/users/{id}", "security"="object == user or is_granted('ROLE_ADMIN')"},
+ *     "delete"={"path"="/users/{id}", "security"="is_granted('ROLE_ADMIN')"}
+ *   }
+ * )
+ */
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
-    #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column]
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private ?string $apiToken = null;
+
+    /**
+     * @Groups({"user:read"})
+     * @ORM\Id
+     * @ORM\GeneratedValue
+     * @ORM\Column(type="integer")
+     */
     private ?int $id = null;
 
     /**
@@ -26,8 +51,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      *     pattern="/^[A-Za-zÀ-ÖØ-öø-ÿ\s'-]{2,}$/u",
      *     message="Le nom doit contenir au moins 2 lettres et ne peut contenir que des lettres, espaces, apostrophes ou tirets."
      * )
+     * @Groups({"user:read", "user:write", "review:read"})
+     * @ORM\Column(name="nom", type="string", length=100)
      */
-    #[ORM\Column(name: 'nom', length: 100)]
     private ?string $lastName = null;
 
     /**
@@ -36,18 +62,23 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      *     pattern="/^[A-Za-zÀ-ÖØ-öø-ÿ\s'-]{2,}$/u",
      *     message="Le prénom doit contenir au moins 2 lettres et ne peut contenir que des lettres, espaces, apostrophes ou tirets."
      * )
+     * @Groups({"user:read", "user:write", "review:read"})
+     * @ORM\Column(name="prenom", type="string", length=100)
      */
-    #[ORM\Column(name: 'prenom', length: 100)]
     private ?string $firstName = null;
 
     /**
      * @Assert\NotBlank(message="L'email est obligatoire.")
      * @Assert\Email(message="L'email n'est pas valide.")
+     * @Groups({"user:admin_read", "user:write"})
+     * @ORM\Column(name="email", type="string", length=180)
      */
-    #[ORM\Column(name: 'email', length: 180)]
     private ?string $email = null;
 
-    #[ORM\Column(length: 255)]
+    /**
+     * @Groups({"user:write"})
+     * @ORM\Column(type="string", length=255)
+     */
     private ?string $password = null;
 
     /**
@@ -57,6 +88,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      *     message="Le mot de passe doit contenir au moins 8 caractères, une majuscule, un chiffre et un symbole.",
      *     groups={"Registration"}
      * )
+     * @Groups({"user:write"})
      */
     private ?string $plainPassword = null;
 
@@ -65,39 +97,66 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public const ROLE_EMPLOYE = 'ROLE_EMPLOYE';
     public const ROLE_ADMIN = 'ROLE_ADMIN';
 
-    #[ORM\Column(name: 'note_moyenne', nullable: true)]
+    /**
+     * @Groups({"user:read"})
+     * @ORM\Column(name="note_moyenne", type="float", nullable=true)
+     */
     private ?float $averageRating = null;
 
-    #[ORM\Column(name: 'a_propos', type: Types::TEXT, nullable: true)]
-    #[Assert\Length(
-        max: 500,
-        maxMessage: "Le texte ne peut pas dépasser 500 caractères."
-    )]
+    /**
+     * @Groups({"user:read", "user:write"})
+     * @ORM\Column(name="a_propos", type="text", nullable=true)
+     * @Assert\Length(
+     *     max=500,
+     *     maxMessage="Le texte ne peut pas dépasser 500 caractères."
+     * )
+     */
     private ?string $about = null;
 
-    #[ORM\OneToMany(mappedBy: 'owner', targetEntity: Car::class, orphanRemoval: true)]
-    private Collection $cars;
-
-    #[ORM\OneToMany(mappedBy: 'driver', targetEntity: Carpool::class)]
-    private Collection $carpools;
-
-    #[ORM\OneToMany(mappedBy: 'passenger', targetEntity: Booking::class)]
-    private Collection $bookings;
-
-    #[ORM\OneToMany(mappedBy: 'author', targetEntity: Review::class, orphanRemoval: true)]
-    private Collection $reviews;
-
-    #[ORM\OneToMany(mappedBy: 'target', targetEntity: Review::class, orphanRemoval: true)]
-    private Collection $receivedReviews;
-
-    #[ORM\Column(type: 'datetime', nullable: true)]
-    private ?\DateTimeInterface $lastPasswordResetRequestAt = null;
-
-    #[ORM\Column(type: 'json')]
+    /**
+     * @Groups({"user:admin_read"})
+     * @ORM\Column(type="json")
+     */
     private array $roles = [];
 
-    #[ORM\Column(type: 'boolean')]
+    /**
+     * @Groups({"user:admin_read"})
+     * @ORM\Column(type="boolean")
+     */
     private bool $isActive = true;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Car::class, mappedBy="owner", orphanRemoval=true)
+     */
+    private Collection $cars;
+
+    /**
+     * @Groups({"user:read"})
+     * @ORM\OneToMany(targetEntity=Carpool::class, mappedBy="driver")
+     */
+    private Collection $carpools;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Booking::class, mappedBy="passenger")
+     */
+    private Collection $bookings;
+
+    /**
+     * @Groups({"user:read"})
+     * @ORM\OneToMany(targetEntity=Review::class, mappedBy="author", orphanRemoval=true)
+     */
+    private Collection $reviews;
+
+    /**
+     * @Groups({"user:read"})
+     * @ORM\OneToMany(targetEntity=Review::class, mappedBy="target", orphanRemoval=true)
+     */
+    private Collection $receivedReviews;
+
+    /**
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private ?\DateTimeInterface $lastPasswordResetRequestAt = null;
 
     public function __construct()
     {
@@ -107,6 +166,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->bookings = new ArrayCollection();
         $this->reviews = new ArrayCollection();
         $this->receivedReviews = new ArrayCollection();
+    }
+
+    public function getApiToken(): ?string
+    {
+        return $this->apiToken;
+    }
+
+    public function setApiToken(?string $apiToken): self
+    {
+        $this->apiToken = $apiToken;
+        return $this;
     }
 
     public function getId(): ?int
