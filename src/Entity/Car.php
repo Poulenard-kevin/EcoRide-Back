@@ -180,7 +180,7 @@ class Car
     /**
      * @ORM\ManyToOne(targetEntity=User::class, inversedBy="cars")
      * @ORM\JoinColumn(name="proprietaire_id", referencedColumnName="id", nullable=true)
-     * @Groups({"car:read", "car:write"})
+     * @Groups({"car:read"})
      */
     private ?User $owner = null;
 

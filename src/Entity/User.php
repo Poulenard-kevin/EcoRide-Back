@@ -84,7 +84,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *                 "lastName"="NouveauNom",
  *                 "plainPassword"="NouveauMotDePasseSiChangement"
  *               }
- *             }
+ *             }  
  *           }
  *         },
  *         "responses"={

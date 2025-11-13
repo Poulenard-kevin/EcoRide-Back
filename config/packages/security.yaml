@@ -1,4 +1,6 @@
 security:
+    enable_authenticator_manager: true
+
     role_hierarchy:
         ROLE_EMPLOYE: ROLE_USER
         ROLE_ADMIN: [ROLE_EMPLOYE, ROLE_USER]
@@ -19,19 +21,30 @@ security:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
 
+        # Firewall API : stateless, pour les requêtes /api (token)
+        api:
+            pattern: ^/api
+            stateless: true
+            provider: app_user_provider
+            # utilise l'Authenticator ci‑dessous pour lire Authorization: Bearer <token>
+            custom_authenticators:
+                - App\Security\ApiTokenAuthenticator
+
         # Firewall principal : gère la navigation, les formulaires, etc.
         main:
             lazy: true
             provider: app_user_provider
             user_checker: App\Security\UserChecker
 
-            # Authentification via formulaire classique
+            # Authentification via formulaire classique (CSRF + session)
             form_login:
                 login_path: app_login
                 check_path: app_login
                 username_parameter: email
                 password_parameter: password
-                csrf_token_generator: security.csrf.token_manager
+                enable_csrf: true
+                csrf_token_id: authenticate    # identifiant utilisé côté serveur pour générer/valider le token
+                csrf_parameter: _csrf_token    # nom du champ dans le formulaire (par défaut _csrf_token)
                 default_target_path: /
                 always_use_default_target_path: false
 
@@ -39,7 +52,6 @@ security:
                 path: app_logout
                 target: app_login
 
-            # Active la session (indispensable pour CSRF)
             remember_me:
                 secret: '%kernel.secret%'
                 lifetime: 604800 # 1 semaine
