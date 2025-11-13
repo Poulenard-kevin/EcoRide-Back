@@ -21,13 +21,87 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *     normalizationContext={"groups"={"booking:read"}},
  *     denormalizationContext={"groups"={"booking:write"}},
  *     collectionOperations={
- *         "get"={"security"="is_granted('ROLE_USER')"},
- *         "post"={"security"="is_granted('ROLE_USER')"}
+ *         "get"={
+ *           "path"="/bookings",
+ *           "security"="is_granted('ROLE_USER')",
+ *           "openapi_context"={
+ *             "summary"="Récupère la liste des réservations",
+ *             "description"="Retourne la liste paginée des réservations. Accessible aux utilisateurs connectés.",
+ *             "responses"={
+ *               "200"={"description"="Liste des réservations"}
+ *             }
+ *           }
+ *         },
+ *         "post"={
+ *           "path"="/bookings",
+ *           "security"="is_granted('ROLE_USER')",
+ *           "openapi_context"={
+ *             "summary"="Crée une réservation",
+ *             "description"="Permet à un utilisateur connecté de réserver des places pour un covoiturage. Le passager (`passenger`) est défini automatiquement côté serveur à partir de l'utilisateur authentifié : ne pas l'envoyer dans le payload.",
+ *             "requestBody"={
+ *               "content"={
+ *                 "application/json"={
+ *                   "example"={
+ *                     "carpool" = "/api/carpools/12",
+ *                     "reservedSeats" = 2
+ *                   }
+ *                 }
+ *               }
+ *             },
+ *             "responses"={
+ *               "201"={"description"="Réservation créée"},
+ *               "400"={"description"="Erreurs de validation (ex: places insuffisantes)"},
+ *               "403"={"description"="Non autorisé"}
+ *             }
+ *           }
+ *         }
  *     },
  *     itemOperations={
- *         "get"={"security"="is_granted('ROLE_USER')"},
- *         "put"={"security"="object.getPassenger() == user or is_granted('ROLE_ADMIN')"},
- *         "delete"={"security"="is_granted('ROLE_ADMIN')"}
+ *         "get"={
+ *           "path"="/bookings/{id}",
+ *           "security"="is_granted('ROLE_USER')",
+ *           "openapi_context"={
+ *             "summary"="Récupère une réservation",
+ *             "description"="Affiche les détails d'une réservation. Accessible aux utilisateurs connectés (à adapter si tu veux restreindre aux propriétaires/admin).",
+ *             "responses"={
+ *               "200"={"description"="Détails de la réservation"},
+ *               "404"={"description"="Réservation introuvable"}
+ *             }
+ *           }
+ *         },
+ *         "put"={
+ *           "path"="/bookings/{id}",
+ *           "security"="object.getPassenger() == user or is_granted('ROLE_ADMIN')",
+ *           "openapi_context"={
+ *             "summary"="Met à jour une réservation",
+ *             "description"="Permet au passager (propriétaire de la réservation) ou à un admin de modifier une réservation (ex : nombre de places si le covoiturage le permet). Certains changements peuvent être refusés par la validation métier (places restantes).",
+ *             "requestBody"={
+ *               "content"={
+ *                 "application/json"={
+ *                   "example"={
+ *                     "reservedSeats" = 1
+ *                   }
+ *                 }
+ *               }
+ *             },
+ *             "responses"={
+ *               "200"={"description"="Réservation mise à jour"},
+ *               "400"={"description"="Erreurs de validation"},
+ *               "403"={"description"="Accès refusé"}
+ *             }
+ *           }
+ *         },
+ *         "delete"={
+ *           "path"="/bookings/{id}",
+ *           "security"="is_granted('ROLE_ADMIN')",
+ *           "openapi_context"={
+ *             "summary"="Supprime une réservation",
+ *             "description"="Suppression réservée aux administrateurs. En production tu peux autoriser aussi le passager à annuler (adapter la sécurité si besoin).",
+ *             "responses"={
+ *               "204"={"description"="Réservation supprimée"}
+ *             }
+ *           }
+ *         }
  *     }
  * )
  */

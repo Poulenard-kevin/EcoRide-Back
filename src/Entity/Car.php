@@ -17,13 +17,94 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *     normalizationContext={"groups"={"car:read"}},
  *     denormalizationContext={"groups"={"car:write"}},
  *     collectionOperations={
- *         "get"={"security"="is_granted('ROLE_ADMIN')"},
- *         "post"={"security"="is_granted('ROLE_USER') or is_granted('ROLE_ADMIN')"}
+ *         "get"={
+ *           "path"="/cars",
+ *           "security"="is_granted('ROLE_ADMIN')",
+ *           "openapi_context"={
+ *             "summary"="Récupère la liste des voitures",
+ *             "description"="Retourne la liste paginée des véhicules. Accessible uniquement aux administrateurs.",
+ *             "responses"={
+ *               "200"={"description"="Liste des voitures (paginated)"}
+ *             }
+ *           }
+ *         },
+ *         "post"={
+ *           "path"="/cars",
+ *           "security"="is_granted('ROLE_USER') or is_granted('ROLE_ADMIN')",
+ *           "openapi_context"={
+ *             "summary"="Crée une nouvelle voiture",
+ *             "description"="Enregistre un véhicule. Le champ `owner` est défini automatiquement côté serveur (utilisateur courant). Ne pas envoyer `owner` dans le payload.",
+ *             "requestBody"={
+ *               "content"={
+ *                 "application/json"={
+ *                   "example"={
+ *                     "brand" = "Peugeot",
+ *                     "model" = "208",
+ *                     "color" = "Bleu",
+ *                     "fuelType" = "Essence",
+ *                     "registration" = "AB-123-CD",
+ *                     "seats" = 4,
+ *                     "driverPreferences" = {"fumeur": false, "animaux": false},
+ *                     "otherPreferences" = "Pas de musique forte"
+ *                   }
+ *                 }
+ *               }
+ *             },
+ *             "responses"={
+ *               "201"={"description"="Voiture créée"},
+ *               "400"={"description"="Erreurs de validation"}
+ *             }
+ *           }
+ *         }
  *     },
  *     itemOperations={
- *         "get"={"security"="is_granted('ROLE_USER')"},
- *         "put"={"security"="object.getOwner() == user or is_granted('ROLE_ADMIN')"},
- *         "delete"={"security"="is_granted('ROLE_ADMIN')"}
+ *         "get"={
+ *           "path"="/cars/{id}",
+ *           "security"="is_granted('ROLE_USER')",
+ *           "openapi_context"={
+ *             "summary"="Récupère une voiture",
+ *             "description"="Détails d'un véhicule. Les informations sensibles (si tu en as) ne sont pas exposées.",
+ *             "responses"={
+ *               "200"={"description"="Détails de la voiture"},
+ *               "404"={"description"="Voiture introuvable"}
+ *             }
+ *           }
+ *         },
+ *         "put"={
+ *           "path"="/cars/{id}",
+ *           "security"="object.getOwner() == user or is_granted('ROLE_ADMIN')",
+ *           "openapi_context"={
+ *             "summary"="Met à jour une voiture",
+ *             "description"="Permet au propriétaire du véhicule ou à un administrateur de modifier ses informations. Le champ `owner` ne peut pas être modifié via cette opération.",
+ *             "requestBody"={
+ *               "content"={
+ *                 "application/json"={
+ *                   "example"={
+ *                     "brand" = "Peugeot",
+ *                     "model" = "208",
+ *                     "color" = "Noir",
+ *                     "seats" = 5
+ *                   }
+ *                 }
+ *               }
+ *             },
+ *             "responses"={
+ *               "200"={"description"="Voiture mise à jour"},
+ *               "403"={"description"="Accès refusé"}
+ *             }
+ *           }
+ *         },
+ *         "delete"={
+ *           "path"="/cars/{id}",
+ *           "security"="is_granted('ROLE_ADMIN')",
+ *           "openapi_context"={
+ *             "summary"="Supprime une voiture",
+ *             "description"="Suppression réservée aux administrateurs.",
+ *             "responses"={
+ *               "204"={"description"="Voiture supprimée"}
+ *             }
+ *           }
+ *         }
  *     }
  * )
  */

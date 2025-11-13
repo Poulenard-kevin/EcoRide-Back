@@ -16,13 +16,89 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *     normalizationContext={"groups"={"review:read"}},
  *     denormalizationContext={"groups"={"review:write"}},
  *     collectionOperations={
- *         "get"={"security"="is_granted('ROLE_USER')"},
- *         "post"={"security"="is_granted('ROLE_USER')"}
+ *         "get"={
+ *           "path"="/reviews",
+ *           "security"="is_granted('ROLE_USER')",
+ *           "openapi_context"={
+ *             "summary"="Récupère la liste des avis",
+ *             "description"="Retourne la liste paginée des avis. Accessible aux utilisateurs connectés.",
+ *             "responses"={
+ *               "200"={"description"="Liste des avis"}
+ *             }
+ *           }
+ *         },
+ *         "post"={
+ *           "path"="/reviews",
+ *           "security"="is_granted('ROLE_USER')",
+ *           "openapi_context"={
+ *             "summary"="Crée un nouvel avis",
+ *             "description"="Permet à un utilisateur de poster un avis sur un covoiturage. L'auteur (`author`) est automatiquement défini comme l'utilisateur courant. Le `target` (personne notée) est généralement le conducteur du covoiturage concerné.",
+ *             "requestBody"={
+ *               "content"={
+ *                 "application/json"={
+ *                   "example"={
+ *                     "rating" = 5,
+ *                     "comment" = "Très bon trajet, conducteur sympathique.",
+ *                     "carpool" = "/api/carpools/12",
+ *                     "target" = "/api/users/7"
+ *                   }
+ *                 }
+ *               }
+ *             },
+ *             "responses"={
+ *               "201"={"description"="Avis créé"},
+ *               "400"={"description"="Erreurs de validation (ex: note hors plage)"},
+ *               "403"={"description"="Non autorisé"}
+ *             }
+ *           }
+ *         }
  *     },
  *     itemOperations={
- *         "get"={"security"="is_granted('ROLE_USER')"},
- *         "put"={"security"="object.getAuthor() == user or is_granted('ROLE_ADMIN')"},
- *         "delete"={"security"="is_granted('ROLE_ADMIN')"}
+ *         "get"={
+ *           "path"="/reviews/{id}",
+ *           "security"="is_granted('ROLE_USER')",
+ *           "openapi_context"={
+ *             "summary"="Récupère un avis",
+ *             "description"="Affiche les détails d'un avis. Accessible aux utilisateurs connectés.",
+ *             "responses"={
+ *               "200"={"description"="Détails de l'avis"},
+ *               "404"={"description"="Avis introuvable"}
+ *             }
+ *           }
+ *         },
+ *         "put"={
+ *           "path"="/reviews/{id}",
+ *           "security"="object.getAuthor() == user or is_granted('ROLE_ADMIN')",
+ *           "openapi_context"={
+ *             "summary"="Met à jour un avis",
+ *             "description"="Permet à l'auteur de l'avis ou à un admin de modifier le commentaire ou la note.",
+ *             "requestBody"={
+ *               "content"={
+ *                 "application/json"={
+ *                   "example"={
+ *                     "comment" = "Mis à jour : trajet agréable mais un peu long."
+ *                   }
+ *                 }
+ *               }
+ *             },
+ *             "responses"={
+ *               "200"={"description"="Avis mis à jour"},
+ *               "400"={"description"="Erreurs de validation"},
+ *               "403"={"description"="Accès refusé"}
+ *             }
+ *           }
+ *         },
+ *         "delete"={
+ *           "path"="/reviews/{id}",
+ *           "security"="is_granted('ROLE_ADMIN')",
+ *           "openapi_context"={
+ *             "summary"="Supprime un avis",
+ *             "description"="Suppression réservée aux administrateurs.",
+ *             "responses"={
+ *               "204"={"description"="Avis supprimé"}
+ *             }
+ *           }
+ *         }
  *     }
  * )
  */

@@ -17,13 +17,93 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *     normalizationContext={"groups"={"carpool:read"}},
  *     denormalizationContext={"groups"={"carpool:write"}},
  *     collectionOperations={
- *         "get"={"security"="is_granted('ROLE_USER')"},
- *         "post"={"security"="is_granted('ROLE_USER') or is_granted('ROLE_ADMIN')"}
+ *         "get"={
+ *           "path"="/carpools",
+ *           "security"="is_granted('ROLE_USER')",
+ *           "openapi_context"={
+ *             "summary"="Récupère la liste des covoiturages",
+ *             "description"="Retourne la liste paginée des covoiturages actifs. Accessible à tous les utilisateurs connectés.",
+ *             "responses"={
+ *               "200"={"description"="Liste des covoiturages"}
+ *             }
+ *           }
+ *         },
+ *         "post"={
+ *           "path"="/carpools",
+ *           "security"="is_granted('ROLE_USER') or is_granted('ROLE_ADMIN')",
+ *           "openapi_context"={
+ *             "summary"="Propose un nouveau covoiturage",
+ *             "description"="Crée un covoiturage. Le conducteur est automatiquement défini comme l'utilisateur courant. Le véhicule doit être sélectionné parmi ceux de l'utilisateur.",
+ *             "requestBody"={
+ *               "content"={
+ *                 "application/json"={
+ *                   "example"={
+ *                     "departureDate" = "2025-12-01",
+ *                     "departureTime" = "08:30:00",
+ *                     "departureLocation" = "Paris",
+ *                     "arrivalDate" = "2025-12-01",
+ *                     "arrivalTime" = "12:00:00",
+ *                     "arrivalLocation" = "Lyon",
+ *                     "pricePerSeat" = 15.5,
+ *                     "totalSeats" = 4,
+ *                     "car" = "/api/cars/5"
+ *                   }
+ *                 }
+ *               }
+ *             },
+ *             "responses"={
+ *               "201"={"description"="Covoiturage proposé"},
+ *               "400"={"description"="Erreurs de validation"}
+ *             }
+ *           }
+ *         }
  *     },
  *     itemOperations={
- *         "get"={"security"="is_granted('ROLE_USER')"},
- *         "put"={"security"="object.getDriver() == user or is_granted('ROLE_ADMIN')"},
- *         "delete"={"security"="is_granted('ROLE_ADMIN')"}
+ *         "get"={
+ *           "path"="/carpools/{id}",
+ *           "security"="is_granted('ROLE_USER')",
+ *           "openapi_context"={
+ *             "summary"="Récupère un covoiturage",
+ *             "description"="Affiche les détails d’un covoiturage. Accessible à tous les utilisateurs connectés.",
+ *             "responses"={
+ *               "200"={"description"="Détails du covoiturage"},
+ *               "404"={"description"="Covoiturage introuvable"}
+ *             }
+ *           }
+ *         },
+ *         "put"={
+ *           "path"="/carpools/{id}",
+ *           "security"="object.getDriver() == user or is_granted('ROLE_ADMIN')",
+ *           "openapi_context"={
+ *             "summary"="Modifie un covoiturage",
+ *             "description"="Permet au conducteur ou à un admin de modifier les informations du covoiturage. Certaines modifications peuvent être bloquées selon le statut (ex: après démarrage).",
+ *             "requestBody"={
+ *               "content"={
+ *                 "application/json"={
+ *                   "example"={
+ *                     "departureLocation" = "Versailles",
+ *                     "pricePerSeat" = 12.0
+ *                   }
+ *                 }
+ *               }
+ *             },
+ *             "responses"={
+ *               "200"={"description"="Covoiturage mis à jour"},
+ *               "403"={"description"="Accès refusé"}
+ *             }
+ *           }
+ *         },
+ *         "delete"={
+ *           "path"="/carpools/{id}",
+ *           "security"="is_granted('ROLE_ADMIN')",
+ *           "openapi_context"={
+ *             "summary"="Supprime un covoiturage",
+ *             "description"="Suppression réservée aux administrateurs.",
+ *             "responses"={
+ *               "204"={"description"="Covoiturage supprimé"}
+ *             }
+ *           }
+ *         }
  *     }
  * )
  */
