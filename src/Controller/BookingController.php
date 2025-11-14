@@ -39,11 +39,23 @@ class BookingController extends AbstractController
         $booking = new Booking();
         $booking->setCarpool($carpool);
 
-        $form = $this->createForm(BookingType::class, $booking, ['is_edit' => false]);
+        // Préremplir passenger AVANT la création du form pour les utilisateurs non-admin
+        if (!$this->isGranted('ROLE_ADMIN')) {
+            $booking->setPassenger($user);
+        }
+
+        // dire au BookingType si on doit afficher le champ passenger (seulement pour admin)
+        $form = $this->createForm(BookingType::class, $booking, [
+            'is_edit' => false,
+            'allow_passenger' => $this->isGranted('ROLE_ADMIN'),
+        ]);
+
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            if ($carpool->getDriver() === $user) {
+            // si admin a choisi un passager via le formulaire, $booking->getPassenger() est déjà renseigné
+            $passenger = $booking->getPassenger() ?? $user;
+            if ($carpool->getDriver() === $passenger) {
                 $this->addFlash('error', 'Vous ne pouvez pas réserver votre propre covoiturage.');
                 return $this->renderForm('booking/new.html.twig', [
                     'booking' => $booking,
@@ -55,7 +67,7 @@ class BookingController extends AbstractController
             $reservedSeats = max(1, (int)$booking->getReservedSeats());
 
             $existingBooking = $bookingRepository->findOneBy([
-                'passenger' => $user,
+                'passenger' => $passenger,
                 'carpool' => $carpool,
             ]);
             if ($existingBooking) {
@@ -63,11 +75,7 @@ class BookingController extends AbstractController
                 return $this->redirectToRoute('app_booking_show', ['id' => $existingBooking->getId()]);
             }
 
-            // calculer les places réellement disponibles depuis la base
-            $statusesToCount = [Booking::STATUS_PENDING, Booking::STATUS_CONFIRMED];
-            $occupied = $bookingRepository->sumReservedSeatsByCarpoolAndStatuses($carpool, $statusesToCount);
-
-            // récupérer totalSeats (fallback sur la voiture si nécessaire)
+            // ... le reste du code inchangé ...
             $totalSeats = $carpool->getTotalSeats();
             if ($totalSeats === null && method_exists($carpool, 'getCar') && $carpool->getCar()) {
                 $vehicle = $carpool->getCar();
@@ -78,6 +86,8 @@ class BookingController extends AbstractController
                 }
             }
 
+            $statusesToCount = [Booking::STATUS_PENDING, Booking::STATUS_CONFIRMED];
+            $occupied = $bookingRepository->sumReservedSeatsByCarpoolAndStatuses($carpool, $statusesToCount);
             $available = $totalSeats !== null ? max(0, $totalSeats - $occupied) : 0;
 
             if ($available < $reservedSeats) {
@@ -93,7 +103,11 @@ class BookingController extends AbstractController
             $conn->beginTransaction();
 
             try {
-                $booking->setPassenger($user);
+                // si ce n'était pas déjà défini (ex: admin), on l'affecte ici encore par sécurité
+                if (null === $booking->getPassenger()) {
+                    $booking->setPassenger($user);
+                }
+
                 $booking->setStatus(Booking::STATUS_PENDING);
                 $booking->setBookingDate(new \DateTime());
                 $booking->setReservedSeats($reservedSeats);

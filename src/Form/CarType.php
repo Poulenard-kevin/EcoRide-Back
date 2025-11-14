@@ -29,9 +29,9 @@ class CarType extends AbstractType
             ])
             ->add('fuelType', ChoiceType::class, [
                 'choices' => [
-                    'Électrique' => 'Electrique',
-                    'Thermique' => 'Thermique',
-                    'Hybride' => 'Hybride',
+                    'Électrique' => Car::FUEL_ELECTRIC,
+                    'Thermique'  => Car::FUEL_THERMIC,
+                    'Hybride'    => Car::FUEL_HYBRID,
                 ],
                 'label' => 'Type d\'énergie',
                 'placeholder' => 'Choisissez un type d\'énergie',

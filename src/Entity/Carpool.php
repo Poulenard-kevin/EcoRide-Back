@@ -169,16 +169,15 @@ class Carpool
 
     /**
      * @ORM\Column(name="nb_places_total", type="integer")
-     * @Groups({"carpool:read", "carpool:write"})
-     * @Assert\NotBlank(message="Le nombre total de places est obligatoire.")
+     * @Groups({"carpool:read"})
      * @Assert\Positive(message="Le nombre total de places doit être positif.")
      */
     private ?int $totalSeats = null;
 
     /**
      * @ORM\Column(name="nb_places_dispo", type="integer")
+     * @Groups({"carpool:read"})   
      * @Assert\GreaterThanOrEqual(value=0, message="Le nombre de places disponibles doit être supérieur ou égal à zéro.")
-     * @Groups({"carpool:read", "carpool:write"})
      */
     private ?int $availableSeats = null;
 

@@ -13,6 +13,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use ApiPlatform\Core\Annotation\ApiResource;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Annotation\SerializedName;
 
 /**
  * @ORM\Entity(repositoryClass=BookingRepository::class)
@@ -126,6 +127,7 @@ class Booking
      * @Assert\Positive(message="Le nombre de places réservées doit être un entier positif.")
      * @ORM\Column(name="nb_places_reservees", type="integer")
      * @Groups({"booking:read", "booking:write"})
+     * @SerializedName("seats") // optionnel : mappe le nom JSON "seats" sur cette propriété
      */
     private ?int $reservedSeats = 1;
 
@@ -144,8 +146,9 @@ class Booking
 
     /**
      * @ORM\ManyToOne(targetEntity=User::class, inversedBy="bookings")
-     * @ORM\JoinColumn(name="passager_id", referencedColumnName="id", nullable=true)
+     * @ORM\JoinColumn(name="passager_id", referencedColumnName="id", nullable=false)
      * @Groups({"booking:read", "booking:write", "user:read"})
+     * @Assert\NotNull(message="Le passager est obligatoire.")
      */
     private ?User $passenger = null;
 
@@ -191,6 +194,17 @@ class Booking
     public function setBookingDate(DateTimeInterface $bookingDate): static
     {
         $this->bookingDate = $bookingDate;
+        return $this;
+    }
+
+    public function getSeats(): ?int
+    {
+        return $this->reservedSeats;
+    }
+
+    public function setSeats(int $seats): self
+    {
+        $this->reservedSeats = $seats;
         return $this;
     }
 

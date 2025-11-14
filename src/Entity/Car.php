@@ -9,6 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use ApiPlatform\Core\Annotation\ApiResource;
 use Symfony\Component\Serializer\Annotation\Groups;
+use ApiPlatform\Core\Annotation\ApiProperty;
 
 /**
  * @ORM\Entity(repositoryClass=CarRepository::class)
@@ -139,12 +140,32 @@ class Car
      */
     private ?string $color = null;
 
+    public const FUEL_ELECTRIC = 'Électrique';
+    public const FUEL_THERMIC  = 'Thermique';
+    public const FUEL_HYBRID   = 'Hybride';
+
+    public const FUEL_CHOICES = [
+        self::FUEL_ELECTRIC,
+        self::FUEL_THERMIC,
+        self::FUEL_HYBRID,
+    ];
+
     /**
      * @ORM\Column(name="type_energie", type="string", length=30)
      * @Assert\NotBlank(message="Le type d'énergie est obligatoire.")
+     * @Assert\Choice(choices=Car::FUEL_CHOICES, message="Type d'énergie invalide.")
      * @Groups({"car:read", "car:write"})
+     * @ApiProperty(attributes={
+     *     "openapi_context"={
+     *         "type"="string",
+     *         "enum"={
+     *             "Électrique","Thermique","Hybride"
+     *         }
+     *     }
+     * })
      */
     private ?string $fuelType = null;
+
 
     /**
      * @ORM\Column(name="immatriculation", type="string", length=20)
@@ -237,7 +258,7 @@ class Car
         return $this->fuelType;
     }
 
-    public function setFuelType(string $fuelType): static
+    public function setFuelType(string $fuelType): self
     {
         $this->fuelType = $fuelType;
         return $this;
