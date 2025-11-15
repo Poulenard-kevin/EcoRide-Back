@@ -9,7 +9,6 @@ class SessionCookieNameListener
 {
     public function onKernelRequest(RequestEvent $event)
     {
-        dump('Listener called');
         
         $request = $event->getRequest();
 
@@ -28,7 +27,6 @@ class SessionCookieNameListener
         }
 
         $firewallName = $request->attributes->get('_firewall_context');
-        dump($firewallName);
 
         if ($firewallName === 'admin') {
             $session->setName('PHPSESSID_ADMIN');
