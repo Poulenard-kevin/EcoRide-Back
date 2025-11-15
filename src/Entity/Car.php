@@ -35,22 +35,6 @@ use ApiPlatform\Core\Annotation\ApiProperty;
  *           "openapi_context"={
  *             "summary"="Crée une nouvelle voiture",
  *             "description"="Enregistre un véhicule. Le champ `owner` est défini automatiquement côté serveur (utilisateur courant). Ne pas envoyer `owner` dans le payload.",
- *             "requestBody"={
- *               "content"={
- *                 "application/json"={
- *                   "example"={
- *                     "brand" = "Peugeot",
- *                     "model" = "208",
- *                     "color" = "Bleu",
- *                     "fuelType" = "Essence",
- *                     "registration" = "AB-123-CD",
- *                     "seats" = 4,
- *                     "driverPreferences" = {"fumeur": false, "animaux": false},
- *                     "otherPreferences" = "Pas de musique forte"
- *                   }
- *                 }
- *               }
- *             },
  *             "responses"={
  *               "201"={"description"="Voiture créée"},
  *               "400"={"description"="Erreurs de validation"}
@@ -77,18 +61,6 @@ use ApiPlatform\Core\Annotation\ApiProperty;
  *           "openapi_context"={
  *             "summary"="Met à jour une voiture",
  *             "description"="Permet au propriétaire du véhicule ou à un administrateur de modifier ses informations. Le champ `owner` ne peut pas être modifié via cette opération.",
- *             "requestBody"={
- *               "content"={
- *                 "application/json"={
- *                   "example"={
- *                     "brand" = "Peugeot",
- *                     "model" = "208",
- *                     "color" = "Noir",
- *                     "seats" = 5
- *                   }
- *                 }
- *               }
- *             },
  *             "responses"={
  *               "200"={"description"="Voiture mise à jour"},
  *               "403"={"description"="Accès refusé"}

@@ -39,16 +39,6 @@ use Symfony\Component\Serializer\Annotation\SerializedName;
  *           "openapi_context"={
  *             "summary"="Crée une réservation",
  *             "description"="Permet à un utilisateur connecté de réserver des places pour un covoiturage. Le passager (`passenger`) est défini automatiquement côté serveur à partir de l'utilisateur authentifié : ne pas l'envoyer dans le payload.",
- *             "requestBody"={
- *               "content"={
- *                 "application/json"={
- *                   "example"={
- *                     "carpool" = "/api/carpools/12",
- *                     "reservedSeats" = 2
- *                   }
- *                 }
- *               }
- *             },
  *             "responses"={
  *               "201"={"description"="Réservation créée"},
  *               "400"={"description"="Erreurs de validation (ex: places insuffisantes)"},
@@ -76,15 +66,6 @@ use Symfony\Component\Serializer\Annotation\SerializedName;
  *           "openapi_context"={
  *             "summary"="Met à jour une réservation",
  *             "description"="Permet au passager (propriétaire de la réservation) ou à un admin de modifier une réservation (ex : nombre de places si le covoiturage le permet). Certains changements peuvent être refusés par la validation métier (places restantes).",
- *             "requestBody"={
- *               "content"={
- *                 "application/json"={
- *                   "example"={
- *                     "reservedSeats" = 1
- *                   }
- *                 }
- *               }
- *             },
  *             "responses"={
  *               "200"={"description"="Réservation mise à jour"},
  *               "400"={"description"="Erreurs de validation"},

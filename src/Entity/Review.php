@@ -33,18 +33,6 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *           "openapi_context"={
  *             "summary"="Crée un nouvel avis",
  *             "description"="Permet à un utilisateur de poster un avis sur un covoiturage. L'auteur (`author`) est automatiquement défini comme l'utilisateur courant. Le `target` (personne notée) est généralement le conducteur du covoiturage concerné.",
- *             "requestBody"={
- *               "content"={
- *                 "application/json"={
- *                   "example"={
- *                     "rating" = 5,
- *                     "comment" = "Très bon trajet, conducteur sympathique.",
- *                     "carpool" = "/api/carpools/12",
- *                     "target" = "/api/users/7"
- *                   }
- *                 }
- *               }
- *             },
  *             "responses"={
  *               "201"={"description"="Avis créé"},
  *               "400"={"description"="Erreurs de validation (ex: note hors plage)"},
@@ -72,15 +60,6 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *           "openapi_context"={
  *             "summary"="Met à jour un avis",
  *             "description"="Permet à l'auteur de l'avis ou à un admin de modifier le commentaire ou la note.",
- *             "requestBody"={
- *               "content"={
- *                 "application/json"={
- *                   "example"={
- *                     "comment" = "Mis à jour : trajet agréable mais un peu long."
- *                   }
- *                 }
- *               }
- *             },
  *             "responses"={
  *               "200"={"description"="Avis mis à jour"},
  *               "400"={"description"="Erreurs de validation"},

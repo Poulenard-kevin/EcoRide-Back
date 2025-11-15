@@ -39,18 +39,6 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  *       "openapi_context"={
  *         "summary"="Crée un nouvel utilisateur",
  *         "description"="Inscription d'un nouvel utilisateur. Le mot de passe en clair (plainPassword) sera traité et haché côté serveur.",
- *         "requestBody"={
- *           "content"={
- *             "application/json"={
- *               "example"={
- *                 "email"="utilisateur@example.com",
- *                 "plainPassword"="P@ssw0rd!",
- *                 "firstName"="Jean",
- *                 "lastName"="Dupont"
- *               }
- *             }
- *           }
- *         },
  *         "responses"={
  *           "201"={"description"="Utilisateur créé"},
  *           "400"={"description"="Erreurs de validation (ex: email déjà utilisé)"}
@@ -61,7 +49,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  *   itemOperations={
  *     "get"={
  *       "path"="/users/{id}",
- *       "security"="is_granted('ROLE_ADMIN') or object == user",
+ *       "security"="is_granted('ROLE_USER') and (object == user or is_granted('ROLE_ADMIN'))",
  *       "openapi_context"={
  *         "summary"="Récupère un utilisateur",
  *         "description"="Retourne les informations publiques d'un utilisateur. Les champs sensibles ne sont pas exposés ici.",
@@ -77,17 +65,6 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  *       "openapi_context"={
  *         "summary"="Met à jour un utilisateur",
  *         "description"="Permet au propriétaire ou à un admin de modifier le profil. Ne permet pas de modifier les rôles côté client.",
- *         "requestBody"={
- *           "content"={
- *             "application/json"={
- *               "example"={
- *                 "firstName"="NouveauPrénom",
- *                 "lastName"="NouveauNom",
- *                 "plainPassword"="NouveauMotDePasseSiChangement"
- *               }
- *             }
- *           }
- *         },
  *         "responses"={
  *           "200"={"description"="Utilisateur mis à jour"},
  *           "403"={"description"="Accès refusé"}
@@ -96,12 +73,13 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  *     },
  *     "delete"={
  *       "path"="/users/{id}",
- *       "security"="is_granted('ROLE_ADMIN')",
+ *       "security"="object == user or is_granted('ROLE_ADMIN')",
  *       "openapi_context"={
  *         "summary"="Supprime un utilisateur",
- *         "description"="Suppression réservée aux administrateurs.",
+ *         "description"="Permet à l'utilisateur de supprimer son propre compte ou à un administrateur de supprimer n'importe quel compte.",
  *         "responses"={
- *           "204"={"description"="Utilisateur supprimé"}
+ *           "204"={"description"="Utilisateur supprimé"},
+ *           "403"={"description"="Accès refusé"}
  *         }
  *       }
  *     }
@@ -154,7 +132,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $email = null;
 
     /**
-     * @Groups({"user:write"})
+     * // pas de groupe user:write ici : le hash ne doit pas être envoyé par le client
      * @ORM\Column(type="string", length=255)
      */
     private ?string $password = null;

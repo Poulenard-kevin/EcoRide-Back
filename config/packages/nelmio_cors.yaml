@@ -3,9 +3,9 @@ nelmio_cors:
         origin_regex: true
         allow_origin: ['^https?://(localhost|127\\.0\\.0\\.1)(:[0-9]{1,5})?$']
         allow_methods: ['GET','POST','PUT','PATCH','DELETE','OPTIONS']
-        allow_headers: ['Content-Type','Authorization','X-Requested-With']
+        allow_headers: ['Content-Type','Authorization','X-Requested-With','X-AUTH-TOKEN']
         allow_credentials: true
-        expose_headers: ['Link']
+        expose_headers: ['Link','X-Debug-Token','X-Debug-Token-Link']
         max_age: 3600
     paths:
         '^/': ~
