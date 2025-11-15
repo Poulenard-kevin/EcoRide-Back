@@ -2,12 +2,12 @@
 
 namespace App\OpenApi;
 
-use ApiPlatform\Core\OpenApi\Factory\OpenApiFactoryInterface;
-use ApiPlatform\Core\OpenApi\Model\Components;
-use ApiPlatform\Core\OpenApi\Model\SecurityScheme;
-use ApiPlatform\Core\OpenApi\OpenApi;
+use ApiPlatform\OpenApi\Factory\OpenApiFactoryInterface;
+use ApiPlatform\OpenApi\Model\Components;
+use ApiPlatform\OpenApi\Model\SecurityScheme;
+use ApiPlatform\OpenApi\OpenApi;
 
-class OpenApiDecorator implements OpenApiFactoryInterface
+final class OpenApiDecorator implements OpenApiFactoryInterface
 {
     private OpenApiFactoryInterface $decorated;
 
@@ -21,20 +21,28 @@ class OpenApiDecorator implements OpenApiFactoryInterface
         $openApi = ($this->decorated)($context);
 
         $components = $openApi->getComponents();
+        $schemes = $components->getSecuritySchemes() ?? [];
 
-        // ➜ On ajoute un schéma "ApiToken"
-        $securitySchemes = $components->getSecuritySchemes() ?? [];
-        $securitySchemes['ApiToken'] = new SecurityScheme(
-            'apiKey',      // type
-            'header',      // in
-            'X-AUTH-TOKEN' // name du header
+        // bearerAuth
+        $schemes['bearerAuth'] = new SecurityScheme(
+            type: 'http',
+            scheme: 'bearer',
+            bearerFormat: 'JWT' // label only; your tokens can be anything
         );
 
-        $components = $components->withSecuritySchemes($securitySchemes);
+        // API key header
+        $schemes['ApiKeyAuth'] = new SecurityScheme(
+            type: 'apiKey',
+            name: 'X-AUTH-TOKEN',
+            in: 'header'  
+        );
 
-        // ➜ On applique la sécurité par défaut (bouton authorize)
-        $openApi = $openApi->withSecurity([['ApiToken' => []]]);
-        $openApi = $openApi->withComponents($components);
+        $openApi = $openApi->withComponents($components->withSecuritySchemes($schemes));
+
+        // Apply a global security requirement (optional)
+        $security = $openApi->getSecurity() ?? [];
+        $security[] = ['bearerAuth' => []];
+        $openApi = $openApi->withSecurity($security);
 
         return $openApi;
     }

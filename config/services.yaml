@@ -29,6 +29,7 @@ services:
     App\OpenApi\OpenApiDecorator:
         decorates: 'api_platform.openapi.factory'
         arguments: ['@App\OpenApi\OpenApiDecorator.inner']
+        autoconfigure: false
     
     App\DataPersister\UserDataPersister:
         autowire: true

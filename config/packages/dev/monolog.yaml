@@ -1,0 +1,13 @@
+# config/packages/dev/monolog.yaml
+monolog:
+  handlers:
+    main:
+      type: stream
+      path: "%kernel.logs_dir%/%kernel.environment%.log"
+      level: debug
+      channels: ["!deprecation"]
+    deprecation:
+      type: stream
+      path: "%kernel.logs_dir%/%kernel.environment%_deprecations.log"
+      level: info
+      channels: ["deprecation"]

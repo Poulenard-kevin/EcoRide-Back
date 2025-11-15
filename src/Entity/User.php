@@ -73,7 +73,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  *     },
  *     "delete"={
  *       "path"="/users/{id}",
- *       "security"="object == user or is_granted('ROLE_ADMIN')",
+ *       "security"="is_granted('ROLE_ADMIN') or (user and object.getId() == user.getId())",
  *       "openapi_context"={
  *         "summary"="Supprime un utilisateur",
  *         "description"="Permet à l'utilisateur de supprimer son propre compte ou à un administrateur de supprimer n'importe quel compte.",
