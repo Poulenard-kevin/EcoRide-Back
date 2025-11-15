@@ -16,35 +16,34 @@ security:
                 property: email
 
     firewalls:
-        # Pas de sécurité sur les assets ou le profiler Symfony
+
+        # Profiler, assets, debug
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
 
-        # Firewall API : stateless, pour les requêtes /api (token)
+        # API stateless avec API TOKEN
         api:
             pattern: ^/api
             stateless: true
             provider: app_user_provider
-            # utilise l'Authenticator ci‑dessous pour lire Authorization: Bearer <token>
             custom_authenticators:
                 - App\Security\ApiTokenAuthenticator
 
-        # Firewall principal : gère la navigation, les formulaires, etc.
+        # Application web (CRUD + login + CSRF)
         main:
             lazy: true
             provider: app_user_provider
             user_checker: App\Security\UserChecker
 
-            # Authentification via formulaire classique (CSRF + session)
             form_login:
                 login_path: app_login
                 check_path: app_login
+                enable_csrf: true
                 username_parameter: email
                 password_parameter: password
-                enable_csrf: true
-                csrf_token_id: authenticate    # identifiant utilisé côté serveur pour générer/valider le token
-                csrf_parameter: _csrf_token    # nom du champ dans le formulaire (par défaut _csrf_token)
+                csrf_parameter: _csrf_token
+                csrf_token_id: authenticate
                 default_target_path: /
                 always_use_default_target_path: false
 
@@ -54,27 +53,32 @@ security:
 
             remember_me:
                 secret: '%kernel.secret%'
-                lifetime: 604800 # 1 semaine
+                lifetime: 604800
                 path: /
-                always_remember_me: false
 
     access_control:
-        # Autorise l'accès public à certaines routes
+
+        # --- ROUTES PUBLIQUES API ---
+        - { path: ^/api/users$, methods: [POST], roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/api/docs, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/api/docs.jsonld, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+
+        # --- ROUTES PUBLIQUES SITE WEB ---
         - { path: ^/login$, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/register$, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/reset-password, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/create-users$, roles: IS_AUTHENTICATED_ANONYMOUSLY }
-
-        # Exemples de restrictions par rôles
-        - { path: ^/admin, roles: ROLE_ADMIN }
-        - { path: ^/employe, roles: ROLE_EMPLOYE }
-        - { path: ^/user, roles: ROLE_USER }
-        - { path: ^/carpool, roles: ROLE_USER }
-        - { path: ^/booking, roles: ROLE_USER }
-        - { path: ^/car, roles: ROLE_USER }
-        - { path: ^/review, roles: ROLE_USER }
-
-        # Par défaut, la page d'accueil est publique
         - { path: ^/$, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+
+        # --- RÈGLES API protégées ---
+        - { path: ^/api/users$, methods: [GET], roles: ROLE_ADMIN }
+        - { path: ^/api, roles: ROLE_USER }   # Tout le reste de l'API = besoin d'être connecté
+
+        # --- ESPACE ADMIN ---
+        - { path: ^/admin, roles: ROLE_ADMIN }
+
+        # --- ESPACE EMPLOYÉ ---
+        - { path: ^/employe, roles: ROLE_EMPLOYE }
+
+        # --- ESPACE USER (CRUD sécurisé) ---
+        - { path: ^/(user|carpool|booking|car|review), roles: ROLE_USER }

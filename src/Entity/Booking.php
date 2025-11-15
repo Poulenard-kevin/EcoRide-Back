@@ -94,10 +94,10 @@ use Symfony\Component\Serializer\Annotation\SerializedName;
  *         },
  *         "delete"={
  *           "path"="/bookings/{id}",
- *           "security"="is_granted('ROLE_ADMIN')",
+ *           "security"="object.getPassenger() == user or is_granted('ROLE_ADMIN')",
  *           "openapi_context"={
  *             "summary"="Supprime une réservation",
- *             "description"="Suppression réservée aux administrateurs. En production tu peux autoriser aussi le passager à annuler (adapter la sécurité si besoin).",
+ *             "description"="Permet au passager (propriétaire de la réservation) ou à un administrateur de supprimer une réservation.",
  *             "responses"={
  *               "204"={"description"="Réservation supprimée"}
  *             }

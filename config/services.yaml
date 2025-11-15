@@ -25,3 +25,14 @@ services:
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
+
+    App\OpenApi\OpenApiDecorator:
+        decorates: 'api_platform.openapi.factory'
+        arguments: ['@App\OpenApi\OpenApiDecorator.inner']
+    
+    App\DataPersister\UserDataPersister:
+        autowire: true
+        autoconfigure: true
+        public: false
+        # si tu veux forcer le tag (optionnel si autoconfigure=true)
+        # tags: ['api_platform.data_persister']

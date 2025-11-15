@@ -95,10 +95,10 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *         },
  *         "delete"={
  *           "path"="/carpools/{id}",
- *           "security"="is_granted('ROLE_ADMIN')",
+ *           "security"="object.getDriver() == user or is_granted('ROLE_ADMIN')",
  *           "openapi_context"={
  *             "summary"="Supprime un covoiturage",
- *             "description"="Suppression réservée aux administrateurs.",
+ *             "description"="Permet au conducteur du covoiturage ou à un administrateur de supprimer le covoiturage.",
  *             "responses"={
  *               "204"={"description"="Covoiturage supprimé"}
  *             }

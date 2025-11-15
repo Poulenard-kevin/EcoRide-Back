@@ -1,49 +1,56 @@
 <?php
-// src/Security/ApiTokenAuthenticator.php
 namespace App\Security;
 
 use App\Repository\UserRepository;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
+use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Http\Authenticator\AbstractAuthenticator;
+use Symfony\Component\Security\Http\Authenticator\Passport\SelfValidatingPassport;
 use Symfony\Component\Security\Http\Authenticator\Passport\Badge\UserBadge;
-use Symfony\Component\Security\Http\Authenticator\Passport\Credentials\CustomCredentials;
-use Symfony\Component\Security\Http\Authenticator\Passport\Passport;
 
 class ApiTokenAuthenticator extends AbstractAuthenticator
 {
-    public function __construct(private UserRepository $userRepository) {}
+    private UserRepository $userRepository;
+
+    public function __construct(UserRepository $userRepository)
+    {
+        $this->userRepository = $userRepository;
+    }
 
     public function supports(Request $request): ?bool
     {
-        // On supporte si header Authorization présent et commence par "Bearer "
-        $auth = $request->headers->get('Authorization');
-        return $auth && 0 === stripos($auth, 'Bearer ');
+        // supporte X-API-TOKEN, X-AUTH-TOKEN ou ?api_token=
+        return $request->headers->has('X-API-TOKEN')
+            || $request->headers->has('X-AUTH-TOKEN')
+            || $request->query->has('api_token');
     }
 
-    public function authenticate(Request $request): Passport
+    public function authenticate(Request $request)
     {
-        $auth = $request->headers->get('Authorization', '');
-        if (!preg_match('/^Bearer\s+(.*)$/i', $auth, $m)) {
-            throw new AuthenticationException('Token mal formé.');
+        $apiToken = $request->headers->get('X-API-TOKEN')
+            ?? $request->headers->get('X-AUTH-TOKEN')
+            ?? $request->query->get('api_token');
+
+        if (!$apiToken) {
+            throw new AuthenticationException('No API token provided');
         }
-        $token = $m[1];
 
-        return new Passport(
-            new UserBadge($token, fn($tokenValue) => $this->userRepository->findOneBy(['apiToken' => $tokenValue])),
-            new CustomCredentials(fn($credentials, $user) => true, $token)
-        );
+        return new SelfValidatingPassport(new UserBadge($apiToken, function ($tokenValue) {
+            // retourne l'entité User ou null
+            return $this->userRepository->findOneBy(['apiToken' => $tokenValue]);
+        }));
     }
 
-    public function onAuthenticationSuccess(Request $request, $token, string $firewallName): ?\Symfony\Component\HttpFoundation\Response
+    public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?JsonResponse
     {
-        // laisser continuer la requête
+        // laisser continuer la requête normalement
         return null;
     }
 
-    public function onAuthenticationFailure(Request $request, AuthenticationException $exception): ?\Symfony\Component\HttpFoundation\Response
+    public function onAuthenticationFailure(Request $request, AuthenticationException $exception): ?JsonResponse
     {
-        return new JsonResponse(['message' => 'Authentification requise.'], 401);
+        return new JsonResponse(['error' => $exception->getMessage()], 401);
     }
 }

@@ -3,7 +3,6 @@
 namespace App\EventSubscriber;
 
 use ApiPlatform\Core\EventListener\EventPriorities; // si tu as API Platform v2
-// use ApiPlatform\Symfony\EventListener\EventPriorities; // si v3
 use App\Entity\Review;
 use App\Repository\BookingRepository;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;

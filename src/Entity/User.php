@@ -12,6 +12,7 @@ use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 use ApiPlatform\Core\Annotation\ApiResource;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
  * @ORM\Entity(repositoryClass=UserRepository::class)
@@ -60,10 +61,10 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *   itemOperations={
  *     "get"={
  *       "path"="/users/{id}",
- *       "security"="is_granted('ROLE_USER')",
+ *       "security"="is_granted('ROLE_ADMIN') or object == user",
  *       "openapi_context"={
  *         "summary"="Récupère un utilisateur",
- *         "description"="Retourne les informations publiques d'un utilisateur. Les champs sensibles (mot de passe, etc.) ne sont pas exposés ici.",
+ *         "description"="Retourne les informations publiques d'un utilisateur. Les champs sensibles ne sont pas exposés ici.",
  *         "responses"={
  *           "200"={"description"="Détails d'un utilisateur"},
  *           "403"={"description"="Accès refusé si non autorisé"}
@@ -75,7 +76,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *       "security"="object == user or is_granted('ROLE_ADMIN')",
  *       "openapi_context"={
  *         "summary"="Met à jour un utilisateur",
- *         "description"="Permet à l'utilisateur propriétaire ou à un admin de modifier le profil. Ne permet pas de modifier les rôles côté client.",
+ *         "description"="Permet au propriétaire ou à un admin de modifier le profil. Ne permet pas de modifier les rôles côté client.",
  *         "requestBody"={
  *           "content"={
  *             "application/json"={
@@ -84,7 +85,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *                 "lastName"="NouveauNom",
  *                 "plainPassword"="NouveauMotDePasseSiChangement"
  *               }
- *             }  
+ *             }
  *           }
  *         },
  *         "responses"={

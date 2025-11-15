@@ -97,10 +97,10 @@ use ApiPlatform\Core\Annotation\ApiProperty;
  *         },
  *         "delete"={
  *           "path"="/cars/{id}",
- *           "security"="is_granted('ROLE_ADMIN')",
+ *           "security"="object.getOwner() == user or is_granted('ROLE_ADMIN')",
  *           "openapi_context"={
  *             "summary"="Supprime une voiture",
- *             "description"="Suppression réservée aux administrateurs.",
+ *             "description"="Permet au propriétaire du véhicule ou à un administrateur de supprimer le véhicule.",
  *             "responses"={
  *               "204"={"description"="Voiture supprimée"}
  *             }

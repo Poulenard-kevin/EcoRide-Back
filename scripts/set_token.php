@@ -16,7 +16,7 @@ $container = $kernel->getContainer();
 $em = $container->get('doctrine.orm.entity_manager');
 
 // 💡 Change ici avec l'email de l'utilisateur pour lequel tu veux créer le token :
-$user = $em->getRepository(User::class)->findOneBy(['email' => 'kevin@ecoride.com']);
+$user = $em->getRepository(User::class)->findOneBy(['email' => 'admin@ecoride.com']);
 
 if (!$user) {
     echo "❌ Utilisateur non trouvé.\n";
