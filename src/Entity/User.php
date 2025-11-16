@@ -170,7 +170,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $about = null;
 
     /**
-     * @Groups({"user:admin_read"})
+     * @Groups({"user:admin_read", "user:read"})
      * @ORM\Column(type="json")
      */
     private array $roles = [];

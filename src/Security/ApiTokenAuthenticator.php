@@ -24,15 +24,42 @@ class ApiTokenAuthenticator extends AbstractAuthenticator
 
     public function supports(Request $request): ?bool
     {
+        // Ignore preflight
+        if ($request->isMethod('OPTIONS')) {
+            return false;
+        }
+
+        // Vérifier qu'un header X-API-TOKEN non vide est présent
+        $xApiToken = $request->headers->get('X-API-TOKEN', '');
+        $hasXApiToken = is_string($xApiToken) && trim($xApiToken) !== '';
+
+        // Vérifier X-AUTH-TOKEN non vide
+        $xAuthToken = $request->headers->get('X-AUTH-TOKEN', '');
+        $hasXAuthToken = is_string($xAuthToken) && trim($xAuthToken) !== '';
+
+        // Vérifier Authorization: Bearer <token>
+        $auth = $request->headers->get('Authorization', '');
+        $hasBearer = false;
+        if (is_string($auth) && 0 === stripos($auth, 'Bearer ')) {
+            $bearerToken = trim(substr($auth, 7));
+            $hasBearer = $bearerToken !== '';
+        }
+
+        // Vérifier paramètre query api_token non vide
+        $queryToken = (string) $request->query->get('api_token', '');
+        $hasQueryToken = trim($queryToken) !== '';
+
+        $hasToken = $hasXApiToken || $hasXAuthToken || $hasBearer || $hasQueryToken;
+
         $this->logger->debug('ApiTokenAuthenticator::supports', [
             'path' => $request->getPathInfo(),
-            'headers' => array_keys($request->headers->all()),
+            'has_x_api_token' => $hasXApiToken,
+            'has_x_auth_token' => $hasXAuthToken,
+            'has_bearer' => $hasBearer,
+            'has_query_token' => $hasQueryToken,
         ]);
 
-        return $request->headers->has('X-API-TOKEN')
-            || $request->headers->has('X-AUTH-TOKEN')
-            || $request->headers->has('Authorization')
-            || $request->query->has('api_token');
+        return $hasToken;
     }
 
     public function authenticate(Request $request)

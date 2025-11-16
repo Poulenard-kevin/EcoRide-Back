@@ -58,30 +58,31 @@ security:
 
     access_control:
 
-        # --- ROUTES PUBLIQUES API ---
-        - { path: ^/api/users$, methods: [POST], roles: PUBLIC_ACCESS }
-        - { path: ^/api/docs, roles: PUBLIC_ACCESS }
-        - { path: ^/api/docs.jsonld, roles: PUBLIC_ACCESS }
-        - { path: ^/api/docs.json, roles: PUBLIC_ACCESS }     # optionnel
-        - { path: ^/api$, roles: PUBLIC_ACCESS }              # <-- IMPORTANT : permet l'UI /api (Swagger UI)
-        - { path: ^/api/, roles: PUBLIC_ACCESS }              # <-- autorise /api/ and children used by the UI (optionnel si nécessaire)
+    # --- ROUTES PUBLIQUES API ---
+    - { path: ^/api/register$, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+    - { path: ^/api/login$, methods: [POST], roles: IS_AUTHENTICATED_ANONYMOUSLY }
+    - { path: ^/api/users$, methods: [POST], roles: IS_AUTHENTICATED_ANONYMOUSLY }
+    - { path: ^/api/docs$, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+    - { path: ^/api/docs.jsonld$, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+    - { path: ^/api/docs.json$, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+    - { path: ^/api$, roles: IS_AUTHENTICATED_ANONYMOUSLY } # swagger root
 
-        # --- ROUTES PUBLIQUES SITE WEB ---
-        - { path: ^/login$, roles: PUBLIC_ACCESS }
-        - { path: ^/register$, roles: PUBLIC_ACCESS }
-        - { path: ^/reset-password, roles: PUBLIC_ACCESS }
-        - { path: ^/create-users$, roles: PUBLIC_ACCESS }
-        - { path: ^/$, roles: PUBLIC_ACCESS }
+    # --- ROUTES PUBLIQUES SITE WEB ---
+    - { path: ^/login$, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+    - { path: ^/register$, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+    - { path: ^/reset-password, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+    - { path: ^/create-users$, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+    - { path: ^/$, roles: IS_AUTHENTICATED_ANONYMOUSLY }
 
-        # --- RÈGLES API protégées ---
-        - { path: ^/api/users$, methods: [GET], roles: ROLE_ADMIN }
-        - { path: ^/api, roles: ROLE_USER }   # Tout le reste de l'API = besoin d'être connecté
+    # --- RÈGLES API protégées ---
+    - { path: ^/api/users$, methods: [GET], roles: ROLE_ADMIN }
+    - { path: ^/api, roles: ROLE_USER }   # Tout le reste de l'API = besoin d'être connecté
 
-        # --- ESPACE ADMIN ---
-        - { path: ^/admin, roles: ROLE_ADMIN }
+    # --- ESPACE ADMIN ---
+    - { path: ^/admin, roles: ROLE_ADMIN }
 
-        # --- ESPACE EMPLOYÉ ---
-        - { path: ^/employe, roles: ROLE_EMPLOYE }
+    # --- ESPACE EMPLOYÉ ---
+    - { path: ^/employe, roles: ROLE_EMPLOYE }
 
-        # --- ESPACE USER (CRUD sécurisé) ---
-        - { path: ^/(user|carpool|booking|car|review), roles: ROLE_USER }
+    # --- ESPACE USER (CRUD sécurisé) ---
+    - { path: ^/api/(users|carpool|booking|car|review), roles: ROLE_USER }
