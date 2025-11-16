@@ -65,7 +65,7 @@ security:
     - { path: ^/api/docs$, roles: IS_AUTHENTICATED_ANONYMOUSLY }
     - { path: ^/api/docs.jsonld$, roles: IS_AUTHENTICATED_ANONYMOUSLY }
     - { path: ^/api/docs.json$, roles: IS_AUTHENTICATED_ANONYMOUSLY }
-    - { path: ^/api$, roles: IS_AUTHENTICATED_ANONYMOUSLY } # swagger root
+    - { path: ^/api$, roles: IS_AUTHENTICATED_ANONYMOUSLY }
 
     # --- ROUTES PUBLIQUES SITE WEB ---
     - { path: ^/login$, roles: IS_AUTHENTICATED_ANONYMOUSLY }
@@ -74,15 +74,14 @@ security:
     - { path: ^/create-users$, roles: IS_AUTHENTICATED_ANONYMOUSLY }
     - { path: ^/$, roles: IS_AUTHENTICATED_ANONYMOUSLY }
 
-    # --- RÈGLES API protégées ---
+    # --- RÈGLES API protégées (spécifiques avant générique) ---
     - { path: ^/api/users$, methods: [GET], roles: ROLE_ADMIN }
-    - { path: ^/api, roles: ROLE_USER }   # Tout le reste de l'API = besoin d'être connecté
+    - { path: ^/api/admin, roles: ROLE_ADMIN }
+    - { path: ^/api/employee, roles: [ROLE_EMPLOYE, ROLE_ADMIN] }
 
-    # --- ESPACE ADMIN ---
-    - { path: ^/admin, roles: ROLE_ADMIN }
-
-    # --- ESPACE EMPLOYÉ ---
-    - { path: ^/employe, roles: ROLE_EMPLOYE }
+    # --- ESPACE ADMIN / EMPLOYÉ (front) ---
+    - { path: ^/espace-administrateur, roles: ROLE_ADMIN }
+    - { path: ^/espace-employe, roles: [ROLE_EMPLOYE, ROLE_ADMIN] }
 
     # --- ESPACE USER (CRUD sécurisé) ---
     - { path: ^/api/(users|carpool|booking|car|review), roles: ROLE_USER }
