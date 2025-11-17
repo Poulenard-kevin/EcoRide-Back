@@ -30,10 +30,17 @@ class CarpoolDataPersister implements ContextAwareDataPersisterInterface
         $method = $request?->getMethod();
         $operation = $context['collection_operation_name'] ?? $context['item_operation_name'] ?? null;
 
+        // Log d'entrée et infos utiles
         $this->logger->info('CarpoolDataPersister called', ['method' => $method, 'operation' => $operation]);
+        $this->logger->info('CarpoolDataPersister request debug', [
+            'requestUri' => $request?->getRequestUri(),
+            'cookieHeader' => $request?->headers->get('cookie'),
+            'authHeader' => $request?->headers->get('authorization'),
+        ]);
 
         // Appliquer uniquement à la création (POST)
         if (($method === 'POST') || ($operation === 'post')) {
+            // Vérifier la présence de la voiture
             $car = $data->getCar();
             if (!$car) {
                 throw new HttpException(400, 'A car is required to create a carpool.');
@@ -55,9 +62,20 @@ class CarpoolDataPersister implements ContextAwareDataPersisterInterface
                 throw new HttpException(400, 'The selected car must define a positive number of seats.');
             }
 
-            // Sécurité optionnelle : s'assurer que la voiture appartient à l'utilisateur courant
+            // Récupérer l'utilisateur courant
             $user = $this->security->getUser();
-            if ($user && method_exists($car, 'getOwner') && $car->getOwner() && $car->getOwner()->getId() !== $user->getId()) {
+
+            // Refuser la création si aucun utilisateur n'est authentifié
+            if (!$user) {
+                $this->logger->error('Attempt to create carpool without authenticated user', [
+                    'requestUri' => $request?->getRequestUri(),
+                    'payload' => $request?->getContent()
+                ]);
+                throw new HttpException(401, 'Authentication required to create a carpool.');
+            }
+
+            // Sécurité : s'assurer que la voiture appartient à l'utilisateur courant
+            if (method_exists($car, 'getOwner') && $car->getOwner() && $car->getOwner()->getId() !== $user->getId()) {
                 throw new HttpException(403, 'You cannot create a carpool using a car that does not belong to you.');
             }
 
@@ -69,8 +87,8 @@ class CarpoolDataPersister implements ContextAwareDataPersisterInterface
                 $data->setAvailableSeats($seats);
             }
 
-            // Optionnel : assigner le chauffeur (driver) si absent
-            if (method_exists($data, 'getDriver') && method_exists($data, 'setDriver') && $user && null === $data->getDriver()) {
+            // Définir le driver si pas encore fait
+            if (method_exists($data, 'getDriver') && method_exists($data, 'setDriver') && null === $data->getDriver()) {
                 $data->setDriver($user);
             }
         }
