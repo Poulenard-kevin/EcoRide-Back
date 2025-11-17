@@ -37,3 +37,10 @@ services:
         public: false
         # si tu veux forcer le tag (optionnel si autoconfigure=true)
         # tags: ['api_platform.data_persister']
+    
+    App\Api\Extension\CarOwnerExtension:
+        arguments:
+            - '@security.helper' 
+        tags:
+            - { name: 'api_platform.doctrine.orm.query_extension.collection' }
+        public: false

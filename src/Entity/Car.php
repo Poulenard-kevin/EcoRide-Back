@@ -10,6 +10,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 use ApiPlatform\Core\Annotation\ApiResource;
 use Symfony\Component\Serializer\Annotation\Groups;
 use ApiPlatform\Core\Annotation\ApiProperty;
+use DateTimeInterface;
 
 /**
  * @ORM\Entity(repositoryClass=CarRepository::class)
@@ -20,10 +21,10 @@ use ApiPlatform\Core\Annotation\ApiProperty;
  *     collectionOperations={
  *         "get"={
  *           "path"="/cars",
- *           "security"="is_granted('ROLE_ADMIN')",
+ *           "security"="is_granted('ROLE_USER')",
  *           "openapi_context"={
- *             "summary"="Récupère la liste des voitures",
- *             "description"="Retourne la liste paginée des véhicules. Accessible uniquement aux administrateurs.",
+ *             "summary"="Récupère la liste des voitures (uniquement celles de l'utilisateur courant sauf admin)",
+ *             "description"="Retourne la liste des véhicules appartenant à l'utilisateur connecté. Les administrateurs reçoivent toutes les voitures.",
  *             "responses"={
  *               "200"={"description"="Liste des voitures (paginated)"}
  *             }
@@ -45,7 +46,7 @@ use ApiPlatform\Core\Annotation\ApiProperty;
  *     itemOperations={
  *         "get"={
  *           "path"="/cars/{id}",
- *           "security"="is_granted('ROLE_USER')",
+ *           "security"="object.getOwner() == user or is_granted('ROLE_ADMIN')",
  *           "openapi_context"={
  *             "summary"="Récupère une voiture",
  *             "description"="Détails d'un véhicule. Les informations sensibles (si tu en as) ne sont pas exposées.",
@@ -171,6 +172,12 @@ class Car
     private ?string $otherPreferences = null;
 
     /**
+     * @ORM\Column(type="date", nullable=true)
+     * @Groups({"car:read","car:write"})
+     */
+    private ?DateTimeInterface $firstRegistration = null;
+
+    /**
      * @ORM\ManyToOne(targetEntity=User::class, inversedBy="cars")
      * @ORM\JoinColumn(name="proprietaire_id", referencedColumnName="id", nullable=true)
      * @Groups({"car:read"})
@@ -277,6 +284,17 @@ class Car
     public function setOtherPreferences(?string $otherPreferences): static
     {
         $this->otherPreferences = $otherPreferences;
+        return $this;
+    }
+
+    public function getFirstRegistration(): ?\DateTimeInterface
+    {
+        return $this->firstRegistration;
+    }
+
+    public function setFirstRegistration(?\DateTimeInterface $firstRegistration): self
+    {
+        $this->firstRegistration = $firstRegistration;
         return $this;
     }
 
