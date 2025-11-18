@@ -27,10 +27,10 @@ class CarpoolApiController extends AbstractController
     }
 
     #[Route('', name: 'api_carpool_create', methods: ['POST'])]
-    public function create(Request $request, EntityManagerInterface $em): JsonResponse
-    {
+    public function create(Request $request, EntityManagerInterface $em, LoggerInterface $logger): JsonResponse
+{
         $logger->info('CarpoolApiController create called', [
-            'userId'       => $this->getUser()?->getId(),
+            'userId' => $this->getUser()?->getId(),
             'username'     => $this->getUser()?->getUserIdentifier() ?? null,
             'cookieHeader' => $request->headers->get('cookie'),
             'authHeader'   => $request->headers->get('authorization'),
@@ -93,18 +93,45 @@ class CarpoolApiController extends AbstractController
     }
 
     #[Route('/{id}', name: 'api_carpool_delete', methods: ['DELETE'])]
-    public function delete(Carpool $carpool, EntityManagerInterface $em): JsonResponse
-    {
-        $this->denyAccessUnlessGranted('ROLE_USER');
-        if ($carpool->getDriver() !== $this->getUser()) {
-            throw new AccessDeniedException();
+public function delete(Carpool $carpool, EntityManagerInterface $em, LoggerInterface $logger): JsonResponse
+{
+    $this->denyAccessUnlessGranted('ROLE_USER');
+    if ($carpool->getDriver() !== $this->getUser()) {
+        throw new AccessDeniedException();
+    }
+
+    $id = $carpool->getId();
+    $logger->info('Tentative de suppression du carpool (start)', ['id' => $id, 'userId' => $this->getUser()?->getId()]);
+
+    try {
+        $bookings = $carpool->getBookings();
+        $count = is_iterable($bookings) ? (is_countable($bookings) ? count($bookings) : iterator_count($bookings)) : 0;
+        $logger->info('Bookings count before remove', ['id' => $id, 'count' => $count]);
+
+        if ($count > 0) {
+            foreach ($bookings as $booking) {
+                $logger->info('Removing booking', ['bookingId' => $booking->getId()]);
+                $em->remove($booking);
+            }
         }
 
+        $logger->info('Removing carpool entity', ['id' => $id]);
         $em->remove($carpool);
         $em->flush();
 
-        return $this->json(['message' => 'Trajet supprimé']);
+        $logger->info('Carpool supprimé avec succès', ['id' => $id]);
+        return $this->json(null, 204);
+    } catch (\Throwable $e) {
+        $logger->error('Erreur lors de la suppression du carpool', [
+            'id' => $id,
+            'error' => $e->getMessage(),
+            'class' => get_class($e),
+            'trace' => $e->getTraceAsString(),
+        ]);
+
+        return $this->json(['error' => 'Erreur lors de la suppression', 'detail' => $e->getMessage()], 500);
     }
+}
 
     #[Route('/{id}/join', name: 'api_carpool_join', methods: ['POST'])]
     public function join(Carpool $carpool, Request $request, EntityManagerInterface $em): JsonResponse

@@ -44,3 +44,9 @@ services:
         tags:
             - { name: 'api_platform.doctrine.orm.query_extension.collection' }
         public: false
+    
+    App\DataPersister\CarpoolDataPersister:
+        arguments:
+            $entityManager: '@doctrine.orm.entity_manager'
+            $logger: '@logger'
+        tags: ['api_platform.data_persister']

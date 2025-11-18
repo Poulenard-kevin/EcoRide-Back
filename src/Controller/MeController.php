@@ -19,8 +19,11 @@ class MeController extends AbstractController
             return $this->json(['message' => 'Not authenticated'], 401);
         }
 
-        $groups = $this->isGranted('ROLE_ADMIN') ? ['user:admin_read'] : ['user:read'];
-
-        return $this->json($user, 200, [], ['groups' => $groups]);
+        // Retourne uniquement les champs nécessaires — pas de sérialisation Doctrine/ORM
+        return $this->json([
+            'id' => $user->getId(),
+            'email' => method_exists($user, 'getEmail') ? $user->getEmail() : $user->getUserIdentifier(),
+            'roles' => $user->getRoles(),
+        ]);
     }
 }

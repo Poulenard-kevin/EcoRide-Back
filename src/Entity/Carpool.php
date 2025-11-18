@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use Symfony\Component\Serializer\Annotation\SerializedName;
 use App\Repository\CarpoolRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -143,6 +144,7 @@ class Carpool
     /**
      * @ORM\Column(name="nb_places_total", type="integer")
      * @Groups({"carpool:read"})
+     * @Symfony\Component\Serializer\Annotation\SerializedName("nbPlacesTotal")
      * @Assert\Positive(message="Le nombre total de places doit être positif.")
      */
     private ?int $totalSeats = null;

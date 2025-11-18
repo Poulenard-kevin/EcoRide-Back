@@ -3,19 +3,19 @@
 namespace App\DataPersister;
 
 use ApiPlatform\Core\DataPersister\ContextAwareDataPersisterInterface;
+use App\Entity\Car;
 use App\Entity\Carpool;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Security\Core\Security;
-use Symfony\Component\HttpFoundation\RequestStack;
-use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class CarpoolDataPersister implements ContextAwareDataPersisterInterface
 {
     public function __construct(
-        private EntityManagerInterface $em,
+        private EntityManagerInterface $entityManager,
         private Security $security,
-        private RequestStack $requestStack,
         private LoggerInterface $logger
     ) {}
 
@@ -26,82 +26,87 @@ class CarpoolDataPersister implements ContextAwareDataPersisterInterface
 
     public function persist($data, array $context = [])
     {
-        $request = $this->requestStack->getCurrentRequest();
-        $method = $request?->getMethod();
-        $operation = $context['collection_operation_name'] ?? $context['item_operation_name'] ?? null;
+        if (!($data instanceof Carpool)) {
+            return $data;
+        }
 
-        // Log d'entrée et infos utiles
-        $this->logger->info('CarpoolDataPersister called', ['method' => $method, 'operation' => $operation]);
-        $this->logger->info('CarpoolDataPersister request debug', [
-            'requestUri' => $request?->getRequestUri(),
-            'cookieHeader' => $request?->headers->get('cookie'),
-            'authHeader' => $request?->headers->get('authorization'),
+        $user = $this->security->getUser();
+        $this->logger->info('CarpoolDataPersister persist', [
+            'user' => $user ? $user->getId() : 'null',
+            'carpoolId' => $data->getId()
         ]);
 
-        // Appliquer uniquement à la création (POST)
-        if (($method === 'POST') || ($operation === 'post')) {
-            // Vérifier la présence de la voiture
-            $car = $data->getCar();
-            if (!$car) {
-                throw new HttpException(400, 'A car is required to create a carpool.');
-            }
+        if ($data->getDriver() === null) {
+            $data->setDriver($user);
+            $this->logger->info('Driver set to current user', ['driver_id' => $user?->getId()]);
+        } elseif ($data->getDriver()->getId() !== $user?->getId()) {
+            throw new \InvalidArgumentException('Vous ne pouvez pas créer un covoiturage pour un autre conducteur.');
+        }
 
-            // Récupération robuste du nombre de sièges depuis l'entité Car
-            $seats = null;
-            if (method_exists($car, 'getSeats')) {
-                $seats = (int) $car->getSeats();
-            } elseif (method_exists($car, 'getNbPlaces')) {
-                $seats = (int) $car->getNbPlaces();
-            } elseif (method_exists($car, 'getTotalSeats')) {
-                $seats = (int) $car->getTotalSeats();
-            } elseif (method_exists($car, 'getNumberOfSeats')) {
-                $seats = (int) $car->getNumberOfSeats();
-            }
+        $car = $data->getCar();
+        if ($car) {
+            // Recharger la voiture depuis la base pour garantir les relations
+            $carFromDb = $this->entityManager->getRepository(Car::class)->find($car->getId());
 
-            if (null === $seats || $seats <= 0) {
-                throw new HttpException(400, 'The selected car must define a positive number of seats.');
-            }
-
-            // Récupérer l'utilisateur courant
-            $user = $this->security->getUser();
-
-            // Refuser la création si aucun utilisateur n'est authentifié
-            if (!$user) {
-                $this->logger->error('Attempt to create carpool without authenticated user', [
-                    'requestUri' => $request?->getRequestUri(),
-                    'payload' => $request?->getContent()
+            if (!$carFromDb) {
+                $this->logger->warning('Car not found when creating carpool', [
+                    'carId' => $car->getId(),
+                    'currentUserId' => $user?->getId()
                 ]);
-                throw new HttpException(401, 'Authentication required to create a carpool.');
+                throw new NotFoundHttpException('La voiture sélectionnée est introuvable.');
             }
 
-            // Sécurité : s'assurer que la voiture appartient à l'utilisateur courant
-            if (method_exists($car, 'getOwner') && $car->getOwner() && $car->getOwner()->getId() !== $user->getId()) {
-                throw new HttpException(403, 'You cannot create a carpool using a car that does not belong to you.');
+            $owner = $carFromDb->getOwner();
+            $ownerId = $owner?->getId();
+
+            $this->logger->info('Checking car ownership', [
+                'carId' => $carFromDb->getId(),
+                'ownerId' => $ownerId ?? null,
+                'currentUserId' => $user?->getId()
+            ]);
+
+            if ($owner && $ownerId !== $user?->getId()) {
+                $this->logger->warning('Car ownership mismatch', [
+                    'carId' => $carFromDb->getId(),
+                    'ownerId' => $ownerId,
+                    'currentUserId' => $user?->getId()
+                ]);
+                throw new AccessDeniedHttpException('Vous ne pouvez pas utiliser une voiture qui ne vous appartient pas.');
             }
 
-            // Affecter totalSeats depuis la voiture
-            $data->setTotalSeats($seats);
-
-            // Initialiser availableSeats = totalSeats si non fourni
-            if (null === $data->getAvailableSeats()) {
-                $data->setAvailableSeats($seats);
-            }
-
-            // Définir le driver si pas encore fait
-            if (method_exists($data, 'getDriver') && method_exists($data, 'setDriver') && null === $data->getDriver()) {
-                $data->setDriver($user);
+            if ($data->getTotalSeats() === null) {
+                if (method_exists($carFromDb, 'getSeats')) {
+                    $nbSeats = (int) $carFromDb->getSeats();
+                    $data->setTotalSeats($nbSeats);
+                    if ($data->getAvailableSeats() === null) {
+                        $data->setAvailableSeats($nbSeats);
+                    }
+                    $this->logger->info('totalSeats mis à jour depuis la voiture', [
+                        'carpoolId' => $data->getId(),
+                        'carId' => $carFromDb->getId(),
+                        'totalSeats' => $nbSeats
+                    ]);
+                }
             }
         }
 
-        $this->em->persist($data);
-        $this->em->flush();
+        if (($data->getAvailableSeats() ?? 0) < 0) {
+            throw new \InvalidArgumentException('Le nombre de places disponibles ne peut pas être négatif.');
+        }
+
+        $this->entityManager->persist($data);
+        $this->entityManager->flush();
 
         return $data;
     }
 
     public function remove($data, array $context = [])
     {
-        $this->em->remove($data);
-        $this->em->flush();
+        if (!($data instanceof Carpool)) {
+            return;
+        }
+
+        $this->entityManager->remove($data);
+        $this->entityManager->flush();
     }
 }

@@ -33,8 +33,9 @@ class BookingDataPersister implements ContextAwareDataPersisterInterface
         $operation = $context['collection_operation_name'] ?? $context['item_operation_name'] ?? null;
 
         if (in_array($method, ['POST', 'PUT', 'PATCH'], true) || in_array($operation, ['post','put','patch'], true)) {
-            // assign passenger if absent
             $user = $this->security->getUser();
+
+            // 1. Assigner le passager si non défini
             if (null === $data->getPassenger()) {
                 if (!$user) {
                     throw new HttpException(401, 'Authentication required to create a booking.');
@@ -42,16 +43,24 @@ class BookingDataPersister implements ContextAwareDataPersisterInterface
                 $data->setPassenger($user);
             }
 
-            if (!$data->getPassenger()) {
-                throw new HttpException(400, 'A passenger must be provided.');
+            // 2. Vérifier que le passager est bien l'utilisateur courant (sauf admin)
+            $passenger = $data->getPassenger();
+            if ($passenger->getId() !== $user?->getId() && !in_array('ROLE_ADMIN', $user->getRoles() ?? [])) {
+                throw new HttpException(403, 'Vous ne pouvez pas réserver pour un autre passager.');
             }
 
-            if (!$data->getCarpool()) {
+            // 3. Vérifier que le passager n'est pas le conducteur
+            $carpool = $data->getCarpool();
+            if (!$carpool) {
                 throw new HttpException(400, 'A carpool must be provided for the booking.');
             }
 
-            // Fallback pour récupérer le nombre de sièges (compatibilité noms différents)
-            $seatGetters = ['getSeats', 'getReservedSeats', 'getNbPlaces', 'getPlaces'];
+            if ($carpool->getDriver() && $passenger->getId() === $carpool->getDriver()->getId()) {
+                throw new HttpException(400, 'Le conducteur ne peut pas réserver une place dans son propre covoiturage.');
+            }
+
+            // 4. Récupérer le nombre de sièges réservés
+            $seatGetters = ['getReservedSeats', 'getSeats', 'getNbPlaces', 'getPlaces'];
             $newSeats = null;
             foreach ($seatGetters as $m) {
                 if (method_exists($data, $m)) {
@@ -60,18 +69,18 @@ class BookingDataPersister implements ContextAwareDataPersisterInterface
                 }
             }
             if (null === $newSeats) {
-                throw new HttpException(500, 'Booking entity: no seats getter found (expected getSeats or equivalent).');
+                throw new HttpException(500, 'Booking entity: no seats getter found (expected getReservedSeats or equivalent).');
             }
             if ($newSeats <= 0) {
-                throw new HttpException(400, 'Invalid number of seats requested.');
+                throw new HttpException(400, 'Le nombre de places réservées doit être positif.');
             }
 
             $conn = $this->em->getConnection();
             $conn->beginTransaction();
             try {
-                // charger et locker le carpool DANS la transaction
+                // Charger et locker le carpool
                 $carpoolRepo = $this->em->getRepository(Carpool::class);
-                $carpool = $carpoolRepo->find($data->getCarpool()->getId());
+                $carpool = $carpoolRepo->find($carpool->getId());
                 if (!$carpool) {
                     throw new HttpException(404, 'Carpool not found.');
                 }
@@ -89,31 +98,29 @@ class BookingDataPersister implements ContextAwareDataPersisterInterface
                 }
 
                 $bookedSeatsExclCurrent = (int) $qb->getQuery()->getSingleScalarResult();
-                $available = $carpool->getTotalSeats() - $bookedSeatsExclCurrent;
+                $available = $carpool->getAvailableSeats() ?? 0;
 
                 // Ancien nombre de sièges (si mise à jour)
                 $oldSeats = 0;
                 if ($data->getId()) {
                     $existing = $this->em->getRepository(Booking::class)->find($data->getId());
                     if ($existing) {
-                        // fallback getter pour l'existant
                         $oldSeats = (int) (
-                            method_exists($existing, 'getSeats') ? $existing->getSeats()
-                            : (method_exists($existing, 'getReservedSeats') ? $existing->getReservedSeats() : 0)
+                            method_exists($existing, 'getReservedSeats') ? $existing->getReservedSeats() : 0
                         );
                     }
                 }
 
                 $delta = $newSeats - $oldSeats;
                 if ($delta > 0 && $available < $delta) {
-                    throw new HttpException(400, 'Not enough available seats for this carpool.');
+                    throw new HttpException(400, 'Pas assez de places disponibles pour cette réservation.');
                 }
 
                 // Sauvegarder la réservation
                 $this->em->persist($data);
                 $this->em->flush();
 
-                // Recalculer et mettre à jour availableSeats (prop source de vérité)
+                // Recalculer et mettre à jour availableSeats
                 $totalBooked = (int) $this->em->createQueryBuilder()
                     ->select('COALESCE(SUM(b.reservedSeats), 0)')
                     ->from(Booking::class, 'b')
@@ -128,10 +135,17 @@ class BookingDataPersister implements ContextAwareDataPersisterInterface
 
                 $conn->commit();
 
+                $this->logger->info('Booking created/updated', [
+                    'bookingId' => $data->getId(),
+                    'passenger' => $passenger->getId(),
+                    'carpoolId' => $carpool->getId(),
+                    'reservedSeats' => $newSeats,
+                    'availableSeats' => $carpool->getAvailableSeats()
+                ]);
+
                 return $data;
             } catch (\Throwable $e) {
                 $conn->rollBack();
-                // log l'exception complète pour debugging
                 $this->logger->error('Booking persist failed: '.$e->getMessage(), ['exception' => $e]);
                 throw new HttpException(500, 'An error occurred while saving the booking.');
             }
@@ -150,20 +164,16 @@ class BookingDataPersister implements ContextAwareDataPersisterInterface
             return;
         }
 
-        $carpool = $data->getCarpool();
-        if (!$carpool) {
-            $this->em->remove($data);
-            $this->em->flush();
-            return;
-        }
-
         $conn = $this->em->getConnection();
         $conn->beginTransaction();
         try {
-            $carpoolRepo = $this->em->getRepository(Carpool::class);
-            $carpool = $carpoolRepo->find($carpool->getId());
+            $carpool = $data->getCarpool();
             if ($carpool) {
-                $this->em->lock($carpool, LockMode::PESSIMISTIC_WRITE);
+                $carpoolRepo = $this->em->getRepository(Carpool::class);
+                $carpool = $carpoolRepo->find($carpool->getId());
+                if ($carpool) {
+                    $this->em->lock($carpool, LockMode::PESSIMISTIC_WRITE);
+                }
             }
 
             $this->em->remove($data);
@@ -181,6 +191,12 @@ class BookingDataPersister implements ContextAwareDataPersisterInterface
                 $carpool->setAvailableSeats($carpool->getTotalSeats() - $totalBooked);
                 $this->em->persist($carpool);
                 $this->em->flush();
+
+                $this->logger->info('Booking removed, availableSeats updated', [
+                    'bookingId' => $data->getId(),
+                    'carpoolId' => $carpool->getId(),
+                    'availableSeats' => $carpool->getAvailableSeats()
+                ]);
             }
 
             $conn->commit();
