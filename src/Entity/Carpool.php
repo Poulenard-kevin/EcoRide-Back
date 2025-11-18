@@ -67,6 +67,17 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *             }
  *           }
  *         },
+ *         "patch"={
+ *           "path"="/carpools/{id}",
+ *           "security"="object.getDriver() == user or is_granted('ROLE_ADMIN')",
+ *           "openapi_context"={
+ *             "summary"="Modifier partiellement un covoiturage",
+ *             "description"="Permet au conducteur ou à un admin de modifier partiellement les informations du covoiturage. Certaines modifications peuvent être bloquées selon le statut (ex: après démarrage).",
+ *             "responses"={ 
+ *               "200"={"description"="Covoiturage mis à jour"} 
+ *             }
+ *           }
+ *         },
  *         "delete"={
  *           "path"="/carpools/{id}",
  *           "security"="object.getDriver() == user or is_granted('ROLE_ADMIN')",
