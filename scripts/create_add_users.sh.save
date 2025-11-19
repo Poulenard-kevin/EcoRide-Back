@@ -1,0 +1,88 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Modifier si nécessaire
+DB_CONTAINER="ecoride-docker160533-db_ecoride-1"
+OUTPUT_SQL="add_users.sql"
+
+# --- Utilisateurs / mots de passe en clair (modifiable) ---
+ADMIN_PASS="AdminPass!2025"
+EMPLOY_PASS="EmployerPass!2025"
+USER_PASS="UserPass!2025"
+
+ADMIN_EMAIL="admin@example.com"
+EMPLOY_EMAIL="employe@example.com"
+USER_EMAIL="user@example.com"
+
+ADMIN_NOM="Admin"
+ADMIN_PRENOM="Super"
+EMPLOY_NOM="Employe"
+EMPLOY_PRENOM="Principal"
+USER_NOM="User"
+USER_PRENOM="Simple"
+
+# --- Génère les hashes en une seule invocation PHP (plus rapide) ---
+echo "Génération des hashes bcrypt..."
+HASH_OUTPUT=$(docker run --rm \
+  -e ADMIN_PASS="$ADMIN_PASS" -e EMPLOY_PASS="$EMPLOY_PASS" -e USER_PASS="$USER_PASS" \
+  php:8.1-cli php -r '
+    echo "HASH_ADMIN=".password_hash(getenv("ADMIN_PASS"), PASSWORD_BCRYPT).PHP_EOL;
+    echo "HASH_EMPLOY=".password_hash(getenv("EMPLOY_PASS"), PASSWORD_BCRYPT).PHP_EOL;
+    echo "HASH_USER=".password_hash(getenv("USER_PASS"), PASSWORD_BCRYPT).PHP_EOL;
+  ')
+
+# Parse
+HASH_ADMIN=$(echo "$HASH_OUTPUT" | awk -F= '/HASH_ADMIN/ {print substr($0,index($0,$2))}')
+HASH_EMPLOY=$(echo "$HASH_OUTPUT" | awk -F= '/HASH_EMPLOY/ {print substr($0,index($0,$2))}')
+HASH_USER=$(echo "$HASH_OUTPUT" | awk -F= '/HASH_USER/ {print substr($0,index($0,$2))}')
+
+echo "Hashes générés."
+
+# --- Génère 3 tokens (une seule invocation Alpine) ---
+echo "Génération des api_tokens..."
+TOKENS=$(docker run --rm alpine sh -c "apk add --no-cache openssl >/dev/null 2>&1; for i in 1 2 3; do openssl rand -hex 20; done")
+TOKEN_ADMIN=$(echo "$TOKENS" | sed -n '1p')
+TOKEN_EMPLOY=$(echo "$TOKENS" | sed -n '2p')
+TOKEN_USER=$(echo "$TOKENS" | sed -n '3p')
+echo "Tokens générés."
+
+# --- Crée le fichier SQL d'insertion ---
+cat > "$OUTPUT_SQL" <<SQL
+USE sf_EcoRide;
+SET FOREIGN_KEY_CHECKS=0;
+
+INSERT INTO utilisateur (nom, prenom, email, password, roles, is_active, api_token)
+VALUES
+  ('$ADMIN_NOM', '$ADMIN_PRENOM', '$ADMIN_EMAIL', '$HASH_ADMIN', JSON_ARRAY('ROLE_USER','ROLE_EMPLOYE','ROLE_ADMIN'), 1, '$TOKEN_ADMIN'),
+  ('$EMPLOY_NOM', '$EMPLOY_PRENOM', '$EMPLOY_EMAIL', '$HASH_EMPLOY', JSON_ARRAY('ROLE_USER','ROLE_EMPLOYE'), 1, '$TOKEN_EMPLOY'),
+  ('$USER_NOM', '$USER_PRENOM', '$USER_EMAIL', '$HASH_USER', JSON_ARRAY('ROLE_USER'), 1, '$TOKEN_USER');
+
+SET FOREIGN_KEY_CHECKS=1;
+SQL
+
+echo "Fichier SQL créé : $OUTPUT_SQL"
+
+# --- Option : exécuter directement dans la base (décommente si tu veux l'exécuter automatiquement) ---
+read -p "Veux-tu exécuter l'insertion maintenant dans le conteneur $DB_CONTAINER ? [y/N] " runnow
+if [[ "${runnow,,}" == "y" ]]; then
+  echo "Exécution du SQL dans le conteneur..."
+  docker exec -i "$DB_CONTAINER" mysql -u root -prootpassword_ecoride < "$OUTPUT_SQL"
+  echo "Insertion exécutée."
+  echo "Vérification :"
+  docker exec -it "$DB_CONTAINER" mysql -u root -prootpassword_ecoride -e "USE sf_EcoRide; SELECT id, prenom, nom, email, roles, api_token FROM utilisateur;"
+else
+  echo "Tu peux importer $OUTPUT_SQL via phpMyAdmin ou en CLI plus tard."
+fi
+
+# --- Affiche infos de connexion (mot de passe en clair pour test) ---
+echo
+echo "Comptes créés (mots de passe en clair pour connexion de test) :"
+echo "Admin  : $ADMIN_EMAIL / $ADMIN_PASS"
+echo "Employe: $EMPLOY_EMAIL / $EMPLOY_PASS"
+echo "User   : $USER_EMAIL / $USER_PASS"
+echo
+echo "Tokens (extraits dans $OUTPUT_SQL) :"
+echo "ADMIN  : $TOKEN_ADMIN"
+echo "EMPLOY : $TOKEN_EMPLOY"
+echo "USER   : $TOKEN_USER"
+

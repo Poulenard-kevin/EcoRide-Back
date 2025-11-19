@@ -9,7 +9,7 @@ services:
       MYSQL_USER: kevin
       MYSQL_PASSWORD: kevin_password
     ports:
-      - "3310:3306"       # port hôte 3310 -> container 3306 (évite conflits)
+      - "3310:3306"
     volumes:
       - ecoride_db_data:/var/lib/mysql
 
@@ -20,10 +20,10 @@ services:
       - db_ecoride
     environment:
       PMA_HOST: db_ecoride
-      PMA_USER: root
-      PMA_PASSWORD: rootpassword_ecoride
+    volumes:
+      - ./phpmyadmin/config.user.inc.php:/etc/phpmyadmin/config.user.inc.php:ro
     ports:
-      - "8082:80"         # phpMyAdmin accessible sur 8082
+      - "8082:80"
 
 volumes:
   ecoride_db_data:
