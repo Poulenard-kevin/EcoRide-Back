@@ -1,0 +1,16 @@
+{
+	"folders": [
+		{
+			"path": "../../EcoRide-Front"
+		},
+		{
+			"path": ".."
+		}
+	],
+	"settings": {
+		"workbench.editor.enablePreview": false,
+		"workbench.editor.enablePreviewFromQuickOpen": false,
+		"workbench.editor.showTabs": "multiple",
+		"workbench.list.openMode": "doubleClick"
+	}
+}

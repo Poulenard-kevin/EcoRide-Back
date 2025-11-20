@@ -12,14 +12,23 @@ services:
       - "3310:3306"
     volumes:
       - ecoride_db_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "kevin", "--password=kevin_password"]
+      interval: 5s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
 
   phpmyadmin_ecoride:
     image: phpmyadmin/phpmyadmin
     restart: unless-stopped
     depends_on:
-      - db_ecoride
+      db_ecoride: 
+        condition: service_healthy 
     environment:
       PMA_HOST: db_ecoride
+      PMA_USER: root
+      PMA_PASSWORD: rootpassword_ecoride
     volumes:
       - ./phpmyadmin/config.user.inc.php:/etc/phpmyadmin/config.user.inc.php:ro
     ports:
