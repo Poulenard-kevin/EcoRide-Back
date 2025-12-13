@@ -15,7 +15,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
  * @ORM\Entity(repositoryClass=CarpoolRepository::class)
  * @ORM\Table(name="covoiturage")
  * @ApiResource(
- *     normalizationContext={"groups"={"carpool:read"}},
+ *     normalizationContext={"groups"={"carpool:read", "user:read"}},
  *     denormalizationContext={"groups"={"carpool:write"}},
  *     collectionOperations={
  *         "get"={

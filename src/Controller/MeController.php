@@ -24,6 +24,8 @@ class MeController extends AbstractController
             'id' => $user->getId(),
             'email' => method_exists($user, 'getEmail') ? $user->getEmail() : $user->getUserIdentifier(),
             'roles' => $user->getRoles(),
+            'firstName' => $user->getFirstName(),   
+            'lastName'  => $user->getLastName(),    
         ]);
     }
 }
