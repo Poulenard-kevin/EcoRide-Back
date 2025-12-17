@@ -94,7 +94,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $apiToken = null;
 
     /**
-     * @Groups({"user:read"})
+     * @Groups({"user:read", "carpool:read"})
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
@@ -107,7 +107,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      *     pattern="/^[A-Za-zÀ-ÖØ-öø-ÿ\s'-]{2,}$/u",
      *     message="Le nom doit contenir au moins 2 lettres et ne peut contenir que des lettres, espaces, apostrophes ou tirets."
      * )
-     * @Groups({"user:read", "user:write", "review:read"})
+     * @Groups({"user:read", "user:write", "review:read", "carpool:read"})
      * @ORM\Column(name="nom", type="string", length=100)
      */
     private ?string $lastName = null;
@@ -118,7 +118,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      *     pattern="/^[A-Za-zÀ-ÖØ-öø-ÿ\s'-]{2,}$/u",
      *     message="Le prénom doit contenir au moins 2 lettres et ne peut contenir que des lettres, espaces, apostrophes ou tirets."
      * )
-     * @Groups({"user:read", "user:write", "review:read"})
+     * @Groups({"user:read", "user:write", "review:read", "carpool:read"})
      * @ORM\Column(name="prenom", type="string", length=100)
      */
     private ?string $firstName = null;
@@ -126,7 +126,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @Assert\NotBlank(message="L'email est obligatoire.")
      * @Assert\Email(message="L'email n'est pas valide.")
-     * @Groups({"user:admin_read", "user:write"})
+     * @Groups({"user:admin_read", "user:write", "carpool:read"})
      * @ORM\Column(name="email", type="string", length=180)
      */
     private ?string $email = null;
@@ -157,7 +157,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @Groups({"user:read"})
      * @ORM\Column(name="note_moyenne", type="float", nullable=true)
      */
-    private ?float $averageRating = null;
+    private ?float $averageRating = 5.0;
 
     /**
      * @Groups({"user:read", "user:write"})
