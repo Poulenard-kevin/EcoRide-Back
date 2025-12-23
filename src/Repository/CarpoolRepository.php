@@ -7,12 +7,12 @@ use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @extends ServiceEntityRepository<Covoiturage>
+ * @extends ServiceEntityRepository<Carpool>
  *
- * @method Covoiturage|null find($id, $lockMode = null, $lockVersion = null)
- * @method Covoiturage|null findOneBy(array $criteria, array $orderBy = null)
- * @method Covoiturage[]    findAll()
- * @method Covoiturage[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method Carpool|null find($id, $lockMode = null, $lockVersion = null)
+ * @method Carpool|null findOneBy(array $criteria, array $orderBy = null)
+ * @method Carpool[]    findAll()
+ * @method Carpool[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
 class CarpoolRepository extends ServiceEntityRepository
 {
@@ -21,28 +21,40 @@ class CarpoolRepository extends ServiceEntityRepository
         parent::__construct($registry, Carpool::class);
     }
 
-//    /**
-//     * @return Covoiturage[] Returns an array of Covoiturage objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('c')
-//            ->andWhere('c.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('c.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
+    /**
+     * Récupère un covoiturage avec ses relations car et driver chargées.
+     */
+    public function findAllWithRelations(): array
+    {
+        return $this->createQueryBuilder('c')
+            ->leftJoin('c.car', 'car')
+            ->addSelect('car')
+            ->leftJoin('c.driver', 'driver')
+            ->addSelect('driver')
+            ->getQuery()
+            ->getResult();
+    }
 
-//    public function findOneBySomeField($value): ?Covoiturage
-//    {
-//        return $this->createQueryBuilder('c')
-//            ->andWhere('c.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+    /**
+     * Récupère un covoiturage par son id avec ses relations car et driver chargées.
+     */
+    public function findWithRelations(int $id): ?Carpool
+    {
+        return $this->createQueryBuilder('c')
+            ->leftJoin('c.car', 'car')
+            ->addSelect('car')
+            ->leftJoin('c.driver', 'driver')
+            ->addSelect('driver')
+            ->where('c.id = :id')
+            ->setParameter('id', $id)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
+    public function createQueryBuilderWithRelations(): \Doctrine\ORM\QueryBuilder
+    {
+        return $this->createQueryBuilder('c')
+            ->leftJoin('c.car', 'car')->addSelect('car')
+            ->leftJoin('c.driver', 'driver')->addSelect('driver');
+    }
 }

@@ -50,3 +50,14 @@ services:
             $entityManager: '@doctrine.orm.entity_manager'
             $logger: '@logger'
         tags: ['api_platform.data_persister']
+
+    App\DataProvider\CarpoolItemDataProvider:
+        arguments:
+            $carpoolRepository: '@App\Repository\CarpoolRepository'
+        tags:
+            - { name: 'api_platform.item_data_provider', priority: 10 }
+
+    App\DataProvider\CarpoolCollectionDataProvider:
+        arguments: { $carpoolRepository: '@App\Repository\CarpoolRepository' }
+        tags:
+            - { name: 'api_platform.collection_data_provider', priority: 10 }

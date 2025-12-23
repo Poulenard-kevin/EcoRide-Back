@@ -15,7 +15,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
  * @ORM\Entity(repositoryClass=CarpoolRepository::class)
  * @ORM\Table(name="covoiturage")
  * @ApiResource(
- *     normalizationContext={"groups"={"carpool:read", "user:read"}},
+ *     normalizationContext={"groups"={"carpool:read", "user:read", "user:public", "car:read"}},
  *     denormalizationContext={"groups"={"carpool:write"}},
  *     collectionOperations={
  *         "get"={
@@ -437,6 +437,17 @@ class Carpool
     {
         $this->car = $car;
         return $this;
+    }
+
+    /**
+     * Expose le type d'énergie du véhicule au niveau du carpool (pratique côté front)
+     *
+     * @Groups({"carpool:read"})
+     * @SerializedName("fuelType")
+     */
+    public function getCarFuelType(): ?string
+    {
+        return $this->car ? $this->car->getFuelType() : null;
     }
 
     /**

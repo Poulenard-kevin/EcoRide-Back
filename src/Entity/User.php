@@ -71,6 +71,18 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  *         }
  *       }
  *     },
+*      "patch"={
+*        "path"="/users/{id}",
+*        "security"="object == user or is_granted('ROLE_ADMIN')",
+*        "openapi_context"={
+*          "summary"="Met à jour partiellement un utilisateur",
+*          "description"="Permet au propriétaire ou à un admin de modifier partiellement le profil.",
+*          "responses"={
+*            "200"={"description"="Utilisateur mis à jour partiellement"},
+*            "403"={"description"="Accès refusé"}
+*          }
+*        }
+*      },
  *     "delete"={
  *       "path"="/users/{id}",
  *       "security"="is_granted('ROLE_ADMIN') or (user and object.getId() == user.getId())",
@@ -132,6 +144,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $email = null;
 
     /**
+     * @Groups({"user:read", "user:write"})
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private ?string $avatar = null;
+
+    /**
      * // pas de groupe user:write ici : le hash ne doit pas être envoyé par le client
      * @ORM\Column(type="string", length=255)
      */
@@ -160,7 +178,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?float $averageRating = 5.0;
 
     /**
-     * @Groups({"user:read", "user:write"})
+     * @Groups({"user:read", "user:write", "user:public"})
      * @ORM\Column(name="a_propos", type="text", nullable=true)
      * @Assert\Length(
      *     max=500,
@@ -270,6 +288,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setEmail(string $email): static
     {
         $this->email = $email;
+        return $this;
+    }
+
+    public function getAvatar(): ?string
+{
+    return $this->avatar;
+}
+
+    public function setAvatar(?string $avatar): self
+    {
+        $this->avatar = $avatar;
         return $this;
     }
 
