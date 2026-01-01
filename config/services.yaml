@@ -61,3 +61,12 @@ services:
         arguments: { $carpoolRepository: '@App\Repository\CarpoolRepository' }
         tags:
             - { name: 'api_platform.collection_data_provider', priority: 10 }
+    
+    App\DataPersister\BookingDataPersister:
+        arguments:
+            $em: '@doctrine.orm.entity_manager'
+            $security: '@security.helper'
+            $requestStack: '@request_stack'
+            $logger: '@logger'
+        tags: ['api_platform.data_persister']
+        public: false

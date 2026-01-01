@@ -1,9 +1,9 @@
 nelmio_cors:
     defaults:
-        allow_credentials: false
-        allow_origin: ['http://localhost:3000', 'http://127.0.0.1:3000'] # adapte à ton front, ou ['*'] en dev
+        allow_credentials: true
+        allow_origin: ['http://localhost:3000', 'http://127.0.0.1:3000']
         allow_headers: ['Content-Type', 'Accept', 'X-Requested-With', 'Authorization', 'X-AUTH-TOKEN']
-        expose_headers: ['X-Debug-Token', 'X-Debug-Token-Link'] # utile pour debugger en dev
+        expose_headers: ['X-Debug-Token', 'X-Debug-Token-Link']
         allow_methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH']
         max_age: 3600
     paths:
@@ -12,4 +12,5 @@ nelmio_cors:
             allow_headers: ['Content-Type', 'Accept', 'Authorization', 'X-AUTH-TOKEN']
             expose_headers: ['X-Debug-Token', 'X-Debug-Token-Link']
             allow_methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH']
+            allow_credentials: true
             max_age: 3600

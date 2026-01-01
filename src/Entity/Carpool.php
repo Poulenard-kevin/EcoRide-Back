@@ -189,7 +189,8 @@ class Carpool
     private ?User $driver = null;
 
     /**
-     * @ORM\OneToMany(targetEntity=Booking::class, mappedBy="carpool", orphanRemoval=true, cascade={"remove"})
+     * @ORM\OneToMany(targetEntity=Booking::class, mappedBy="carpool", orphanRemoval=true, cascade={"remove"}, fetch="EAGER")
+     * @Groups({"carpool:read"})
      */
     private Collection $bookings;
 

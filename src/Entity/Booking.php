@@ -107,8 +107,8 @@ class Booking
      * @Assert\NotNull(message="Le nombre de places réservées est obligatoire.")
      * @Assert\Positive(message="Le nombre de places réservées doit être un entier positif.")
      * @ORM\Column(name="nb_places_reservees", type="integer")
-     * @Groups({"booking:read", "booking:write"})
-     * @SerializedName("seats") // optionnel : mappe le nom JSON "seats" sur cette propriété
+     * @Groups({"booking:read", "booking:write", "carpool:read"})
+     * @SerializedName("seats")
      */
     private ?int $reservedSeats = 1;
 

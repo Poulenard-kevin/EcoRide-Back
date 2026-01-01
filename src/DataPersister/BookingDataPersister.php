@@ -11,6 +11,7 @@ use Psr\Log\LoggerInterface;
 use Symfony\Component\Security\Core\Security;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpKernel\Exception\HttpException;
+use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 
 class BookingDataPersister implements ContextAwareDataPersisterInterface
 {
@@ -32,6 +33,7 @@ class BookingDataPersister implements ContextAwareDataPersisterInterface
         $method = $request?->getMethod();
         $operation = $context['collection_operation_name'] ?? $context['item_operation_name'] ?? null;
 
+        // Intervenir principalement sur création / mise à jour
         if (in_array($method, ['POST', 'PUT', 'PATCH'], true) || in_array($operation, ['post','put','patch'], true)) {
             $user = $this->security->getUser();
 
@@ -59,7 +61,7 @@ class BookingDataPersister implements ContextAwareDataPersisterInterface
                 throw new HttpException(400, 'Le conducteur ne peut pas réserver une place dans son propre covoiturage.');
             }
 
-            // 4. Récupérer le nombre de sièges réservés
+            // 4. Récupérer le nombre de sièges réservés depuis l'entité Booking
             $seatGetters = ['getReservedSeats', 'getSeats', 'getNbPlaces', 'getPlaces'];
             $newSeats = null;
             foreach ($seatGetters as $m) {
@@ -78,7 +80,7 @@ class BookingDataPersister implements ContextAwareDataPersisterInterface
             $conn = $this->em->getConnection();
             $conn->beginTransaction();
             try {
-                // Charger et locker le carpool
+                // Recharger et locker le carpool pour éviter races
                 $carpoolRepo = $this->em->getRepository(Carpool::class);
                 $carpool = $carpoolRepo->find($carpool->getId());
                 if (!$carpool) {
@@ -86,7 +88,14 @@ class BookingDataPersister implements ContextAwareDataPersisterInterface
                 }
                 $this->em->lock($carpool, LockMode::PESSIMISTIC_WRITE);
 
-                // Calculer les sièges réservés (hors la réservation actuelle si mise à jour)
+                // Déterminer la capacité totale du carpool
+                $capacity = (int) (
+                    method_exists($carpool, 'getTotalSeats') ? $carpool->getTotalSeats() :
+                    (method_exists($carpool, 'getPlaces') ? $carpool->getPlaces() :
+                        ($carpool->getAvailableSeats() ?? 0))
+                );
+
+                // Calculer la somme des réservations existantes (excluant l'item courant si update)
                 $qb = $this->em->createQueryBuilder()
                     ->select('COALESCE(SUM(b.reservedSeats), 0)')
                     ->from(Booking::class, 'b')
@@ -98,29 +107,29 @@ class BookingDataPersister implements ContextAwareDataPersisterInterface
                 }
 
                 $bookedSeatsExclCurrent = (int) $qb->getQuery()->getSingleScalarResult();
-                $available = $carpool->getAvailableSeats() ?? 0;
 
-                // Ancien nombre de sièges (si mise à jour)
+                // Ancien nombre de sièges en cas de mise à jour (pour calcul delta)
                 $oldSeats = 0;
                 if ($data->getId()) {
                     $existing = $this->em->getRepository(Booking::class)->find($data->getId());
                     if ($existing) {
-                        $oldSeats = (int) (
-                            method_exists($existing, 'getReservedSeats') ? $existing->getReservedSeats() : 0
-                        );
+                        $oldSeats = (int) (method_exists($existing, 'getReservedSeats') ? $existing->getReservedSeats() : 0);
                     }
                 }
 
                 $delta = $newSeats - $oldSeats;
+                $available = $capacity - $bookedSeatsExclCurrent;
+
                 if ($delta > 0 && $available < $delta) {
-                    throw new HttpException(400, 'Pas assez de places disponibles pour cette réservation.');
+                    // Erreur métier -> 422 Unprocessable Entity
+                    throw new HttpException(422, 'Le nombre de places demandées dépasse les places disponibles.');
                 }
 
-                // Sauvegarder la réservation
+                // Persister la réservation
                 $this->em->persist($data);
                 $this->em->flush();
 
-                // Recalculer et mettre à jour availableSeats
+                // Recalculer le total et mettre à jour availableSeats si l'entité le supporte
                 $totalBooked = (int) $this->em->createQueryBuilder()
                     ->select('COALESCE(SUM(b.reservedSeats), 0)')
                     ->from(Booking::class, 'b')
@@ -129,9 +138,11 @@ class BookingDataPersister implements ContextAwareDataPersisterInterface
                     ->getQuery()
                     ->getSingleScalarResult();
 
-                $carpool->setAvailableSeats($carpool->getTotalSeats() - $totalBooked);
-                $this->em->persist($carpool);
-                $this->em->flush();
+                if (method_exists($carpool, 'setAvailableSeats') && method_exists($carpool, 'getTotalSeats')) {
+                    $carpool->setAvailableSeats($carpool->getTotalSeats() - $totalBooked);
+                    $this->em->persist($carpool);
+                    $this->em->flush();
+                }
 
                 $conn->commit();
 
@@ -140,17 +151,31 @@ class BookingDataPersister implements ContextAwareDataPersisterInterface
                     'passenger' => $passenger->getId(),
                     'carpoolId' => $carpool->getId(),
                     'reservedSeats' => $newSeats,
-                    'availableSeats' => $carpool->getAvailableSeats()
+                    'availableSeats' => method_exists($carpool, 'getAvailableSeats') ? $carpool->getAvailableSeats() : null
                 ]);
 
                 return $data;
             } catch (\Throwable $e) {
-                $conn->rollBack();
+                // rollback obligatoire
+                try {
+                    $conn->rollBack();
+                } catch (\Throwable $rb) {
+                    $this->logger->error('Failed to roll back transaction: ' . $rb->getMessage(), ['exception' => $rb]);
+                }
+
                 $this->logger->error('Booking persist failed: '.$e->getMessage(), ['exception' => $e]);
-                throw new HttpException(500, 'An error occurred while saving the booking.');
+
+                // Si c'est déjà une HttpException (erreur 4xx métier), on la ré-lance telle quelle pour conserver le statut
+                if ($e instanceof HttpExceptionInterface) {
+                    throw $e;
+                }
+
+                // Erreur inattendue -> 500 (garder l'exception d'origine en "previous")
+                throw new HttpException(500, 'An error occurred while saving the booking.', $e);
             }
         }
 
+        // Pour autres cas (delete géré ailleurs), comportement par défaut
         $this->em->persist($data);
         $this->em->flush();
         return $data;
@@ -179,7 +204,7 @@ class BookingDataPersister implements ContextAwareDataPersisterInterface
             $this->em->remove($data);
             $this->em->flush();
 
-            if ($carpool) {
+            if ($carpool && method_exists($carpool, 'setAvailableSeats') && method_exists($carpool, 'getTotalSeats')) {
                 $totalBooked = (int) $this->em->createQueryBuilder()
                     ->select('COALESCE(SUM(b.reservedSeats), 0)')
                     ->from(Booking::class, 'b')
@@ -201,9 +226,18 @@ class BookingDataPersister implements ContextAwareDataPersisterInterface
 
             $conn->commit();
         } catch (\Throwable $e) {
-            $conn->rollBack();
+            try {
+                $conn->rollBack();
+            } catch (\Throwable $rb) {
+                $this->logger->error('Failed to roll back transaction (remove): ' . $rb->getMessage(), ['exception' => $rb]);
+            }
             $this->logger->error('Booking remove failed: '.$e->getMessage(), ['exception' => $e]);
-            throw new HttpException(500, 'An error occurred while deleting the booking.');
+
+            if ($e instanceof HttpExceptionInterface) {
+                throw $e;
+            }
+
+            throw new HttpException(500, 'An error occurred while deleting the booking.', $e);
         }
     }
 }
