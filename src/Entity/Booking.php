@@ -93,7 +93,7 @@ class Booking
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups({"booking:read"})
+     * @Groups({"booking:read", "carpool:read"})
      */
     private ?int $id = null;
 
@@ -128,7 +128,7 @@ class Booking
     /**
      * @ORM\ManyToOne(targetEntity=User::class, inversedBy="bookings")
      * @ORM\JoinColumn(name="passager_id", referencedColumnName="id", nullable=false)
-     * @Groups({"booking:read", "booking:write", "user:read"})
+     * @Groups({"booking:read", "booking:write", "user:read", "carpool:read"})
      * @Assert\NotNull(message="Le passager est obligatoire.")
      */
     private ?User $passenger = null;

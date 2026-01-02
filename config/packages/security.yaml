@@ -58,6 +58,9 @@ security:
 
     access_control:
 
+    # Autoriser OPTIONS sans authentification (important pour CORS preflight)
+    - { path: ^/api/, roles: IS_AUTHENTICATED_ANONYMOUSLY, methods: [OPTIONS] }
+
     # --- ROUTES PUBLIQUES API ---
     - { path: ^/api/register$, roles: IS_AUTHENTICATED_ANONYMOUSLY }
     - { path: ^/api/login$, methods: [POST], roles: IS_AUTHENTICATED_ANONYMOUSLY }
