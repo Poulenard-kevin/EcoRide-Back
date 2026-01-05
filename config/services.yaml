@@ -70,3 +70,13 @@ services:
             $logger: '@logger'
         tags: ['api_platform.data_persister']
         public: false
+
+    App\EventSubscriber\CarpoolStatusSubscriber:
+        public: true
+        tags:
+            - { name: doctrine.event_subscriber }
+
+    App\DataPersister\ReviewDataPersister:
+        autowire: true
+        autoconfigure: true
+        public: false

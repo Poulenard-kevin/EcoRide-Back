@@ -145,7 +145,7 @@ class Review
     /**
      * @ORM\ManyToOne(targetEntity=Booking::class, inversedBy="reviews")
      * @ORM\JoinColumn(onDelete="SET NULL", nullable=true)
-     * @Groups({"review:read"})
+     * @Groups({"review:read", "review:write"})
      */
     private ?Booking $booking = null;
 

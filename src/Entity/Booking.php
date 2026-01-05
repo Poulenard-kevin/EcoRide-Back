@@ -23,13 +23,14 @@ use Symfony\Component\Serializer\Annotation\SerializedName;
  *     denormalizationContext={"groups"={"booking:write"}},
  *     collectionOperations={
  *         "get"={
- *           "path"="/bookings",
- *           "security"="is_granted('ROLE_USER')",
+ *           "path"="/bookings/{id}",
+ *           "security"="object.getPassenger() == user or is_granted('ROLE_ADMIN')",
  *           "openapi_context"={
- *             "summary"="Récupère la liste des réservations",
- *             "description"="Retourne la liste paginée des réservations. Accessible aux utilisateurs connectés.",
+ *             "summary"="Récupère une réservation",
+ *             "description"="Affiche les détails d'une réservation. Accessible uniquement au passager ou admin.",
  *             "responses"={
- *               "200"={"description"="Liste des réservations"}
+ *               "200"={"description"="Détails de la réservation"},
+ *               "404"={"description"="Réservation introuvable"}
  *             }
  *           }
  *         },
@@ -68,6 +69,19 @@ use Symfony\Component\Serializer\Annotation\SerializedName;
  *             "description"="Permet au passager (propriétaire de la réservation) ou à un admin de modifier une réservation (ex : nombre de places si le covoiturage le permet). Certains changements peuvent être refusés par la validation métier (places restantes).",
  *             "responses"={
  *               "200"={"description"="Réservation mise à jour"},
+ *               "400"={"description"="Erreurs de validation"},
+ *               "403"={"description"="Accès refusé"}
+ *             }
+ *           }
+ *         },
+ *         "patch"={
+ *           "path"="/bookings/{id}",
+ *           "security"="object.getPassenger() == user or is_granted('ROLE_ADMIN')",
+ *           "openapi_context"={
+ *             "summary"="Met à jour partiellement une réservation",
+ *             "description"="Permet au passager (propriétaire) ou à un admin de modifier partiellement une réservation (ex: changer le statut).",
+ *             "responses"={
+ *               "200"={"description"="Réservation mise à jour partiellement"},
  *               "400"={"description"="Erreurs de validation"},
  *               "403"={"description"="Accès refusé"}
  *             }
@@ -114,7 +128,7 @@ class Booking
 
     /**
      * @ORM\Column(name="statut", type="string", length=50, nullable=true)
-     * @Groups({"booking:read"})
+     * @Groups({"booking:read", "booking:write", "carpool:read"})
      */
     private ?string $status = self::STATUS_PENDING;
 
