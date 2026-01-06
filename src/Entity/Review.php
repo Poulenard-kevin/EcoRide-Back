@@ -7,11 +7,16 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Core\Annotation\ApiFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\BooleanFilter;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass=ReviewRepository::class)
  * @ORM\Table(name="avis")
+ * @ApiFilter(SearchFilter::class, properties={"status": "exact"})
+ * @ApiFilter(BooleanFilter::class, properties={"validated"})
  * @ApiResource(
  *     normalizationContext={"groups"={"review:read"}},
  *     denormalizationContext={"groups"={"review:write"}},

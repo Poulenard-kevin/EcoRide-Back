@@ -19,48 +19,47 @@ use Symfony\Component\Serializer\Annotation\SerializedName;
  * @ORM\Entity(repositoryClass=BookingRepository::class)
  * @ORM\Table(name="reservation")
  * @ApiResource(
- *     normalizationContext={"groups"={"booking:read"}},
- *     denormalizationContext={"groups"={"booking:write"}},
- *     collectionOperations={
- *         "get"={
- *           "path"="/bookings/{id}",
- *           "security"="object.getPassenger() == user or is_granted('ROLE_ADMIN')",
- *           "openapi_context"={
- *             "summary"="Récupère une réservation",
- *             "description"="Affiche les détails d'une réservation. Accessible uniquement au passager ou admin.",
- *             "responses"={
- *               "200"={"description"="Détails de la réservation"},
- *               "404"={"description"="Réservation introuvable"}
- *             }
- *           }
- *         },
- *         "post"={
- *           "path"="/bookings",
- *           "security"="is_granted('ROLE_USER')",
- *           "openapi_context"={
- *             "summary"="Crée une réservation",
- *             "description"="Permet à un utilisateur connecté de réserver des places pour un covoiturage. Le passager (`passenger`) est défini automatiquement côté serveur à partir de l'utilisateur authentifié : ne pas l'envoyer dans le payload.",
- *             "responses"={
- *               "201"={"description"="Réservation créée"},
- *               "400"={"description"="Erreurs de validation (ex: places insuffisantes)"},
- *               "403"={"description"="Non autorisé"}
- *             }
- *           }
- *         }
- *     },
- *     itemOperations={
- *         "get"={
- *           "path"="/bookings/{id}",
- *           "security"="is_granted('ROLE_USER')",
- *           "openapi_context"={
- *             "summary"="Récupère une réservation",
- *             "description"="Affiche les détails d'une réservation. Accessible aux utilisateurs connectés (à adapter si tu veux restreindre aux propriétaires/admin).",
- *             "responses"={
- *               "200"={"description"="Détails de la réservation"},
- *               "404"={"description"="Réservation introuvable"}
- *             }
- *           }
- *         },
+ *  normalizationContext={"groups"={"booking:read"}},
+ *  denormalizationContext={"groups"={"booking:write"}},
+ *  collectionOperations={
+ *      "get"={
+ *        "path"="/bookings",
+ *        "security"="is_granted('ROLE_USER')",
+ *        "openapi_context"={
+ *          "summary"="Récupère la liste des réservations",
+ *          "description"="Accessible aux utilisateurs connectés.",
+ *          "responses"={
+ *            "200"={"description"="Liste des réservations"}
+ *          }
+ *        }
+ *      },
+ *      "post"={
+ *        "path"="/bookings",
+ *        "security"="is_granted('ROLE_USER')",
+ *        "openapi_context"={
+ *          "summary"="Crée une réservation",
+ *          "description"="...",
+ *          "responses"={
+ *            "201"={"description"="Réservation créée"},
+ *            "400"={"description"="Erreurs de validation"},
+ *            "403"={"description"="Non autorisé"}
+ *          }
+ *        }
+ *      }
+ *  },
+ *  itemOperations={
+ *      "get"={
+ *        "path"="/bookings/{id}",
+ *        "security"="object.getPassenger() == user or is_granted('ROLE_ADMIN')",
+ *        "openapi_context"={
+ *          "summary"="Récupère une réservation",
+ *          "description"="Affiche les détails d'une réservation. Accessible uniquement au passager ou admin.",
+ *          "responses"={
+ *            "200"={"description"="Détails de la réservation"},
+ *            "404"={"description"="Réservation introuvable"}
+ *          }
+ *        }
+ *      },
  *         "put"={
  *           "path"="/bookings/{id}",
  *           "security"="object.getPassenger() == user or is_granted('ROLE_ADMIN')",
