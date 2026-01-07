@@ -44,7 +44,29 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  *           "400"={"description"="Erreurs de validation (ex: email déjà utilisé)"}
  *         }
  *       }
+ *     },
+ *   "get_reviews"={  
+ *     "method"="GET",
+ *     "path"="/users/{id}/reviews",
+ *     "controller"=App\Controller\Api\UserReviewsController::class,
+ *     "read"=false,
+ *     "pagination_enabled"=false,
+ *     "openapi_context"={
+ *       "summary"="Récupère les avis d'un utilisateur",
+ *       "parameters"={
+ *         {
+ *           "name"="id",
+ *           "in"="path",
+ *           "required"=true,
+ *           "schema"={"type"="integer"},
+ *           "description"="ID de l'utilisateur"
+ *         }
+ *       },
+ *       "responses"={
+ *         "200"={"description"="Liste des avis de l'utilisateur"}
+ *       }
  *     }
+ *   }
  *   },
  *   itemOperations={
  *     "get"={
