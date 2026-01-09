@@ -80,3 +80,13 @@ services:
         autowire: true
         autoconfigure: true
         public: false
+    
+    App\EventListener\ReviewChangedListener:
+        arguments:
+            $reviewRepository: '@App\Repository\ReviewRepository'
+            $em: '@doctrine.orm.entity_manager'
+            $logger: '@logger'
+        tags:
+            - { name: doctrine.event_listener, event: postPersist }
+            - { name: doctrine.event_listener, event: postUpdate }
+            - { name: doctrine.event_listener, event: postRemove }

@@ -22,31 +22,7 @@ class ReviewRepository extends ServiceEntityRepository
         parent::__construct($registry, Review::class);
     }
 
-
-//    /**
-//     * @return Avis[] Returns an array of Avis objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('a')
-//            ->andWhere('a.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('a.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
-
-//    public function findOneBySomeField($value): ?Avis
-//    {
-//        return $this->createQueryBuilder('a')
-//            ->andWhere('a.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+    // ... tes méthodes existantes ...
 
     public function findApprovedByTarget(User $target, int $limit = null): array
     {
@@ -95,5 +71,28 @@ class ReviewRepository extends ServiceEntityRepository
             ->orderBy('r.date', 'ASC')
             ->getQuery()
             ->getResult();
+    }
+
+    /**
+     * Retourne la moyenne (AVG) des notes validées pour un utilisateur cible.
+     *
+     * @param User $user
+     * @return float|null Moyenne (float) ou null si aucun avis validé
+     */
+    public function getAverageRatingForUser(User $user): ?float
+    {
+        $qb = $this->createQueryBuilder('r')
+            ->select('AVG(r.rating) as avg_rating')
+            ->where('r.target = :user')
+            ->andWhere('r.validated = true')
+            ->setParameter('user', $user);
+
+        $result = $qb->getQuery()->getSingleScalarResult();
+
+        if ($result === null) {
+            return null;
+        }
+
+        return (float) $result;
     }
 }

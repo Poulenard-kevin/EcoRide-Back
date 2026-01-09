@@ -195,7 +195,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     /**
      * @Groups({"user:read"})
-     * @ORM\Column(name="note_moyenne", type="float", nullable=true)
+     * @ORM\Column(name="note_moyenne", type="float", options={"default": 5})
      */
     private ?float $averageRating = 5.0;
 

@@ -24,36 +24,46 @@ class ReviewValidationController extends AbstractController
      */
     public function validateReview(int $id, EntityManagerInterface $em, ReviewRepository $repo): JsonResponse
     {
-        // Récupérer l'avis en base
         $review = $repo->find($id);
         if (!$review) {
-            // Si l'avis n'existe pas, retourner 404
             return $this->json(['error' => 'Avis non trouvé'], 404);
         }
 
-        // Vérifier que l'utilisateur a le rôle employé ou admin
         if (!$this->isGranted('ROLE_EMPLOYEE') && !$this->isGranted('ROLE_ADMIN')) {
-            // Accès refusé si l'utilisateur n'a pas les droits requis
             return $this->json(['error' => 'Accès refusé'], 403);
         }
 
-        // Marquer l'avis comme validé — utiliser les constantes de l'entité si disponible
-        if ($review instanceof Review) {
-            $review->setStatus(Review::STATUS_APPROVED);
-            $review->setValidated(true);
-        } else {
-            // fallback - si l'entité diffère
-            $review->setStatus('APPROVED');
-            if (method_exists($review, 'setValidated')) {
-                $review->setValidated(true);
-            }
-        }
-
-        // Persister la modification
+        // 1. Marquer l'avis comme validé
+        $review->setStatus(Review::STATUS_APPROVED);
+        $review->setValidated(true);
+        
+        // On flush une première fois pour que l'avis soit compté dans le calcul SQL
         $em->flush();
 
-        // Réponse de succès
-        return $this->json(['ok' => true]);
+        // 2. Recalculer la moyenne
+        $target = $review->getTarget();
+        if ($target) {
+            // On appelle la méthode du repository qu'on a créée
+            $avg = $repo->getAverageRatingForUser($target);
+            
+            // On arrondit à l'unité (ex: 3.1 -> 3)
+            $newAverage = ($avg === null) ? 5.0 : (float) round($avg);
+            
+            // On force la mise à jour de l'utilisateur
+            $target->setAverageRating($newAverage);
+            
+            // On persiste explicitement l'utilisateur pour être sûr
+            $em->persist($target);
+            $em->flush();
+            
+            return $this->json([
+                'ok' => true, 
+                'message' => 'Avis validé et moyenne mise à jour',
+                'new_rating' => $newAverage
+            ]);
+        }
+
+        return $this->json(['ok' => true, 'message' => 'Avis validé mais aucun utilisateur cible trouvé']);
     }
 
     /**
