@@ -1,0 +1,570 @@
+<br />
+<b>Deprecated</b>:  ApiPlatform\Serializer\ItemNormalizer::__construct(): Implicitly marking parameter $propertyAccessor as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Serializer/ItemNormalizer.php</b> on line <b>43</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Serializer\ItemNormalizer::__construct(): Implicitly marking parameter $nameConverter as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Serializer/ItemNormalizer.php</b> on line <b>43</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Serializer\ItemNormalizer::__construct(): Implicitly marking parameter $classMetadataFactory as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Serializer/ItemNormalizer.php</b> on line <b>43</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Serializer\ItemNormalizer::__construct(): Implicitly marking parameter $itemDataProvider as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Serializer/ItemNormalizer.php</b> on line <b>43</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Serializer\ItemNormalizer::__construct(): Implicitly marking parameter $logger as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Serializer/ItemNormalizer.php</b> on line <b>43</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Serializer\ItemNormalizer::__construct(): Implicitly marking parameter $resourceAccessChecker as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Serializer/ItemNormalizer.php</b> on line <b>43</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Serializer\AbstractItemNormalizer::__construct(): Implicitly marking parameter $propertyAccessor as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Serializer/AbstractItemNormalizer.php</b> on line <b>91</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Serializer\AbstractItemNormalizer::__construct(): Implicitly marking parameter $nameConverter as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Serializer/AbstractItemNormalizer.php</b> on line <b>91</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Serializer\AbstractItemNormalizer::__construct(): Implicitly marking parameter $classMetadataFactory as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Serializer/AbstractItemNormalizer.php</b> on line <b>91</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Serializer\AbstractItemNormalizer::__construct(): Implicitly marking parameter $itemDataProvider as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Serializer/AbstractItemNormalizer.php</b> on line <b>91</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Serializer\AbstractItemNormalizer::__construct(): Implicitly marking parameter $resourceAccessChecker as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Serializer/AbstractItemNormalizer.php</b> on line <b>91</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Serializer\AbstractItemNormalizer::instantiateObject(): Implicitly marking parameter $format as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Serializer/AbstractItemNormalizer.php</b> on line <b>401</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Serializer\AbstractItemNormalizer::createConstructorArgument(): Implicitly marking parameter $format as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Serializer/AbstractItemNormalizer.php</b> on line <b>473</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Serializer\AbstractItemNormalizer::validateType(): Implicitly marking parameter $format as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Serializer/AbstractItemNormalizer.php</b> on line <b>591</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Serializer\AbstractItemNormalizer::transformOutput(): Implicitly marking parameter $outputClass as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Serializer/AbstractItemNormalizer.php</b> on line <b>917</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Serializer\OperationContextTrait::createOperationContext(): Implicitly marking parameter $resourceClass as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Serializer/OperationContextTrait.php</b> on line <b>25</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Symfony\Routing\SkolemIriConverter::getResourceFromIri(): Implicitly marking parameter $operation as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Symfony/Routing/SkolemIriConverter.php</b> on line <b>39</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Symfony\Routing\SkolemIriConverter::getIriFromResource(): Implicitly marking parameter $operation as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Symfony/Routing/SkolemIriConverter.php</b> on line <b>44</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Api\IriConverterInterface::getResourceFromIri(): Implicitly marking parameter $operation as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Api/IriConverterInterface.php</b> on line <b>36</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Api\IriConverterInterface::getIriFromResource(): Implicitly marking parameter $operation as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Api/IriConverterInterface.php</b> on line <b>46</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Core\EventListener\ReadListener::__construct(): Implicitly marking parameter $subresourceDataProvider as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Core/EventListener/ReadListener.php</b> on line <b>54</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Core\EventListener\ReadListener::__construct(): Implicitly marking parameter $serializerContextBuilder as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Core/EventListener/ReadListener.php</b> on line <b>54</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Core\EventListener\ReadListener::__construct(): Implicitly marking parameter $identifierConverter as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Core/EventListener/ReadListener.php</b> on line <b>54</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Core\EventListener\ReadListener::__construct(): Implicitly marking parameter $resourceMetadataFactory as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Core/EventListener/ReadListener.php</b> on line <b>54</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Core\EventListener\ReadListener::__construct(): Implicitly marking parameter $resourceMetadataCollectionFactory as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Core/EventListener/ReadListener.php</b> on line <b>54</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Core\EventListener\ReadListener::__construct(): Implicitly marking parameter $metadataBackwardCompatibilityLayer as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Core/EventListener/ReadListener.php</b> on line <b>54</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Metadata\Resource\Factory\ExtractorResourceNameCollectionFactory::__construct(): Implicitly marking parameter $decorated as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Metadata/Resource/Factory/ExtractorResourceNameCollectionFactory.php</b> on line <b>31</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Metadata\Property\Factory\ExtractorPropertyNameCollectionFactory::__construct(): Implicitly marking parameter $decorated as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Metadata/Property/Factory/ExtractorPropertyNameCollectionFactory.php</b> on line <b>33</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Core\Bridge\Symfony\PropertyInfo\Metadata\Property\PropertyInfoPropertyMetadataFactory::__construct(): Implicitly marking parameter $decorated as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Core/Bridge/Symfony/PropertyInfo/Metadata/Property/PropertyInfoPropertyMetadataFactory.php</b> on line <b>31</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Core\Metadata\Property\Factory\SerializerPropertyMetadataFactory::__construct(): Implicitly marking parameter $resourceClassResolver as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Core/Metadata/Property/Factory/SerializerPropertyMetadataFactory.php</b> on line <b>38</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Core\Metadata\Property\Factory\SerializerPropertyMetadataFactory::transformReadWrite(): Implicitly marking parameter $normalizationGroups as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Core/Metadata/Property/Factory/SerializerPropertyMetadataFactory.php</b> on line <b>76</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Core\Metadata\Property\Factory\SerializerPropertyMetadataFactory::transformReadWrite(): Implicitly marking parameter $denormalizationGroups as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Core/Metadata/Property/Factory/SerializerPropertyMetadataFactory.php</b> on line <b>76</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Core\Metadata\Property\Factory\SerializerPropertyMetadataFactory::transformLinkStatus(): Implicitly marking parameter $normalizationGroups as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Core/Metadata/Property/Factory/SerializerPropertyMetadataFactory.php</b> on line <b>102</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Core\Metadata\Property\Factory\SerializerPropertyMetadataFactory::transformLinkStatus(): Implicitly marking parameter $denormalizationGroups as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Core/Metadata/Property/Factory/SerializerPropertyMetadataFactory.php</b> on line <b>102</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Core\Metadata\Property\Factory\DefaultPropertyMetadataFactory::__construct(): Implicitly marking parameter $decorated as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Core/Metadata/Property/Factory/DefaultPropertyMetadataFactory.php</b> on line <b>26</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Metadata\Extractor\AbstractResourceExtractor::__construct(): Implicitly marking parameter $container as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Metadata/Extractor/AbstractResourceExtractor.php</b> on line <b>34</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Core\Metadata\Property\Factory\ExtractorPropertyMetadataFactory::__construct(): Implicitly marking parameter $decorated as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Core/Metadata/Property/Factory/ExtractorPropertyMetadataFactory.php</b> on line <b>36</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Core\Metadata\Resource\Factory\ExtractorResourceMetadataFactory::__construct(): Implicitly marking parameter $decorated as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Core/Metadata/Resource/Factory/ExtractorResourceMetadataFactory.php</b> on line <b>32</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Core\Metadata\Resource\Factory\AnnotationResourceNameCollectionFactory::__construct(): Implicitly marking parameter $reader as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Core/Metadata/Resource/Factory/AnnotationResourceNameCollectionFactory.php</b> on line <b>36</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Core\Metadata\Resource\Factory\AnnotationResourceNameCollectionFactory::__construct(): Implicitly marking parameter $decorated as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Core/Metadata/Resource/Factory/AnnotationResourceNameCollectionFactory.php</b> on line <b>36</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Core\Metadata\Resource\Factory\AnnotationResourceMetadataFactory::__construct(): Implicitly marking parameter $reader as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Core/Metadata/Resource/Factory/AnnotationResourceMetadataFactory.php</b> on line <b>32</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Core\Metadata\Resource\Factory\AnnotationResourceMetadataFactory::__construct(): Implicitly marking parameter $decorated as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Core/Metadata/Resource/Factory/AnnotationResourceMetadataFactory.php</b> on line <b>32</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Core\Metadata\Resource\Factory\AnnotationResourceMetadataFactory::createMetadata(): Implicitly marking parameter $parentResourceMetadata as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Core/Metadata/Resource/Factory/AnnotationResourceMetadataFactory.php</b> on line <b>87</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Core\Metadata\Resource\Factory\AnnotationResourceFilterMetadataFactory::__construct(): Implicitly marking parameter $reader as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Core/Metadata/Resource/Factory/AnnotationResourceFilterMetadataFactory.php</b> on line <b>34</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Core\Metadata\Resource\Factory\AnnotationResourceFilterMetadataFactory::__construct(): Implicitly marking parameter $decorated as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Core/Metadata/Resource/Factory/AnnotationResourceFilterMetadataFactory.php</b> on line <b>34</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Core\Metadata\Property\Factory\AnnotationSubresourceMetadataFactory::__construct(): Implicitly marking parameter $reader as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Core/Metadata/Property/Factory/AnnotationSubresourceMetadataFactory.php</b> on line <b>34</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Core\Metadata\Property\Factory\AnnotationPropertyMetadataFactory::__construct(): Implicitly marking parameter $reader as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Core/Metadata/Property/Factory/AnnotationPropertyMetadataFactory.php</b> on line <b>32</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Core\Metadata\Property\Factory\AnnotationPropertyMetadataFactory::__construct(): Implicitly marking parameter $decorated as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Core/Metadata/Property/Factory/AnnotationPropertyMetadataFactory.php</b> on line <b>32</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Core\Metadata\Property\Factory\AnnotationPropertyMetadataFactory::createMetadata(): Implicitly marking parameter $parentPropertyMetadata as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Core/Metadata/Property/Factory/AnnotationPropertyMetadataFactory.php</b> on line <b>113</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Core\Metadata\Resource\Factory\PhpDocResourceMetadataFactory::__construct(): Implicitly marking parameter $docBlockFactory as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Core/Metadata/Resource/Factory/PhpDocResourceMetadataFactory.php</b> on line <b>32</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\JsonSchema\TypeFactory::__construct(): Implicitly marking parameter $resourceClassResolver as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/JsonSchema/TypeFactory.php</b> on line <b>36</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\JsonSchema\TypeFactory::getType(): Implicitly marking parameter $readableLink as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/JsonSchema/TypeFactory.php</b> on line <b>49</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\JsonSchema\TypeFactory::getType(): Implicitly marking parameter $serializerContext as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/JsonSchema/TypeFactory.php</b> on line <b>49</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\JsonSchema\TypeFactory::getType(): Implicitly marking parameter $schema as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/JsonSchema/TypeFactory.php</b> on line <b>49</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\JsonSchema\TypeFactory::makeBasicType(): Implicitly marking parameter $readableLink as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/JsonSchema/TypeFactory.php</b> on line <b>71</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\JsonSchema\TypeFactory::makeBasicType(): Implicitly marking parameter $serializerContext as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/JsonSchema/TypeFactory.php</b> on line <b>71</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\JsonSchema\TypeFactory::makeBasicType(): Implicitly marking parameter $schema as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/JsonSchema/TypeFactory.php</b> on line <b>71</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\JsonLd\ContextBuilder::__construct(): Implicitly marking parameter $nameConverter as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/JsonLd/ContextBuilder.php</b> on line <b>65</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\JsonLd\ContextBuilder::__construct(): Implicitly marking parameter $iriConverter as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/JsonLd/ContextBuilder.php</b> on line <b>65</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\JsonLd\ContextBuilder::getResourceContextUri(): Implicitly marking parameter $referenceType as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/JsonLd/ContextBuilder.php</b> on line <b>145</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\JsonLd\ContextBuilder::getResourceContextWithShortname(): Implicitly marking parameter $operation as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/JsonLd/ContextBuilder.php</b> on line <b>212</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\JsonLd\Serializer\ItemNormalizer::__construct(): Implicitly marking parameter $propertyAccessor as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/JsonLd/Serializer/ItemNormalizer.php</b> on line <b>50</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\JsonLd\Serializer\ItemNormalizer::__construct(): Implicitly marking parameter $nameConverter as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/JsonLd/Serializer/ItemNormalizer.php</b> on line <b>50</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\JsonLd\Serializer\ItemNormalizer::__construct(): Implicitly marking parameter $classMetadataFactory as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/JsonLd/Serializer/ItemNormalizer.php</b> on line <b>50</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\JsonLd\Serializer\ItemNormalizer::__construct(): Implicitly marking parameter $resourceAccessChecker as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/JsonLd/Serializer/ItemNormalizer.php</b> on line <b>50</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Serializer\JsonEncoder::__construct(): Implicitly marking parameter $jsonEncoder as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Serializer/JsonEncoder.php</b> on line <b>33</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Hydra\Serializer\DocumentationNormalizer::__construct(): Implicitly marking parameter $operationMethodResolver as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Hydra/Serializer/DocumentationNormalizer.php</b> on line <b>68</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Hydra\Serializer\DocumentationNormalizer::__construct(): Implicitly marking parameter $subresourceOperationFactory as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Hydra/Serializer/DocumentationNormalizer.php</b> on line <b>68</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Hydra\Serializer\DocumentationNormalizer::__construct(): Implicitly marking parameter $nameConverter as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Hydra/Serializer/DocumentationNormalizer.php</b> on line <b>68</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Hydra\Serializer\DocumentationNormalizer::populateEntrypointProperties(): Implicitly marking parameter $resourceMetadataCollection as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Hydra/Serializer/DocumentationNormalizer.php</b> on line <b>130</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Hydra\Serializer\DocumentationNormalizer::getClass(): Implicitly marking parameter $resourceMetadataCollection as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Hydra/Serializer/DocumentationNormalizer.php</b> on line <b>172</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Hydra\Serializer\DocumentationNormalizer::getHydraOperations(): Implicitly marking parameter $resourceMetadataCollection as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Hydra/Serializer/DocumentationNormalizer.php</b> on line <b>340</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Hydra\Serializer\DocumentationNormalizer::getHydraOperation(): Implicitly marking parameter $operationType as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Hydra/Serializer/DocumentationNormalizer.php</b> on line <b>381</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Hydra\Serializer\DocumentationNormalizer::getHydraOperation(): Implicitly marking parameter $subresourceMetadata as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Hydra/Serializer/DocumentationNormalizer.php</b> on line <b>381</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Hydra\Serializer\ConstraintViolationListNormalizer::__construct(): Implicitly marking parameter $serializePayloadFields as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Hydra/Serializer/ConstraintViolationListNormalizer.php</b> on line <b>31</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Hydra\Serializer\ConstraintViolationListNormalizer::__construct(): Implicitly marking parameter $nameConverter as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Hydra/Serializer/ConstraintViolationListNormalizer.php</b> on line <b>31</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Serializer\AbstractConstraintViolationListNormalizer::__construct(): Implicitly marking parameter $serializePayloadFields as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Serializer/AbstractConstraintViolationListNormalizer.php</b> on line <b>36</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Serializer\AbstractConstraintViolationListNormalizer::__construct(): Implicitly marking parameter $nameConverter as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Serializer/AbstractConstraintViolationListNormalizer.php</b> on line <b>36</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Hydra\Serializer\PartialCollectionViewNormalizer::__construct(): Implicitly marking parameter $propertyAccessor as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Hydra/Serializer/PartialCollectionViewNormalizer.php</b> on line <b>42</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Core\Hydra\JsonSchema\SchemaFactory::buildSchema(): Implicitly marking parameter $operationType as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Core/Hydra/JsonSchema/SchemaFactory.php</b> on line <b>70</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Core\Hydra\JsonSchema\SchemaFactory::buildSchema(): Implicitly marking parameter $operationName as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Core/Hydra/JsonSchema/SchemaFactory.php</b> on line <b>70</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Core\Hydra\JsonSchema\SchemaFactory::buildSchema(): Implicitly marking parameter $schema as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Core/Hydra/JsonSchema/SchemaFactory.php</b> on line <b>70</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Core\Hydra\JsonSchema\SchemaFactory::buildSchema(): Implicitly marking parameter $serializerContext as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Core/Hydra/JsonSchema/SchemaFactory.php</b> on line <b>70</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Problem\Serializer\ConstraintViolationListNormalizer::__construct(): Implicitly marking parameter $serializePayloadFields as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Problem/Serializer/ConstraintViolationListNormalizer.php</b> on line <b>37</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Problem\Serializer\ConstraintViolationListNormalizer::__construct(): Implicitly marking parameter $nameConverter as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Problem/Serializer/ConstraintViolationListNormalizer.php</b> on line <b>37</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\HttpCache\EventListener\AddHeadersListener::__construct(): Implicitly marking parameter $maxAge as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/HttpCache/EventListener/AddHeadersListener.php</b> on line <b>43</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\HttpCache\EventListener\AddHeadersListener::__construct(): Implicitly marking parameter $sharedMaxAge as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/HttpCache/EventListener/AddHeadersListener.php</b> on line <b>43</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\HttpCache\EventListener\AddHeadersListener::__construct(): Implicitly marking parameter $vary as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/HttpCache/EventListener/AddHeadersListener.php</b> on line <b>43</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\HttpCache\EventListener\AddHeadersListener::__construct(): Implicitly marking parameter $public as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/HttpCache/EventListener/AddHeadersListener.php</b> on line <b>43</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\HttpCache\EventListener\AddHeadersListener::__construct(): Implicitly marking parameter $staleWhileRevalidate as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/HttpCache/EventListener/AddHeadersListener.php</b> on line <b>43</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\HttpCache\EventListener\AddHeadersListener::__construct(): Implicitly marking parameter $staleIfError as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/HttpCache/EventListener/AddHeadersListener.php</b> on line <b>43</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Core\Bridge\Symfony\Bundle\DataProvider\TraceableChainCollectionDataProvider::getCollection(): Implicitly marking parameter $operationName as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Core/Bridge/Symfony/Bundle/DataProvider/TraceableChainCollectionDataProvider.php</b> on line <b>50</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Core\DataProvider\RestrictDataProviderTrait::supports(): Implicitly marking parameter $operationName as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Core/DataProvider/RestrictDataProviderTrait.php</b> on line <b>21</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Core\Bridge\Symfony\Bundle\DataProvider\TraceableChainItemDataProvider::getItem(): Implicitly marking parameter $operationName as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Core/Bridge/Symfony/Bundle/DataProvider/TraceableChainItemDataProvider.php</b> on line <b>50</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Core\Bridge\Symfony\Bundle\DataProvider\TraceableChainSubresourceDataProvider::getSubresource(): Implicitly marking parameter $operationName as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Core/Bridge/Symfony/Bundle/DataProvider/TraceableChainSubresourceDataProvider.php</b> on line <b>47</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Symfony\Security\ResourceAccessChecker::__construct(): Implicitly marking parameter $expressionLanguage as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Symfony/Security/ResourceAccessChecker.php</b> on line <b>39</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Symfony\Security\ResourceAccessChecker::__construct(): Implicitly marking parameter $authenticationTrustResolver as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Symfony/Security/ResourceAccessChecker.php</b> on line <b>39</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Symfony\Security\ResourceAccessChecker::__construct(): Implicitly marking parameter $roleHierarchy as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Symfony/Security/ResourceAccessChecker.php</b> on line <b>39</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Symfony\Security\ResourceAccessChecker::__construct(): Implicitly marking parameter $tokenStorage as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Symfony/Security/ResourceAccessChecker.php</b> on line <b>39</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Symfony\Security\ResourceAccessChecker::__construct(): Implicitly marking parameter $authorizationChecker as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Symfony/Security/ResourceAccessChecker.php</b> on line <b>39</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Symfony\EventListener\DenyAccessListener::__construct(): Implicitly marking parameter $authenticationTrustResolver as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Symfony/EventListener/DenyAccessListener.php</b> on line <b>50</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Symfony\EventListener\DenyAccessListener::__construct(): Implicitly marking parameter $roleHierarchy as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Symfony/EventListener/DenyAccessListener.php</b> on line <b>50</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Symfony\EventListener\DenyAccessListener::__construct(): Implicitly marking parameter $tokenStorage as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Symfony/EventListener/DenyAccessListener.php</b> on line <b>50</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Symfony\EventListener\DenyAccessListener::__construct(): Implicitly marking parameter $authorizationChecker as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Symfony/EventListener/DenyAccessListener.php</b> on line <b>50</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Core\Api\CachedIdentifiersExtractor::__construct(): Implicitly marking parameter $propertyAccessor as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Core/Api/CachedIdentifiersExtractor.php</b> on line <b>37</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Core\Api\CachedIdentifiersExtractor::__construct(): Implicitly marking parameter $resourceClassResolver as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Core/Api/CachedIdentifiersExtractor.php</b> on line <b>37</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Core\Identifier\IdentifierConverter::__construct(): Implicitly marking parameter $resourceMetadataFactory as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Core/Identifier/IdentifierConverter.php</b> on line <b>40</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Serializer\SerializerContextBuilder::createFromRequest(): Implicitly marking parameter $attributes as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Serializer/SerializerContextBuilder.php</b> on line <b>43</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Hydra\Serializer\CollectionNormalizer::__construct(): Implicitly marking parameter $resourceMetadataCollectionFactory as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Hydra/Serializer/CollectionNormalizer.php</b> on line <b>57</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Core\JsonSchema\SchemaFactory::__construct(): Implicitly marking parameter $nameConverter as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Core/JsonSchema/SchemaFactory.php</b> on line <b>61</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Core\JsonSchema\SchemaFactory::__construct(): Implicitly marking parameter $resourceClassResolver as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Core/JsonSchema/SchemaFactory.php</b> on line <b>61</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Core\JsonSchema\SchemaFactory::buildSchema(): Implicitly marking parameter $operationType as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Core/JsonSchema/SchemaFactory.php</b> on line <b>84</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Core\JsonSchema\SchemaFactory::buildSchema(): Implicitly marking parameter $operationName as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Core/JsonSchema/SchemaFactory.php</b> on line <b>84</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Core\JsonSchema\SchemaFactory::buildSchema(): Implicitly marking parameter $schema as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Core/JsonSchema/SchemaFactory.php</b> on line <b>84</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Core\JsonSchema\SchemaFactory::buildSchema(): Implicitly marking parameter $serializerContext as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Core/JsonSchema/SchemaFactory.php</b> on line <b>84</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Core\JsonSchema\SchemaFactory::buildDefinitionName(): Implicitly marking parameter $inputOrOutputClass as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Core/JsonSchema/SchemaFactory.php</b> on line <b>279</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Core\JsonSchema\SchemaFactory::buildDefinitionName(): Implicitly marking parameter $serializerContext as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Core/JsonSchema/SchemaFactory.php</b> on line <b>279</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Core\JsonSchema\SchemaFactory::getMetadata(): Implicitly marking parameter $operationType as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Core/JsonSchema/SchemaFactory.php</b> on line <b>316</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Core\JsonSchema\SchemaFactory::getMetadata(): Implicitly marking parameter $operationName as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Core/JsonSchema/SchemaFactory.php</b> on line <b>316</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Core\JsonSchema\SchemaFactory::getMetadata(): Implicitly marking parameter $serializerContext as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Core/JsonSchema/SchemaFactory.php</b> on line <b>316</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Core\JsonSchema\SchemaFactory::getSerializerContext(): Implicitly marking parameter $operationType as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Core/JsonSchema/SchemaFactory.php</b> on line <b>357</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Core\JsonSchema\SchemaFactory::getSerializerContext(): Implicitly marking parameter $operationName as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Core/JsonSchema/SchemaFactory.php</b> on line <b>357</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Core\JsonSchema\SchemaFactory::getFactoryOptions(): Implicitly marking parameter $operation as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Core/JsonSchema/SchemaFactory.php</b> on line <b>403</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Core\DataProvider\ChainCollectionDataProvider::getCollection(): Implicitly marking parameter $operationName as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Core/DataProvider/ChainCollectionDataProvider.php</b> on line <b>35</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Core\DataProvider\ChainItemDataProvider::getItem(): Implicitly marking parameter $operationName as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Core/DataProvider/ChainItemDataProvider.php</b> on line <b>35</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Core\DataProvider\ChainSubresourceDataProvider::getSubresource(): Implicitly marking parameter $operationName as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Core/DataProvider/ChainSubresourceDataProvider.php</b> on line <b>40</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Core\Api\IdentifiersExtractor::__construct(): Implicitly marking parameter $propertyAccessor as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Core/Api/IdentifiersExtractor.php</b> on line <b>35</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Core\Api\IdentifiersExtractor::__construct(): Implicitly marking parameter $resourceClassResolver as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Core/Api/IdentifiersExtractor.php</b> on line <b>35</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Core\Api\IdentifiersExtractor::__construct(): Implicitly marking parameter $metadataBackwardCompatibilityLayer as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Core/Api/IdentifiersExtractor.php</b> on line <b>35</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Core\Swagger\Serializer\DocumentationNormalizer::__construct(): Implicitly marking parameter $operationPathResolver as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Core/Swagger/Serializer/DocumentationNormalizer.php</b> on line <b>124</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Core\Swagger\Serializer\DocumentationNormalizer::__construct(): Implicitly marking parameter $urlGenerator as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Core/Swagger/Serializer/DocumentationNormalizer.php</b> on line <b>124</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Core\Swagger\Serializer\DocumentationNormalizer::__construct(): Implicitly marking parameter $nameConverter as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Core/Swagger/Serializer/DocumentationNormalizer.php</b> on line <b>124</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Core\Swagger\Serializer\DocumentationNormalizer::__construct(): Implicitly marking parameter $subresourceOperationFactory as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Core/Swagger/Serializer/DocumentationNormalizer.php</b> on line <b>124</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Core\Swagger\Serializer\DocumentationNormalizer::__construct(): Implicitly marking parameter $identifiersExtractor as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Core/Swagger/Serializer/DocumentationNormalizer.php</b> on line <b>124</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Core\Swagger\Serializer\DocumentationNormalizer::__construct(): Implicitly marking parameter $openApiNormalizer as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Core/Swagger/Serializer/DocumentationNormalizer.php</b> on line <b>124</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Core\Swagger\Serializer\DocumentationNormalizer::getJsonSchema(): Implicitly marking parameter $serializerContext as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Core/Swagger/Serializer/DocumentationNormalizer.php</b> on line <b>745</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Core\Operation\Factory\SubresourceOperationFactory::__construct(): Implicitly marking parameter $identifiersExtractor as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Core/Operation/Factory/SubresourceOperationFactory.php</b> on line <b>39</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Core\Operation\Factory\SubresourceOperationFactory::computeSubresourceOperations(): Implicitly marking parameter $rootResourceClass as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Core/Operation/Factory/SubresourceOperationFactory.php</b> on line <b>68</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Core\Operation\Factory\SubresourceOperationFactory::computeSubresourceOperations(): Implicitly marking parameter $parentOperation as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Core/Operation/Factory/SubresourceOperationFactory.php</b> on line <b>68</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Core\Operation\Factory\SubresourceOperationFactory::computeSubresourceOperations(): Implicitly marking parameter $maxDepth as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Core/Operation/Factory/SubresourceOperationFactory.php</b> on line <b>68</b><br />
+<br />
+<b>Deprecated</b>:  Symfony\Bundle\MakerBundle\Doctrine\DoctrineHelper::getMetadata(): Implicitly marking parameter $classOrNamespace as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/symfony/maker-bundle/src/Doctrine/DoctrineHelper.php</b> on line <b>150</b><br />
+<br />
+<b>Deprecated</b>:  Symfony\Bundle\MakerBundle\Generator::__construct(): Implicitly marking parameter $phpCompatUtil as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/symfony/maker-bundle/src/Generator.php</b> on line <b>31</b><br />
+<br />
+<b>Deprecated</b>:  Symfony\Bundle\MakerBundle\Generator::__construct(): Implicitly marking parameter $templateComponentGenerator as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/symfony/maker-bundle/src/Generator.php</b> on line <b>31</b><br />
+<br />
+<b>Deprecated</b>:  Symfony\Bundle\MakerBundle\Renderer\FormTypeRenderer::render(): Implicitly marking parameter $boundClassDetails as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/symfony/maker-bundle/src/Renderer/FormTypeRenderer.php</b> on line <b>32</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Documentation\Action\DocumentationAction::__invoke(): Implicitly marking parameter $request as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Documentation/Action/DocumentationAction.php</b> on line <b>73</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Core\Api\LegacyIriConverter::__construct(): Implicitly marking parameter $iriConverter as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Core/Api/LegacyIriConverter.php</b> on line <b>36</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Core\Api\LegacyIriConverter::getResourceFromIri(): Implicitly marking parameter $operation as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Core/Api/LegacyIriConverter.php</b> on line <b>42</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Core\Api\LegacyIriConverter::getIriFromResource(): Implicitly marking parameter $operation as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Core/Api/LegacyIriConverter.php</b> on line <b>59</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Api\IdentifiersExtractor::__construct(): Implicitly marking parameter $propertyAccessor as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Api/IdentifiersExtractor.php</b> on line <b>40</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Api\IdentifiersExtractor::getIdentifiersFromItem(): Implicitly marking parameter $operation as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Api/IdentifiersExtractor.php</b> on line <b>54</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Api\IdentifiersExtractorInterface::getIdentifiersFromItem(): Implicitly marking parameter $operation as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Api/IdentifiersExtractorInterface.php</b> on line <b>33</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\State\Pagination\Pagination::getOffset(): Implicitly marking parameter $operation as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/State/Pagination/Pagination.php</b> on line <b>73</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\State\Pagination\Pagination::getLimit(): Implicitly marking parameter $operation as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/State/Pagination/Pagination.php</b> on line <b>105</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\State\Pagination\Pagination::getPagination(): Implicitly marking parameter $operation as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/State/Pagination/Pagination.php</b> on line <b>160</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\State\Pagination\Pagination::isEnabled(): Implicitly marking parameter $operation as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/State/Pagination/Pagination.php</b> on line <b>175</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\State\Pagination\Pagination::isGraphQlEnabled(): Implicitly marking parameter $operation as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/State/Pagination/Pagination.php</b> on line <b>183</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\State\Pagination\Pagination::isPartialEnabled(): Implicitly marking parameter $operation as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/State/Pagination/Pagination.php</b> on line <b>191</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\State\Pagination\Pagination::getEnabled(): Implicitly marking parameter $operation as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/State/Pagination/Pagination.php</b> on line <b>209</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Symfony\Routing\ApiLoader::__construct(): Implicitly marking parameter $subresourceOperationFactory as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Symfony/Routing/ApiLoader.php</b> on line <b>66</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Symfony\Routing\ApiLoader::__construct(): Implicitly marking parameter $identifiersExtractor as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Symfony/Routing/ApiLoader.php</b> on line <b>66</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Symfony\EventListener\RespondListener::__construct(): Implicitly marking parameter $iriConverter as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Symfony/EventListener/RespondListener.php</b> on line <b>43</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Core\EventListener\WriteListener::__construct(): Implicitly marking parameter $resourceMetadataFactory as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Core/EventListener/WriteListener.php</b> on line <b>50</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Core\EventListener\WriteListener::__construct(): Implicitly marking parameter $resourceClassResolver as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Core/EventListener/WriteListener.php</b> on line <b>50</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Core\EventListener\WriteListener::__construct(): Implicitly marking parameter $resourceMetadataCollectionFactory as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Core/EventListener/WriteListener.php</b> on line <b>50</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Core\EventListener\WriteListener::__construct(): Implicitly marking parameter $metadataBackwardCompatibilityLayer as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Core/EventListener/WriteListener.php</b> on line <b>50</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Core\DataProvider\Pagination::getOffset(): Implicitly marking parameter $resourceClass as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Core/DataProvider/Pagination.php</b> on line <b>76</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Core\DataProvider\Pagination::getOffset(): Implicitly marking parameter $operationName as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Core/DataProvider/Pagination.php</b> on line <b>76</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Core\DataProvider\Pagination::getLimit(): Implicitly marking parameter $resourceClass as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Core/DataProvider/Pagination.php</b> on line <b>108</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Core\DataProvider\Pagination::getLimit(): Implicitly marking parameter $operationName as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Core/DataProvider/Pagination.php</b> on line <b>108</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Core\DataProvider\Pagination::getPagination(): Implicitly marking parameter $resourceClass as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Core/DataProvider/Pagination.php</b> on line <b>169</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Core\DataProvider\Pagination::getPagination(): Implicitly marking parameter $operationName as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Core/DataProvider/Pagination.php</b> on line <b>169</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Core\DataProvider\Pagination::isEnabled(): Implicitly marking parameter $resourceClass as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Core/DataProvider/Pagination.php</b> on line <b>184</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Core\DataProvider\Pagination::isEnabled(): Implicitly marking parameter $operationName as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Core/DataProvider/Pagination.php</b> on line <b>184</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Core\DataProvider\Pagination::isGraphQlEnabled(): Implicitly marking parameter $resourceClass as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Core/DataProvider/Pagination.php</b> on line <b>192</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Core\DataProvider\Pagination::isGraphQlEnabled(): Implicitly marking parameter $operationName as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Core/DataProvider/Pagination.php</b> on line <b>192</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Core\DataProvider\Pagination::isPartialEnabled(): Implicitly marking parameter $resourceClass as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Core/DataProvider/Pagination.php</b> on line <b>200</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Core\DataProvider\Pagination::isPartialEnabled(): Implicitly marking parameter $operationName as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Core/DataProvider/Pagination.php</b> on line <b>200</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Core\DataProvider\Pagination::getEnabled(): Implicitly marking parameter $resourceClass as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Core/DataProvider/Pagination.php</b> on line <b>224</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Core\DataProvider\Pagination::getEnabled(): Implicitly marking parameter $operationName as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Core/DataProvider/Pagination.php</b> on line <b>224</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\State\Pagination\PaginationOptions::__construct(): Implicitly marking parameter $maximumItemsPerPage as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/State/Pagination/PaginationOptions.php</b> on line <b>30</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\OpenApi\Options::__construct(): Implicitly marking parameter $oAuthType as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/OpenApi/Options.php</b> on line <b>36</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\OpenApi\Options::__construct(): Implicitly marking parameter $oAuthFlow as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/OpenApi/Options.php</b> on line <b>36</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\OpenApi\Options::__construct(): Implicitly marking parameter $oAuthTokenUrl as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/OpenApi/Options.php</b> on line <b>36</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\OpenApi\Options::__construct(): Implicitly marking parameter $oAuthAuthorizationUrl as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/OpenApi/Options.php</b> on line <b>36</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\OpenApi\Options::__construct(): Implicitly marking parameter $oAuthRefreshUrl as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/OpenApi/Options.php</b> on line <b>36</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\OpenApi\Options::__construct(): Implicitly marking parameter $contactName as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/OpenApi/Options.php</b> on line <b>36</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\OpenApi\Options::__construct(): Implicitly marking parameter $contactUrl as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/OpenApi/Options.php</b> on line <b>36</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\OpenApi\Options::__construct(): Implicitly marking parameter $contactEmail as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/OpenApi/Options.php</b> on line <b>36</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\OpenApi\Options::__construct(): Implicitly marking parameter $termsOfService as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/OpenApi/Options.php</b> on line <b>36</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\OpenApi\Options::__construct(): Implicitly marking parameter $licenseName as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/OpenApi/Options.php</b> on line <b>36</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\OpenApi\Options::__construct(): Implicitly marking parameter $licenseUrl as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/OpenApi/Options.php</b> on line <b>36</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Core\Bridge\Symfony\Bundle\Action\SwaggerUiAction::__construct(): Implicitly marking parameter $swaggerUiAction as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Core/Bridge/Symfony/Bundle/Action/SwaggerUiAction.php</b> on line <b>75</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Core\OpenApi\Factory\OpenApiFactory::__construct(): Implicitly marking parameter $identifiersExtractor as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Core/OpenApi/Factory/OpenApiFactory.php</b> on line <b>62</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Core\OpenApi\Factory\OpenApiFactory::__construct(): Implicitly marking parameter $openApiOptions as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Core/OpenApi/Factory/OpenApiFactory.php</b> on line <b>62</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Core\OpenApi\Factory\OpenApiFactory::__construct(): Implicitly marking parameter $paginationOptions as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Core/OpenApi/Factory/OpenApiFactory.php</b> on line <b>62</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Core\OpenApi\Factory\OpenApiFactory::getMimeTypes(): Implicitly marking parameter $resourceMetadata as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Core/OpenApi/Factory/OpenApiFactory.php</b> on line <b>310</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Symfony\Bundle\SwaggerUi\SwaggerUiAction::__construct(): Implicitly marking parameter $oauthClientId as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Symfony/Bundle/SwaggerUi/SwaggerUiAction.php</b> on line <b>45</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Symfony\Bundle\SwaggerUi\SwaggerUiAction::__construct(): Implicitly marking parameter $oauthClientSecret as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Symfony/Bundle/SwaggerUi/SwaggerUiAction.php</b> on line <b>45</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Core\Bridge\Doctrine\Orm\Extension\EagerLoadingExtension::__construct(): Implicitly marking parameter $requestStack as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Core/Bridge/Doctrine/Orm/Extension/EagerLoadingExtension.php</b> on line <b>56</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Core\Bridge\Doctrine\Orm\Extension\EagerLoadingExtension::__construct(): Implicitly marking parameter $serializerContextBuilder as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Core/Bridge/Doctrine/Orm/Extension/EagerLoadingExtension.php</b> on line <b>56</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Core\Bridge\Doctrine\Orm\Extension\EagerLoadingExtension::__construct(): Implicitly marking parameter $classMetadataFactory as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Core/Bridge/Doctrine/Orm/Extension/EagerLoadingExtension.php</b> on line <b>56</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Core\Bridge\Doctrine\Orm\Extension\EagerLoadingExtension::applyToCollection(): Implicitly marking parameter $resourceClass as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Core/Bridge/Doctrine/Orm/Extension/EagerLoadingExtension.php</b> on line <b>76</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Core\Bridge\Doctrine\Orm\Extension\EagerLoadingExtension::applyToCollection(): Implicitly marking parameter $operationName as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Core/Bridge/Doctrine/Orm/Extension/EagerLoadingExtension.php</b> on line <b>76</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Core\Bridge\Doctrine\Orm\Extension\EagerLoadingExtension::applyToItem(): Implicitly marking parameter $operationName as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Core/Bridge/Doctrine/Orm/Extension/EagerLoadingExtension.php</b> on line <b>86</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Core\Bridge\Doctrine\Orm\Extension\EagerLoadingExtension::joinRelations(): Implicitly marking parameter $currentDepth as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Core/Bridge/Doctrine/Orm/Extension/EagerLoadingExtension.php</b> on line <b>136</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Core\Bridge\Doctrine\Orm\Extension\EagerLoadingExtension::joinRelations(): Implicitly marking parameter $parentAssociation as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Core/Bridge/Doctrine/Orm/Extension/EagerLoadingExtension.php</b> on line <b>136</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Core\Bridge\Doctrine\Orm\Extension\ContextAwareQueryCollectionExtensionInterface::applyToCollection(): Implicitly marking parameter $operationName as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Core/Bridge/Doctrine/Orm/Extension/ContextAwareQueryCollectionExtensionInterface.php</b> on line <b>30</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Core\Bridge\Doctrine\Orm\Extension\QueryItemExtensionInterface::applyToItem(): Implicitly marking parameter $operationName as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Core/Bridge/Doctrine/Orm/Extension/QueryItemExtensionInterface.php</b> on line <b>31</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Core\Bridge\Doctrine\Orm\Extension\FilterExtension::applyToCollection(): Implicitly marking parameter $resourceClass as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Core/Bridge/Doctrine/Orm/Extension/FilterExtension.php</b> on line <b>48</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Core\Bridge\Doctrine\Orm\Extension\FilterExtension::applyToCollection(): Implicitly marking parameter $operationName as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Core/Bridge/Doctrine/Orm/Extension/FilterExtension.php</b> on line <b>48</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Core\Bridge\Doctrine\Orm\Extension\FilterEagerLoadingExtension::__construct(): Implicitly marking parameter $resourceClassResolver as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Core/Bridge/Doctrine/Orm/Extension/FilterEagerLoadingExtension.php</b> on line <b>35</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Core\Bridge\Doctrine\Orm\Extension\FilterEagerLoadingExtension::applyToCollection(): Implicitly marking parameter $resourceClass as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Core/Bridge/Doctrine/Orm/Extension/FilterEagerLoadingExtension.php</b> on line <b>42</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Core\Bridge\Doctrine\Orm\Extension\FilterEagerLoadingExtension::applyToCollection(): Implicitly marking parameter $operationName as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Core/Bridge/Doctrine/Orm/Extension/FilterEagerLoadingExtension.php</b> on line <b>42</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Core\Bridge\Doctrine\Orm\Extension\PaginationExtension::applyToCollection(): Implicitly marking parameter $operationName as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Core/Bridge/Doctrine/Orm/Extension/PaginationExtension.php</b> on line <b>119</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Core\Bridge\Doctrine\Orm\Extension\PaginationExtension::supportsResult(): Implicitly marking parameter $operationName as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Core/Bridge/Doctrine/Orm/Extension/PaginationExtension.php</b> on line <b>132</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Core\Bridge\Doctrine\Orm\Extension\PaginationExtension::getResult(): Implicitly marking parameter $resourceClass as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Core/Bridge/Doctrine/Orm/Extension/PaginationExtension.php</b> on line <b>149</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Core\Bridge\Doctrine\Orm\Extension\PaginationExtension::getResult(): Implicitly marking parameter $operationName as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Core/Bridge/Doctrine/Orm/Extension/PaginationExtension.php</b> on line <b>149</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Core\Bridge\Doctrine\Orm\Extension\PaginationExtension::isPartialPaginationEnabled(): Implicitly marking parameter $request as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Core/Bridge/Doctrine/Orm/Extension/PaginationExtension.php</b> on line <b>254</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Core\Bridge\Doctrine\Orm\Extension\PaginationExtension::isPartialPaginationEnabled(): Implicitly marking parameter $resourceMetadata as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Core/Bridge/Doctrine/Orm/Extension/PaginationExtension.php</b> on line <b>254</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Core\Bridge\Doctrine\Orm\Extension\PaginationExtension::isPartialPaginationEnabled(): Implicitly marking parameter $operationName as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Core/Bridge/Doctrine/Orm/Extension/PaginationExtension.php</b> on line <b>254</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Core\Bridge\Doctrine\Orm\Extension\PaginationExtension::isPaginationEnabled(): Implicitly marking parameter $operationName as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Core/Bridge/Doctrine/Orm/Extension/PaginationExtension.php</b> on line <b>274</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Core\Bridge\Doctrine\Orm\Extension\PaginationExtension::shouldDoctrinePaginatorFetchJoinCollection(): Implicitly marking parameter $resourceClass as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Core/Bridge/Doctrine/Orm/Extension/PaginationExtension.php</b> on line <b>311</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Core\Bridge\Doctrine\Orm\Extension\PaginationExtension::shouldDoctrinePaginatorFetchJoinCollection(): Implicitly marking parameter $operationName as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Core/Bridge/Doctrine/Orm/Extension/PaginationExtension.php</b> on line <b>311</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Core\Bridge\Doctrine\Orm\Extension\PaginationExtension::shouldDoctrinePaginatorUseOutputWalkers(): Implicitly marking parameter $resourceClass as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Core/Bridge/Doctrine/Orm/Extension/PaginationExtension.php</b> on line <b>346</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Core\Bridge\Doctrine\Orm\Extension\PaginationExtension::shouldDoctrinePaginatorUseOutputWalkers(): Implicitly marking parameter $operationName as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Core/Bridge/Doctrine/Orm/Extension/PaginationExtension.php</b> on line <b>346</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Core\Bridge\Doctrine\Orm\Extension\ContextAwareQueryResultCollectionExtensionInterface::supportsResult(): Implicitly marking parameter $operationName as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Core/Bridge/Doctrine/Orm/Extension/ContextAwareQueryResultCollectionExtensionInterface.php</b> on line <b>25</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Core\Bridge\Doctrine\Orm\Extension\ContextAwareQueryResultCollectionExtensionInterface::getResult(): Implicitly marking parameter $resourceClass as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Core/Bridge/Doctrine/Orm/Extension/ContextAwareQueryResultCollectionExtensionInterface.php</b> on line <b>27</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Core\Bridge\Doctrine\Orm\Extension\ContextAwareQueryResultCollectionExtensionInterface::getResult(): Implicitly marking parameter $operationName as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Core/Bridge/Doctrine/Orm/Extension/ContextAwareQueryResultCollectionExtensionInterface.php</b> on line <b>27</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Core\Bridge\Doctrine\Orm\Extension\QueryResultCollectionExtensionInterface::supportsResult(): Implicitly marking parameter $operationName as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Core/Bridge/Doctrine/Orm/Extension/QueryResultCollectionExtensionInterface.php</b> on line <b>27</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Core\Bridge\Doctrine\Orm\Extension\OrderExtension::__construct(): Implicitly marking parameter $order as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Core/Bridge/Doctrine/Orm/Extension/OrderExtension.php</b> on line <b>34</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Core\Bridge\Doctrine\Orm\Extension\OrderExtension::__construct(): Implicitly marking parameter $resourceMetadataFactory as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Core/Bridge/Doctrine/Orm/Extension/OrderExtension.php</b> on line <b>34</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Core\Bridge\Doctrine\Orm\Extension\OrderExtension::applyToCollection(): Implicitly marking parameter $resourceClass as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Core/Bridge/Doctrine/Orm/Extension/OrderExtension.php</b> on line <b>40</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Core\Bridge\Doctrine\Orm\Extension\OrderExtension::applyToCollection(): Implicitly marking parameter $operationName as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Core/Bridge/Doctrine/Orm/Extension/OrderExtension.php</b> on line <b>40</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Symfony\Validator\Validator::__construct(): Implicitly marking parameter $container as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Symfony/Validator/Validator.php</b> on line <b>34</b><br />
+<br />
+<b>Deprecated</b>:  Psy\Shell::__construct(): Implicitly marking parameter $config as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/psy/psysh/src/Shell.php</b> on line <b>91</b><br />
+<br />
+<b>Deprecated</b>:  Psy\Shell::run(): Implicitly marking parameter $input as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/psy/psysh/src/Shell.php</b> on line <b>329</b><br />
+<br />
+<b>Deprecated</b>:  Psy\Shell::run(): Implicitly marking parameter $output as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/psy/psysh/src/Shell.php</b> on line <b>329</b><br />
+<br />
+<b>Deprecated</b>:  Fidry\PsyshBundle\PsyshFacade::setContainer(): Implicitly marking parameter $container as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/theofidry/psysh-bundle/src/PsyshFacade.php</b> on line <b>51</b><br />
+<br />
+<b>Deprecated</b>:  Symfony\Bundle\MakerBundle\Command\MakerCommand::setApplication(): Implicitly marking parameter $application as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/symfony/maker-bundle/src/Command/MakerCommand.php</b> on line <b>114</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Core\Bridge\Symfony\Routing\IriConverter::__construct(): Implicitly marking parameter $propertyAccessor as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Core/Bridge/Symfony/Routing/IriConverter.php</b> on line <b>55</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Core\Bridge\Symfony\Routing\IriConverter::__construct(): Implicitly marking parameter $identifiersExtractor as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Core/Bridge/Symfony/Routing/IriConverter.php</b> on line <b>55</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Core\Bridge\Symfony\Routing\IriConverter::__construct(): Implicitly marking parameter $subresourceDataProvider as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Core/Bridge/Symfony/Routing/IriConverter.php</b> on line <b>55</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Core\Bridge\Symfony\Routing\IriConverter::__construct(): Implicitly marking parameter $identifierConverter as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Core/Bridge/Symfony/Routing/IriConverter.php</b> on line <b>55</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Core\Bridge\Symfony\Routing\IriConverter::__construct(): Implicitly marking parameter $resourceClassResolver as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Core/Bridge/Symfony/Routing/IriConverter.php</b> on line <b>55</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Core\Bridge\Symfony\Routing\IriConverter::__construct(): Implicitly marking parameter $resourceMetadataFactory as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Core/Bridge/Symfony/Routing/IriConverter.php</b> on line <b>55</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Core\Bridge\Symfony\Routing\IriConverter::getIriFromItem(): Implicitly marking parameter $referenceType as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Core/Bridge/Symfony/Routing/IriConverter.php</b> on line <b>113</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Core\Bridge\Symfony\Routing\IriConverter::getIriFromResourceClass(): Implicitly marking parameter $referenceType as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Core/Bridge/Symfony/Routing/IriConverter.php</b> on line <b>126</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Core\Bridge\Symfony\Routing\IriConverter::getItemIriFromResourceClass(): Implicitly marking parameter $referenceType as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Core/Bridge/Symfony/Routing/IriConverter.php</b> on line <b>135</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Core\Bridge\Symfony\Routing\IriConverter::getSubresourceIriFromResourceClass(): Implicitly marking parameter $referenceType as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Core/Bridge/Symfony/Routing/IriConverter.php</b> on line <b>151</b><br />
+<br />
+<b>Deprecated</b>:  Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted::__construct(): Implicitly marking parameter $message as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/sensio/framework-extra-bundle/src/Configuration/IsGranted.php</b> on line <b>58</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Core\Metadata\Resource\ResourceMetadata::__construct(): Implicitly marking parameter $shortName as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Core/Metadata/Resource/ResourceMetadata.php</b> on line <b>34</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Core\Metadata\Resource\ResourceMetadata::__construct(): Implicitly marking parameter $description as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Core/Metadata/Resource/ResourceMetadata.php</b> on line <b>34</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Core\Metadata\Resource\ResourceMetadata::__construct(): Implicitly marking parameter $iri as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Core/Metadata/Resource/ResourceMetadata.php</b> on line <b>34</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Core\Metadata\Resource\ResourceMetadata::__construct(): Implicitly marking parameter $itemOperations as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Core/Metadata/Resource/ResourceMetadata.php</b> on line <b>34</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Core\Metadata\Resource\ResourceMetadata::__construct(): Implicitly marking parameter $collectionOperations as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Core/Metadata/Resource/ResourceMetadata.php</b> on line <b>34</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Core\Metadata\Resource\ResourceMetadata::__construct(): Implicitly marking parameter $attributes as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Core/Metadata/Resource/ResourceMetadata.php</b> on line <b>34</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Core\Metadata\Resource\ResourceMetadata::__construct(): Implicitly marking parameter $subresourceOperations as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Core/Metadata/Resource/ResourceMetadata.php</b> on line <b>34</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Core\Metadata\Resource\ResourceMetadata::__construct(): Implicitly marking parameter $graphql as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Core/Metadata/Resource/ResourceMetadata.php</b> on line <b>34</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Core\Metadata\Property\PropertyMetadata::__construct(): Implicitly marking parameter $type as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Core/Metadata/Property/PropertyMetadata.php</b> on line <b>57</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Core\Metadata\Property\PropertyMetadata::__construct(): Implicitly marking parameter $description as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Core/Metadata/Property/PropertyMetadata.php</b> on line <b>57</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Core\Metadata\Property\PropertyMetadata::__construct(): Implicitly marking parameter $readable as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Core/Metadata/Property/PropertyMetadata.php</b> on line <b>57</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Core\Metadata\Property\PropertyMetadata::__construct(): Implicitly marking parameter $writable as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Core/Metadata/Property/PropertyMetadata.php</b> on line <b>57</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Core\Metadata\Property\PropertyMetadata::__construct(): Implicitly marking parameter $readableLink as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Core/Metadata/Property/PropertyMetadata.php</b> on line <b>57</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Core\Metadata\Property\PropertyMetadata::__construct(): Implicitly marking parameter $writableLink as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Core/Metadata/Property/PropertyMetadata.php</b> on line <b>57</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Core\Metadata\Property\PropertyMetadata::__construct(): Implicitly marking parameter $required as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Core/Metadata/Property/PropertyMetadata.php</b> on line <b>57</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Core\Metadata\Property\PropertyMetadata::__construct(): Implicitly marking parameter $identifier as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Core/Metadata/Property/PropertyMetadata.php</b> on line <b>57</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Core\Metadata\Property\PropertyMetadata::__construct(): Implicitly marking parameter $iri as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Core/Metadata/Property/PropertyMetadata.php</b> on line <b>57</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Core\Metadata\Property\PropertyMetadata::__construct(): Implicitly marking parameter $attributes as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Core/Metadata/Property/PropertyMetadata.php</b> on line <b>57</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Core\Metadata\Property\PropertyMetadata::__construct(): Implicitly marking parameter $subresource as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Core/Metadata/Property/PropertyMetadata.php</b> on line <b>57</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Core\Metadata\Property\PropertyMetadata::__construct(): Implicitly marking parameter $initializable as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Core/Metadata/Property/PropertyMetadata.php</b> on line <b>57</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Core\Metadata\Property\PropertyMetadata::__construct(): Implicitly marking parameter $schema as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Core/Metadata/Property/PropertyMetadata.php</b> on line <b>57</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Core\Metadata\Property\PropertyMetadata::withIri(): Implicitly marking parameter $iri as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Core/Metadata/Property/PropertyMetadata.php</b> on line <b>232</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Core\Metadata\Property\PropertyMetadata::withSubresource(): Implicitly marking parameter $subresource as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Core/Metadata/Property/PropertyMetadata.php</b> on line <b>346</b><br />
+<br />
+<b>Deprecated</b>:  ApiPlatform\Core\Metadata\Property\PropertyMetadata::withSchema(): Implicitly marking parameter $schema as nullable is deprecated, the explicit nullable type must be used instead in <b>/Users/poulenard-kevin/Documents/Cours Studi/ECF/WEB/EcoRide-Back/vendor/api-platform/core/src/Core/Metadata/Property/PropertyMetadata.php</b> on line <b>419</b><br />
+{
+    "MONGODB_URL": {
+        "getenv": "mongodb://:@127.0.0.1:27017/?authSource=",
+        "_ENV": "mongodb://:@127.0.0.1:27017/?authSource=",
+        "_SERVER": "mongodb://:@127.0.0.1:27017/?authSource="
+    },
+    "MONGODB_USER": {
+        "getenv": "",
+        "_ENV": null,
+        "_SERVER": ""
+    },
+    "MONGODB_PASSWORD": {
+        "getenv": "",
+        "_ENV": null,
+        "_SERVER": ""
+    },
+    "MONGODB_DB": {
+        "getenv": "",
+        "_ENV": "",
+        "_SERVER": ""
+    }
+}
