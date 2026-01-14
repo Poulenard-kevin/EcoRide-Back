@@ -10,7 +10,7 @@ class MongoService
     private Client $client;
     private string $dbName;
 
-    public function __construct(Client $client, string $dbName)
+    public function __construct(\MongoDB\Client $client, string $dbName)
     {
         $this->client = $client;
         $this->dbName = $dbName;
