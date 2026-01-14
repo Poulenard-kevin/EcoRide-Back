@@ -95,11 +95,11 @@ services:
 
     MongoDB\Client:
         arguments:
-            - 'mongodb://127.0.0.1:27017'
+            - '%env(resolve:MONGODB_URI)%'
 
     App\Service\MongoService:
         arguments:
-            $dbName: 'sf_EcoRide_mongo'
+            $dbName: '%env(resolve:MONGODB_DB)%'
 
     App\DataPersister\Mongo\ReviewMongoDataPersister:
         arguments:
