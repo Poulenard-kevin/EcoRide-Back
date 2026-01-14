@@ -98,8 +98,12 @@ services:
             - '%env(resolve:MONGODB_URI)%'
 
     App\Service\MongoService:
+        public: true
+        autowire: true
+        autoconfigure: true
         arguments:
-            $dbName: '%env(resolve:MONGODB_DB)%'
+            $client: '@MongoDB\Client'
+            $dbName: 'sf_EcoRide_mongo'
 
     App\DataPersister\Mongo\ReviewMongoDataPersister:
         arguments:
