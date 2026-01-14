@@ -4,6 +4,8 @@
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
+    env(MONGODB_URI): ''
+    env(MONGODB_DB): ''
 
 services:
     App\EventListener\SessionCookieNameListener:
@@ -90,3 +92,26 @@ services:
             - { name: doctrine.event_listener, event: postPersist }
             - { name: doctrine.event_listener, event: postUpdate }
             - { name: doctrine.event_listener, event: postRemove }
+
+    MongoDB\Client:
+        arguments:
+            - 'mongodb://127.0.0.1:27017'
+
+    App\Service\MongoService:
+        arguments:
+            $dbName: 'sf_EcoRide_mongo'
+
+    App\DataPersister\Mongo\ReviewMongoDataPersister:
+        arguments:
+            $dm: '@doctrine_mongodb.odm.document_manager'
+            $security: '@security.helper'
+        tags: ['api_platform.data_persister']
+        public: false
+
+    App\EventListener\Mongo\ReviewSyncListener:
+        arguments:
+            $documentManager: '@doctrine_mongodb.odm.document_manager'
+        tags:
+            - { name: 'doctrine.event_listener', event: 'postPersist' }
+            - { name: 'doctrine.event_listener', event: 'postUpdate' }
+            - { name: 'doctrine.event_listener', event: 'preRemove' }
