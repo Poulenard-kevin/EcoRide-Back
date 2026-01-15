@@ -7,7 +7,9 @@ api_platform:
         versions: [3]
 
     mapping:
-        paths: ['%kernel.project_dir%/src/Entity']
-    
+        paths: 
+          - '%kernel.project_dir%/src/Entity'    # MySQL entities
+          - '%kernel.project_dir%/src/Document'  # MongoDB documents
+
     patch_formats:
         json: ['application/merge-patch+json']

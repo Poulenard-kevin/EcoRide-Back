@@ -10,8 +10,16 @@ use ApiPlatform\Core\Annotation\ApiResource;
 #[ApiResource(
     normalizationContext: ['groups' => ['review:read']],
     denormalizationContext: ['groups' => ['review:write']],
-    collectionOperations: ['get', 'post'],
-    itemOperations: ['get', 'put', 'delete']
+    collectionOperations: [
+        'get', 
+        'post'
+    ],
+    itemOperations: [
+        'get',
+        'put',
+        'delete',
+        'patch' 
+    ],
 )]
 #[MongoDB\Document(collection: "reviews")]
 class ReviewMongo
@@ -39,6 +47,11 @@ class ReviewMongo
     #[Groups(['review:read', 'review:write'])]
     private int $userId;
 
+    // AJOUT DU CHAMP SQL_ID POUR LE LIEN AVEC MYSQL
+    #[MongoDB\Field(type: "string")]
+    #[Groups(['review:read', 'review:write'])]
+    private ?string $sqlId = null;
+
     public function __construct()
     {
         $this->createdAt = new \DateTime();
@@ -58,4 +71,7 @@ class ReviewMongo
 
     public function getUserId(): int { return $this->userId; }
     public function setUserId(int $userId): self { $this->userId = $userId; return $this; }
+
+    public function getSqlId(): ?string { return $this->sqlId; }
+    public function setSqlId(?string $sqlId): self { $this->sqlId = $sqlId; return $this; }
 }
