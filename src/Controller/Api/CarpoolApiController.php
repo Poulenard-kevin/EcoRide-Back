@@ -22,7 +22,7 @@ class CarpoolApiController extends AbstractController
         $repo = $em->getRepository(Carpool::class);
         $carpools = $repo->findAll();
 
-        $data = $serializer->serialize($carpools, 'json', ['groups' => ['carpool:list']]);
+        $data = $serializer->serialize($carpools, 'json', ['groups' => ['carpool:read']]);
         return new JsonResponse($data, 200, [], true);
     }
 
@@ -64,7 +64,7 @@ class CarpoolApiController extends AbstractController
     #[Route('/{id}', name: 'api_carpool_show', methods: ['GET'])]
     public function show(Carpool $carpool, SerializerInterface $serializer): JsonResponse
     {
-        $data = $serializer->serialize($carpool, 'json', ['groups' => ['carpool:detail']]);
+        $data = $serializer->serialize($carpool, 'json', ['groups' => ['carpool:read']]);
         return new JsonResponse($data, 200, [], true);
     }
 
@@ -203,7 +203,7 @@ public function delete(Carpool $carpool, EntityManagerInterface $em, LoggerInter
         $repo = $em->getRepository(Booking::class);
         $bookings = $repo->findBy(['passenger' => $this->getUser()]);
 
-        $data = $serializer->serialize($bookings, 'json', ['groups' => ['booking:detail']]);
+        $data = $serializer->serialize($bookings, 'json', ['groups' => ['booking:read']]);
         return new JsonResponse($data, 200, [], true);
     }
 }

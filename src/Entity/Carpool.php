@@ -98,7 +98,7 @@ class Carpool
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups({"carpool:read"})
+     * @Groups({"carpool:read", "booking:read"})
      */
     private ?int $id = null;
 
@@ -120,7 +120,7 @@ class Carpool
      * @ORM\Column(name="lieu_depart", type="string", length=255)
      * @Assert\NotBlank(message="Le lieu de départ est obligatoire.")
      * @Assert\Length(max=255, maxMessage="Le lieu de départ ne peut pas dépasser {{ limit }} caractères.")
-     * @Groups({"carpool:read", "carpool:write"})
+     * @Groups({"carpool:read", "carpool:write", "booking:read"})
      */
     private ?string $departureLocation = null;
 

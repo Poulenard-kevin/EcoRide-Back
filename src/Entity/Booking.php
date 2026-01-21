@@ -395,4 +395,16 @@ class Booking
                 ->addViolation();
         }
     }
+
+    /**
+     * @Groups({"booking:read"})
+     */
+    public function getCarpoolIri(): ?string
+    {
+        $cp = $this->getCarpool();
+        if (!$cp || !$cp->getId()) {
+            return null;
+        }
+        return '/api/carpools/' . $cp->getId();
+    }
 }
