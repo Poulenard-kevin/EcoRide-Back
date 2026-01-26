@@ -219,6 +219,7 @@ class CarpoolApiController extends AbstractController
     }
 
     #[Route('/bookings/me', name: 'api_bookings_me', methods: ['GET'])]
+    #[Route('/carpools/bookings/me', name: 'api_carpools_bookings_me', methods: ['GET'])]
     public function myBookings(EntityManagerInterface $em, SerializerInterface $serializer): JsonResponse
     {
         $this->denyAccessUnlessGranted('ROLE_USER');
