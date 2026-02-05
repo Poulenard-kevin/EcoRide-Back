@@ -10,7 +10,7 @@ Avant de commencer, assurez-vous d'avoir les éléments suivants installés sur 
 
 * **Git** — pour cloner les dépôts du projet.  
 
-* **Docker Desktop** — pour faire fonctionner la base de données MySQL et phpMyAdmin.  
+* **Docker Desktop** — pour faire fonctionner la base de données MySQL + phpMyAdmin  et MongoDB + MongoDB Compass
   https://www.docker.com/products/docker-desktop/  
 
 * **PHP** — le serveur PHP intégré est utilisé pour servir le frontend.  
@@ -36,6 +36,20 @@ Avant de commencer, assurez-vous d'avoir les éléments suivants installés sur 
 
 (Remplacez les URL par vos URL Git réelles.)
 
+## Configuration NoSQL (MongoDB)
+
+Le projet utilise MongoDB pour la gestion des logs et des avis.
+
+1) Accès à la base NoSQL
+Le service MongoDB est exposé sur le port **27017**.
+
+2) Administration via MongoDB Compass
+Pour visualiser les données NoSQL :
+* Lancez **MongoDB Compass** sur votre machine.
+* Utilisez l'URI de connexion suivante : `mongodb://localhost:27017`
+* Vous pourrez y retrouver la base `ecoride_mongodb` et ses collections (avis, logs).
+
+
 ## Configuration du backend (EcoRide-Back)
 
 1) Aller dans le dossier du backend  
@@ -46,11 +60,25 @@ composer install
 
 3) Fichier .env — exemple de configuration de la base de données  
 # .env  
-DATABASE_URL="mysql://kevin:kevin_password@127.0.0.1:3310/sf_EcoRide?serverVersion=8.0.32&charset=utf8mb4"
+
+APP_ENV=dev
+APP_SECRET=3c32192a959a06a0592a1e2da634a986
+
+DATABASE_URL="mysql://kevin:kevin_password@127.0.0.1:3310/sf_EcoRide?serverVersion=8.0&charset=utf8mb4"
+
+CORS_ALLOW_ORIGIN='^https?://(localhost|127\.0\.0\.1)(:[0-9]+)?$'
+
+MAILER_DSN=null://null
+
+APP_DEBUG=0
+
+PHP_INI_DISPLAY_ERRORS=0
+
+MONGODB_DB=sf_EcoRide_mongo
 
 Note : le port 3310 est le port exposé par Docker sur la machine hôte.
 
-4) Exemple de docker-compose.yml (pour MySQL + phpMyAdmin)
+4) Exemple de docker-compose.yml (pour MySQL + phpMyAdmin et MongoDB + MongoDB Compass)
 version: '3.8'
 services:
   db_ecoride:
@@ -76,8 +104,8 @@ services:
     image: phpmyadmin/phpmyadmin
     restart: unless-stopped
     depends_on:
-      db_ecoride:
-        condition: service_healthy
+      db_ecoride: 
+        condition: service_healthy 
     environment:
       PMA_HOST: db_ecoride
       PMA_USER: root
@@ -87,8 +115,18 @@ services:
     ports:
       - "8082:80"
 
+  mongodb:
+    image: mongo:latest
+    container_name: mongodb_ecoride
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+
 volumes:
   ecoride_db_data:
+  mongodb_data:
 
 (Placez ce fichier docker-compose.yml à l'emplacement prévu.)
 
@@ -108,7 +146,7 @@ cd ~/Documents/Cours\ Studi/ECF/WEB/EcoRide-Back
 ./start-back-docker.sh
 
 Ce script doit :  
-* démarrer les conteneurs Docker (MySQL sur 3310, phpMyAdmin sur 8082),  
+* démarrer les conteneurs Docker (MySQL sur 3310, phpMyAdmin sur 8082, MongoDB sur 27017),  
 * exécuter les migrations Doctrine,  
 * lancer le serveur Symfony sur le port 8000,  
 * ouvrir le navigateur sur http://localhost:8000/login et http://localhost:8082 (si configuré).
@@ -117,6 +155,7 @@ Points d'accès :
 * Formulaire de connexion / CRUD : http://localhost:8000/login  
 * API Platform : http://localhost:8000/api  
 * phpMyAdmin : http://localhost:8082
+* MongoDB Compass : `mongodb://localhost:27017`
 
 2) Accéder à phpMyAdmin  
 Ouvrez http://localhost:8082  
