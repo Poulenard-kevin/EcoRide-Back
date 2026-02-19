@@ -10,12 +10,13 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use ApiPlatform\Core\Annotation\ApiResource;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Annotation\MaxDepth;
 
 /**
  * @ORM\Entity(repositoryClass=CarpoolRepository::class)
  * @ORM\Table(name="covoiturage")
  * @ApiResource(
- *     normalizationContext={"groups"={"carpool:read", "user:read", "user:public", "car:read"}},
+ *     normalizationContext={"groups"={"carpool:read"}},
  *     denormalizationContext={"groups"={"carpool:write"}},
  *     collectionOperations={
  *         "get"={
@@ -184,20 +185,23 @@ class Carpool
     /**
      * @ORM\ManyToOne(targetEntity=User::class, inversedBy="carpools")
      * @ORM\JoinColumn(name="chauffeur_id", referencedColumnName="id", nullable=true)
-     * @Groups({"carpool:read", "carpool:write", "user:read"})
+     * @Groups({"carpool:read", "carpool:write"})
+     * @MaxDepth(1)
      */
     private ?User $driver = null;
 
     /**
-     * @ORM\OneToMany(targetEntity=Booking::class, mappedBy="carpool", orphanRemoval=true, cascade={"remove"}, fetch="EAGER")
+     * @ORM\OneToMany(targetEntity=Booking::class, mappedBy="carpool", orphanRemoval=true, cascade={"remove"}, fetch="LAZY")
      * @Groups({"carpool:read"})
+     * @MaxDepth(1)
      */
     private Collection $bookings;
 
     /**
      * @ORM\ManyToOne(targetEntity=Car::class, inversedBy="carpools")
      * @ORM\JoinColumn(name="voiture_id", referencedColumnName="id", nullable=true)
-     * @Groups({"carpool:read", "carpool:write", "car:read"})
+     * @Groups({"carpool:read", "carpool:write"})
+     * @MaxDepth(1)
      */
     private ?Car $car = null;
 
@@ -218,7 +222,26 @@ class Carpool
         $this->reviews = new ArrayCollection();
     }
 
+    /**
+     * @Groups({"carpool:read"})
+     * @SerializedName("heure")
+     */
+    public function getHeure(): ?string
+    {
+        return $this->departureTime ? $this->departureTime->format('H:i') : null;
+    }
+
+    /**
+     * @Groups({"carpool:read"})
+     * @SerializedName("heure_arrivee")
+     */
+    public function getHeureArrivee(): ?string
+    {
+        return $this->arrivalTime ? $this->arrivalTime->format('H:i') : null;
+    }
+
     // --- Getters / Setters ---
+
 
     public function getId(): ?int
     {

@@ -46,7 +46,7 @@ use DateTimeInterface;
  *     itemOperations={
  *         "get"={
  *           "path"="/cars/{id}",
- *           "security"="object.getOwner() == user or is_granted('ROLE_ADMIN')",
+ *           "security"="is_granted('ROLE_USER')",
  *           "openapi_context"={
  *             "summary"="Récupère une voiture",
  *             "description"="Détails d'un véhicule. Les informations sensibles (si tu en as) ne sont pas exposées.",

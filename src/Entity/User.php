@@ -13,6 +13,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 use ApiPlatform\Core\Annotation\ApiResource;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Serializer\Annotation\MaxDepth;
 
 /**
  * @ORM\Entity(repositoryClass=UserRepository::class)
@@ -160,7 +161,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @Assert\NotBlank(message="L'email est obligatoire.")
      * @Assert\Email(message="L'email n'est pas valide.")
-     * @Groups({"user:admin_read", "user:write", "carpool:read"})
+     * @Groups({"user:admin_read", "user:write"})
      * @ORM\Column(name="email", type="string", length=180)
      */
     private ?string $email = null;
@@ -227,12 +228,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private Collection $cars;
 
     /**
-     * @Groups({"user:read"})
      * @ORM\OneToMany(targetEntity=Carpool::class, mappedBy="driver")
+     * @MaxDepth(1)
      */
     private Collection $carpools;
 
     /**
+     * @Groups({"user:read"})
      * @ORM\OneToMany(targetEntity=Booking::class, mappedBy="passenger")
      */
     private Collection $bookings;

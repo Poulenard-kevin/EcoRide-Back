@@ -182,29 +182,31 @@ class BookingDataPersister implements ContextAwareDataPersisterInterface
     }
 
     public function remove($data, array $context = [])
-    {
-        if (!$data instanceof Booking) {
-            $this->em->remove($data);
-            $this->em->flush();
-            return;
+{
+    if (!$data instanceof Booking) {
+        return;
+    }
+
+    $id = $data->getId();
+    $carpool = $data->getCarpool();
+
+    $this->logger->info('Début suppression Booking', ['id' => $id]);
+
+    $conn = $this->em->getConnection();
+    $conn->beginTransaction();
+
+    try {
+        // 1. S'assurer que l'entité est gérée par l'EM
+        if (!$this->em->contains($data)) {
+            $data = $this->em->getRepository(Booking::class)->find($id);
         }
 
-        $conn = $this->em->getConnection();
-        $conn->beginTransaction();
-        try {
-            $carpool = $data->getCarpool();
-            if ($carpool) {
-                $carpoolRepo = $this->em->getRepository(Carpool::class);
-                $carpool = $carpoolRepo->find($carpool->getId());
-                if ($carpool) {
-                    $this->em->lock($carpool, LockMode::PESSIMISTIC_WRITE);
-                }
-            }
-
+        if ($data) {
             $this->em->remove($data);
             $this->em->flush();
-
-            if ($carpool && method_exists($carpool, 'setAvailableSeats') && method_exists($carpool, 'getTotalSeats')) {
+            
+            // 2. Recalculer les places si le trajet existe encore
+            if ($carpool && $this->em->contains($carpool)) {
                 $totalBooked = (int) $this->em->createQueryBuilder()
                     ->select('COALESCE(SUM(b.reservedSeats), 0)')
                     ->from(Booking::class, 'b')
@@ -213,31 +215,22 @@ class BookingDataPersister implements ContextAwareDataPersisterInterface
                     ->getQuery()
                     ->getSingleScalarResult();
 
-                $carpool->setAvailableSeats($carpool->getTotalSeats() - $totalBooked);
-                $this->em->persist($carpool);
-                $this->em->flush();
-
-                $this->logger->info('Booking removed, availableSeats updated', [
-                    'bookingId' => $data->getId(),
-                    'carpoolId' => $carpool->getId(),
-                    'availableSeats' => $carpool->getAvailableSeats()
-                ]);
+                if (method_exists($carpool, 'setAvailableSeats') && method_exists($carpool, 'getTotalSeats')) {
+                    $carpool->setAvailableSeats($carpool->getTotalSeats() - $totalBooked);
+                    $this->em->persist($carpool);
+                    $this->em->flush();
+                }
             }
-
+            
             $conn->commit();
-        } catch (\Throwable $e) {
-            try {
-                $conn->rollBack();
-            } catch (\Throwable $rb) {
-                $this->logger->error('Failed to roll back transaction (remove): ' . $rb->getMessage(), ['exception' => $rb]);
-            }
-            $this->logger->error('Booking remove failed: '.$e->getMessage(), ['exception' => $e]);
-
-            if ($e instanceof HttpExceptionInterface) {
-                throw $e;
-            }
-
-            throw new HttpException(500, 'An error occurred while deleting the booking.', $e);
+            $this->logger->info('Booking supprimé et places du trajet mises à jour', ['id' => $id]);
         }
+    } catch (\Throwable $e) {
+        if ($conn->isTransactionActive()) {
+            $conn->rollBack();
+        }
+        $this->logger->error('Échec suppression Booking', ['id' => $id, 'error' => $e->getMessage()]);
+        throw new \Symfony\Component\HttpKernel\Exception\HttpException(500, 'Erreur BDD lors de la suppression.', $e);
     }
+}
 }

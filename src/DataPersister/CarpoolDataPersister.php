@@ -118,32 +118,22 @@ class CarpoolDataPersister implements ContextAwareDataPersisterInterface
             // Ensure the Carpool entity holds the managed Car entity from Doctrine
             $data->setCar($carFromDb);
 
-            // set total/available seats if not provided (try multiple possible getters)
-            if ($data->getTotalSeats() === null) {
-                $nbSeats = null;
-                if (method_exists($carFromDb, 'getSeats')) {
-                    $nbSeats = $carFromDb->getSeats();
-                } elseif (method_exists($carFromDb, 'getNbPlaces')) {
-                    $nbSeats = $carFromDb->getNbPlaces();
-                } elseif (method_exists($carFromDb, 'getNbPlacesTotal')) {
-                    $nbSeats = $carFromDb->getNbPlacesTotal();
-                }
+            // ✅ On force TOUJOURS le total depuis la voiture (source de vérité)
+            $isNew = $data->getId() === null;
+            $nbSeats = (int)$carFromDb->getSeats();
+            $data->setTotalSeats($nbSeats);
 
-                if ($nbSeats !== null) {
-                    $nbSeats = (int)$nbSeats;
-                    $data->setTotalSeats($nbSeats);
-                    if ($data->getAvailableSeats() === null) {
-                        $data->setAvailableSeats($nbSeats);
-                    }
-                    $this->logger->info('totalSeats mis à jour depuis la voiture', [
-                        'carpoolId' => $data->getId(),
-                        'carId' => $carFromDb->getId(),
-                        'totalSeats' => $nbSeats
-                    ]);
-                } else {
-                    $this->logger->warning('No seats getter found on Car entity', ['carId' => $carFromDb->getId()]);
-                }
+            if ($isNew) {
+                // Seulement à la création, on initialise les places dispo au max
+                $data->setAvailableSeats($nbSeats);
             }
+
+            $this->logger->info('totalSeats forcé depuis la voiture', [
+                'carpoolId'  => $data->getId(),
+                'carId'      => $carFromDb->getId(),
+                'totalSeats' => $nbSeats,
+                'isNew'      => $isNew
+            ]);
         } else {
             $this->logger->info('No car provided in payload', [
                 'carpoolId' => $data->getId(),
@@ -173,12 +163,26 @@ class CarpoolDataPersister implements ContextAwareDataPersisterInterface
             return;
         }
 
-        // If you have related bookings/reservations, ensure either:
-        // - the relation is set with cascade={"remove"} on the Carpool entity, OR
-        // - remove related bookings here before removing the carpool.
-        $this->entityManager->remove($data);
-        $this->entityManager->flush();
+        $id = $data->getId();
+        $this->logger->info('Tentative de suppression du Carpool', ['id' => $id]);
 
-        $this->logger->info('Carpool removed', ['carpoolId' => $data->getId()]);
+        try {
+            // Sécurité : Si l'entité est détachée, on la récupère pour que Doctrine la reconnaisse
+            if (!$this->entityManager->contains($data)) {
+                $data = $this->entityManager->getRepository(Carpool::class)->find($id);
+            }
+
+            if ($data) {
+                $this->entityManager->remove($data);
+                $this->entityManager->flush(); // Le cascade={"remove"} va supprimer les bookings ici
+                $this->logger->info('Carpool et ses réservations supprimés avec succès', ['id' => $id]);
+            }
+        } catch (\Exception $e) {
+            $this->logger->error('Erreur lors de la suppression du Carpool', [
+                'id' => $id,
+                'error' => $e->getMessage()
+            ]);
+            throw $e;
+        }
     }
 }
