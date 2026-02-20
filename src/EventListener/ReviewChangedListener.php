@@ -38,39 +38,42 @@ class ReviewChangedListener
     }
 
     private function handleChange(LifecycleEventArgs $args): void
-{
-    $entity = $args->getObject();
+    {
+        $entity = $args->getObject();
 
-    if (!$entity instanceof Review) {
-        return;
-    }
-
-    $targetUser = $entity->getTarget();
-    if (!$targetUser) {
-        return;
-    }
-
-    try {
-        $avg = $this->reviewRepository->getAverageRatingForUser($targetUser);
-        $newAverage = ($avg === null) ? 5.0 : (float) round($avg);
-
-        $target->setAverageRating($newAverage);
-
-        $current = $targetUser->getAverageRating();
-        if ($current === null || abs($current - $newAverage) > 0.0001) {
-            $targetUser->setAverageRating($newAverage);
-            $this->em->persist($targetUser);
-
-            // flush ici provoque un flush imbriqué si on est déjà dans une transaction.
-            // Pour la plupart des petites applications c'est acceptable.
-            $this->em->flush();
+        if (!$entity instanceof Review) {
+            return;
         }
-    } catch (\Throwable $e) {
-        $this->logger->error('Erreur lors du recalcul de la moyenne des avis', [
-            'exception' => $e,
-            'reviewId' => $entity->getId() ?? null,
-            'targetUserId' => $targetUser->getId() ?? null,
-        ]);
+
+        $targetUser = $entity->getTarget();
+        if (!$targetUser) {
+            return;
+        }
+
+        try {
+            $avg = $this->reviewRepository->getAverageRatingForUser($targetUser);
+            // On arrondit à 1 décimale pour plus de précision ou entier selon ton choix
+            $newAverage = ($avg === null) ? 5.0 : (float) round($avg, 1);
+
+            $current = $targetUser->getAverageRating();
+            
+            // On ne met à jour que si la note a vraiment changé
+            if ($current === null || abs((float)$current - $newAverage) > 0.1) {
+                $targetUser->setAverageRating($newAverage);
+                
+                // On utilise une requête DQL directe pour éviter de déclencher 
+                // d'autres évènements qui pourraient causer une boucle infinie
+                $this->em->createQuery('UPDATE App\Entity\User u SET u.averageRating = :avg WHERE u.id = :id')
+                         ->setParameter('avg', $newAverage)
+                         ->setParameter('id', $targetUser->getId())
+                         ->execute();
+            }
+        } catch (\Throwable $e) {
+            $this->logger->error('Erreur lors du recalcul de la moyenne des avis', [
+                'exception' => $e->getMessage(),
+                'reviewId' => $entity->getId() ?? 'new',
+                'targetUserId' => $targetUser->getId(),
+            ]);
+        }
     }
-}
 }
