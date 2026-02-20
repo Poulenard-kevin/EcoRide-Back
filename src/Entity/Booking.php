@@ -126,6 +126,13 @@ class Booking
     private ?int $reservedSeats = 1;
 
     /**
+     * @ORM\Column(name="prix_total", type="float", nullable=true)
+     * @Groups({"booking:read", "carpool:read"})
+     * @SerializedName("totalPrice")
+     */
+    private ?float $totalPrice = null;
+
+    /**
      * @ORM\Column(name="statut", type="string", length=50, nullable=true)
      * @Groups({"booking:read", "booking:write", "carpool:read"})
      */
@@ -210,6 +217,24 @@ class Booking
     public function setReservedSeats(int $reservedSeats): self
     {
         $this->reservedSeats = $reservedSeats ?? 1;
+        return $this;
+    }
+
+    public function getTotalPrice(): ?float
+    {
+        if ($this->totalPrice !== null) {
+            return $this->totalPrice;
+        }
+       
+        if ($this->carpool && $this->reservedSeats) {
+            return (float) ($this->carpool->getPricePerSeat() * $this->reservedSeats);
+        }
+        return 0.0;
+    }
+
+    public function setTotalPrice(?float $totalPrice): self
+    {
+        $this->totalPrice = $totalPrice;
         return $this;
     }
 

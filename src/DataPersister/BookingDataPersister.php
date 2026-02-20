@@ -77,6 +77,21 @@ class BookingDataPersister implements ContextAwareDataPersisterInterface
                 throw new HttpException(400, 'Le nombre de places réservées doit être positif.');
             }
 
+            // 5. Calculer le prix total
+            $pricePerSeat = (float) $carpool->getPricePerSeat();
+            $totalPrice = $pricePerSeat * $newSeats;
+
+            // Remplace 'setTotalPrice' par le nom exact de ton setter (ex: setAmount)
+            if (method_exists($data, 'setTotalPrice')) {
+                $data->setTotalPrice($totalPrice);
+            }
+
+            $this->logger->info('Calcul du prix total de la réservation', [
+                'pricePerSeat' => $pricePerSeat,
+                'nbPlaces' => $newSeats,
+                'totalPrice' => $totalPrice
+            ]);
+
             $conn = $this->em->getConnection();
             $conn->beginTransaction();
             try {
