@@ -25,6 +25,7 @@ class MeController extends AbstractController
             'firstName' => $user->getFirstName(),
             'lastName'  => $user->getLastName(),
             'roles'     => $user->getRoles(),
+            'credits'   => $user->getCredits(),
         ]);
     }
 }

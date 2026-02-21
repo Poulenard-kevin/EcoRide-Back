@@ -195,6 +195,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public const ROLE_ADMIN = 'ROLE_ADMIN';
 
     /**
+     * @Groups({"user:read", "me:read"})
+     * @ORM\Column(type="integer", options={"default": 20})
+     */
+    private int $credits = 20;
+
+    /**
      * @Groups({"user:read"})
      * @ORM\Column(name="note_moyenne", type="float", options={"default": 5})
      */
@@ -370,6 +376,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setPlainPassword(?string $plainPassword): self
     {
         $this->plainPassword = $plainPassword;
+        return $this;
+    }
+
+    public function getCredits(): int
+    {
+        return $this->credits;
+    }
+
+    public function setCredits(int $credits): self
+    {
+        $this->credits = $credits;
         return $this;
     }
 
