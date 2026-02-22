@@ -12,8 +12,8 @@ use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 use ApiPlatform\Core\Annotation\ApiResource;
 use Symfony\Component\Serializer\Annotation\Groups;
-use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Serializer\Annotation\MaxDepth;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
  * @ORM\Entity(repositoryClass=UserRepository::class)
@@ -240,19 +240,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private Collection $carpools;
 
     /**
-     * @Groups({"user:read"})
      * @ORM\OneToMany(targetEntity=Booking::class, mappedBy="passenger")
      */
     private Collection $bookings;
 
     /**
-     * @Groups({"user:read"})
      * @ORM\OneToMany(targetEntity=Review::class, mappedBy="author", orphanRemoval=true)
      */
     private Collection $reviews;
 
     /**
-     * @Groups({"user:read"})
      * @ORM\OneToMany(targetEntity=Review::class, mappedBy="target", orphanRemoval=true)
      */
     private Collection $receivedReviews;

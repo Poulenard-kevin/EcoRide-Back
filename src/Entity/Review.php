@@ -11,6 +11,7 @@ use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\BooleanFilter;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Annotation\MaxDepth;
 
 /**
  * @ORM\Entity(repositoryClass=ReviewRepository::class)
@@ -118,26 +119,29 @@ class Review
     private ?\DateTimeInterface $date = null;
 
     /**
-     * @ORM\ManyToOne(targetEntity=User::class, inversedBy="reviews")
+     * @ORM\ManyToOne(targetEntity=User::class, inversedBy="reviews", fetch="LAZY")
      * @ORM\JoinColumn(name="auteur_id", referencedColumnName="id", nullable=false, onDelete="CASCADE")
      * @Assert\NotNull(message="L'auteur est requis.")
      * @Groups({"review:read"})
+     * @MaxDepth(1)
      */
     private ?User $author = null;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Carpool::class, inversedBy="reviews")
+     * @ORM\ManyToOne(targetEntity=Carpool::class, inversedBy="reviews", fetch="LAZY")
      * @ORM\JoinColumn(name="covoiturage_id", referencedColumnName="id", nullable=false, onDelete="CASCADE")
      * @Assert\NotNull(message="Le covoiturage est requis.")
      * @Groups({"review:read", "review:write"})
+     * @MaxDepth(1)
      */
     private ?Carpool $carpool = null;
 
     /**
-     * @ORM\ManyToOne(targetEntity=User::class, inversedBy="receivedReviews")
+     * @ORM\ManyToOne(targetEntity=User::class, inversedBy="receivedReviews", fetch="LAZY")
      * @ORM\JoinColumn(name="cible_id", referencedColumnName="id", nullable=false, onDelete="CASCADE")
      * @Assert\NotNull(message="La cible est requise.")
      * @Groups({"review:read"})
+     * @MaxDepth(1)
      */
     private ?User $target = null;
 
@@ -148,9 +152,10 @@ class Review
     private bool $validated = false;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Booking::class, inversedBy="reviews")
+     * @ORM\ManyToOne(targetEntity=Booking::class, inversedBy="reviews", fetch="LAZY")
      * @ORM\JoinColumn(onDelete="SET NULL", nullable=true)
      * @Groups({"review:read", "review:write"})
+     * @MaxDepth(1)
      */
     private ?Booking $booking = null;
 
