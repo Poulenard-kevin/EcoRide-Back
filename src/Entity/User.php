@@ -167,7 +167,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $email = null;
 
     /**
-     * @Groups({"user:read", "user:write"})
+     * @Groups({"user:read", "user:write", "carpool:read"})
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     private ?string $avatar = null;
