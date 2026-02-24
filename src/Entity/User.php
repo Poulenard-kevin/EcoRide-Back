@@ -207,7 +207,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?float $averageRating = 5.0;
 
     /**
-     * @Groups({"user:read", "user:write", "user:public"})
+     * @Groups({"user:read", "user:write", "user:public", "carpool:read"})
      * @ORM\Column(name="a_propos", type="text", nullable=true)
      * @Assert\Length(
      *     max=500,

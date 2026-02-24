@@ -21,3 +21,6 @@ yarn-error.log
 
 # Ignore IDE specific files
 /.DS_Store
+
+# Ignore nouvelle avatars
+/public/uploads/avatars/*

@@ -1,5 +1,4 @@
 <?php
-// src/Controller/Api/MeController.php
 
 namespace App\Controller\Api;
 
@@ -26,6 +25,7 @@ class MeController extends AbstractController
             'lastName'  => $user->getLastName(),
             'roles'     => $user->getRoles(),
             'credits'   => $user->getCredits(),
+            'avatar'    => method_exists($user, 'getAvatar') ? $user->getAvatar() : null,
         ]);
     }
 }
